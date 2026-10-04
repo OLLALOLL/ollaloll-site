@@ -942,6 +942,12 @@ p {
   color: var(--muted);
 }
 
+@media (max-width: 600px) {
+  .card-desc {
+    display: none;
+  }
+}
+
 .thumb {
   position: relative;
   display: grid;
