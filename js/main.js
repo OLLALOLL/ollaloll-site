@@ -1639,7 +1639,7 @@
       );
     }
 
-    const entryHref = (entry) => "library-entry.html?e=" + encodeURIComponent(entry.slug);
+    const entryHref = (entry) => "/library-entry.html?e=" + encodeURIComponent(entry.slug);
 
     function entryCard(entry) {
       const firstField = (entry.fields || [])[0];
@@ -1821,7 +1821,7 @@
                   "ul",
                   { class: "lib-related-links" },
                   related.map((other) =>
-                    el("li", {}, el("a", { href: "library-entry.html?e=" + encodeURIComponent(other.slug), text: other.name }))
+                    el("li", {}, el("a", { href: "/library-entry.html?e=" + encodeURIComponent(other.slug), text: other.name }))
                   )
                 ),
               ])
@@ -1960,7 +1960,7 @@
             (libraryItems || []).map((entry) => ({
               type: "library",
               title: entry.name,
-              href: "library-entry.html?e=" + encodeURIComponent(entry.slug),
+              href: "/library-entry.html?e=" + encodeURIComponent(entry.slug),
               created_at: entry.created_at,
             }))
           )
@@ -2100,7 +2100,7 @@
                 entry.category.toLowerCase().includes(q) ||
                 (entry.fields || []).some((f) => (f.title || "").toLowerCase().includes(q) || (f.description || "").toLowerCase().includes(q))
             )
-            .map((entry) => ({ type: "library", title: entry.name, sub: entry.category, href: "library-entry.html?e=" + encodeURIComponent(entry.slug) }))
+            .map((entry) => ({ type: "library", title: entry.name, sub: entry.category, href: "/library-entry.html?e=" + encodeURIComponent(entry.slug) }))
         )
         .slice(0, 40);
 
