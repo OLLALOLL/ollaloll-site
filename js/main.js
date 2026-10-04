@@ -1639,7 +1639,12 @@
       );
     }
 
-    const entryHref = (entry) => "/library-entry?e=" + encodeURIComponent(entry.slug);
+    const entryHref = (entry) => {
+      const key = categoryKeyOf(entry);
+      return key
+        ? "/library/" + encodeURIComponent(key) + "/entry?e=" + encodeURIComponent(entry.slug)
+        : "/library-entry?e=" + encodeURIComponent(entry.slug);
+    };
 
     function entryCard(entry) {
       const firstField = (entry.fields || [])[0];
@@ -1821,7 +1826,14 @@
                   "ul",
                   { class: "lib-related-links" },
                   related.map((other) =>
-                    el("li", {}, el("a", { href: "/library-entry?e=" + encodeURIComponent(other.slug), text: other.name }))
+                    el(
+                      "li",
+                      {},
+                      el("a", {
+                        href: "/library/" + encodeURIComponent((other.category || "").toLowerCase()) + "/entry?e=" + encodeURIComponent(other.slug),
+                        text: other.name,
+                      })
+                    )
                   )
                 ),
               ])
@@ -1960,7 +1972,7 @@
             (libraryItems || []).map((entry) => ({
               type: "library",
               title: entry.name,
-              href: "/library-entry?e=" + encodeURIComponent(entry.slug),
+              href: "/library/" + encodeURIComponent((entry.category || "").toLowerCase()) + "/entry?e=" + encodeURIComponent(entry.slug),
               created_at: entry.created_at,
             }))
           )
@@ -2100,7 +2112,12 @@
                 entry.category.toLowerCase().includes(q) ||
                 (entry.fields || []).some((f) => (f.title || "").toLowerCase().includes(q) || (f.description || "").toLowerCase().includes(q))
             )
-            .map((entry) => ({ type: "library", title: entry.name, sub: entry.category, href: "/library-entry?e=" + encodeURIComponent(entry.slug) }))
+            .map((entry) => ({
+              type: "library",
+              title: entry.name,
+              sub: entry.category,
+              href: "/library/" + encodeURIComponent((entry.category || "").toLowerCase()) + "/entry?e=" + encodeURIComponent(entry.slug),
+            }))
         )
         .slice(0, 40);
 
