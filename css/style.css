@@ -4680,6 +4680,17 @@ button.poll-option:hover {
   height: 20px;
 }
 
+/* .search-toggle's 4px margin-top above only makes sense next to the
+   taller desktop .nav — on the mobile pill layout .nav and .lang are
+   both reset flush with the header's top edge (see .lang's own
+   max-width:820px reset above), so without this the search button sat
+   noticeably lower than the logo pill and the language flag beside it. */
+@media (max-width: 820px) {
+  .search-toggle {
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 480px) {
   .search-toggle {
     width: 44px;
