@@ -1,0 +1,33 @@
+{
+  "name": "OLLALOLL Admin",
+  "short_name": "OLLALOLL Admin",
+  "description": "Manage projects, messages and the Tuff People Dictionary for ollaloll.com.",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "id": "/admin/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#0d0a1a",
+  "theme_color": "#0d0a1a",
+  "icons": [
+    {
+      "src": "/assets/admin-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/admin-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/admin-icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

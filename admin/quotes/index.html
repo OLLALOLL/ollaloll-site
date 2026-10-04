@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL Admin">
+  <title>Quotes admin | OLLALOLL</title>
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../../assets/favicon.ico" sizes="any">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="wrap admin-bar">
+    <a class="brand" href="../../index.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span>OLLALOLL</span>
+      <span class="admin-tag">Admin</span>
+    </a>
+    <div class="admin-user" id="user-bar" hidden>
+      <span id="who"></span>
+      <button class="btn btn-ghost btn-small" id="sign-out" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="admin-wrap" id="main">
+    <section id="view-loading">
+      <p class="empty">Loading...</p>
+    </section>
+
+    <section class="panel" id="view-setup" hidden>
+      <h2>Admin is not connected</h2>
+      <p class="panel-text">The Supabase connection could not load. Check your internet connection and reload.</p>
+    </section>
+
+    <section class="panel" id="view-login" hidden aria-labelledby="login-title">
+      <h2 id="login-title">Sign in</h2>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Sign in</button>
+        <p class="form-status" id="login-status" role="status" aria-live="polite" hidden></p>
+      </form>
+    </section>
+
+    <section class="panel" id="view-denied" hidden>
+      <h2>This account can't edit projects</h2>
+      <p class="panel-text">You're signed in, but only the site owner's account can add or change projects. Sign out and use the owner account.</p>
+    </section>
+
+    <div class="admin-app" id="view-app" hidden>
+      <div class="admin-tabs">
+        <details class="admin-nav" id="admin-nav">
+          <summary class="admin-nav-summary">
+            <span id="admin-nav-current">Projects</span>
+            <svg class="admin-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          <div class="tablist" role="tablist" aria-label="Admin sections">
+            <button class="tab" role="tab" id="tab-projects" aria-controls="pane-projects" aria-selected="true" type="button">Projects</button>
+            <button class="tab" role="tab" id="tab-messages" aria-controls="pane-messages" aria-selected="false" tabindex="-1" type="button">Messages<span class="tab-count" id="unread-count" hidden>0</span></button>
+            <button class="tab" role="tab" id="tab-bugreports" aria-controls="pane-bugreports" aria-selected="false" tabindex="-1" type="button">Bug Reports<span class="tab-count" id="new-bugreport-count" hidden>0</span></button>
+            <button class="tab" role="tab" id="tab-dictionary" aria-controls="pane-dictionary" aria-selected="false" tabindex="-1" type="button">Dictionary</button>
+            <button class="tab" role="tab" id="tab-quotes" aria-controls="pane-quotes" aria-selected="false" tabindex="-1" type="button">Quotes</button>
+            <button class="tab" role="tab" id="tab-library" aria-controls="pane-library" aria-selected="false" tabindex="-1" type="button">Library</button>
+            <button class="tab" role="tab" id="tab-events" aria-controls="pane-events" aria-selected="false" tabindex="-1" type="button">Extras</button>
+            <button class="tab" role="tab" id="tab-words" aria-controls="pane-words" aria-selected="false" tabindex="-1" type="button">Words</button>
+          </div>
+        </details>
+      </div>
+
+      <div class="admin-app" id="pane-projects" role="tabpanel" aria-labelledby="tab-projects">
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="form-title">
+          <h2 id="form-title">Add a project</h2>
+          <form id="project-form" novalidate>
+            <div class="field">
+              <label for="p-name">Project name</label>
+              <input id="p-name" name="name" type="text" maxlength="80" aria-describedby="error-name" required>
+              <p class="error" id="error-name"></p>
+            </div>
+
+            <div class="field">
+              <label for="p-slug">Page address</label>
+              <input id="p-slug" name="slug" type="text" maxlength="80" autocomplete="off" aria-describedby="slug-hint error-slug" required>
+              <p class="hint" id="slug-hint"></p>
+              <p class="error" id="error-slug"></p>
+            </div>
+
+            <div class="field">
+              <label for="p-description">Short description <span class="count" id="description-count">0 / 400</span></label>
+              <textarea id="p-description" name="description" maxlength="400" aria-describedby="error-description" required></textarea>
+              <p class="error" id="error-description"></p>
+            </div>
+
+            <div class="field">
+              <label for="p-details">Full description for the project page (optional) <span class="count" id="details-count">0 / 6000</span></label>
+              <textarea id="p-details" name="details" maxlength="6000" class="tall"></textarea>
+              <p class="hint">A blank line starts a new paragraph. Lines that start with "- " become a bullet list, lines that start with "1. " become a numbered list.</p>
+            </div>
+
+            <div class="field">
+              <label for="p-install">Install note (optional) <span class="count" id="install-count">0 / 1000</span></label>
+              <textarea id="p-install" name="install_note" maxlength="1000"></textarea>
+              <p class="hint">Extra install steps for this project. It shows with a link to the general install guide.</p>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="p-date">Release date (day/month/year)</label>
+                <input id="p-date" name="release_date" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY" aria-describedby="error-date" required>
+                <p class="error" id="error-date"></p>
+              </div>
+              <div class="field">
+                <label for="p-version">Minecraft version (optional)</label>
+                <input id="p-version" name="version" type="text" maxlength="40" placeholder="Minecraft 1.21+">
+              </div>
+            </div>
+
+            <div class="field" role="radiogroup" aria-labelledby="type-label">
+              <span class="label" id="type-label">Type</span>
+              <div class="seg">
+                <label><input type="radio" name="type" value="addon" checked><span>Addon</span></label>
+                <label><input type="radio" name="type" value="texturepack"><span>Texture pack</span></label>
+                <label><input type="radio" name="type" value="script"><span>Script</span></label>
+              </div>
+            </div>
+
+            <div class="field" role="radiogroup" aria-labelledby="source-label">
+              <span class="label" id="source-label">Download button</span>
+              <div class="seg">
+                <label><input type="radio" name="source" value="none" checked><span>None</span></label>
+                <label><input type="radio" name="source" value="link"><span>Link</span></label>
+                <label><input type="radio" name="source" value="file"><span>Upload a file</span></label>
+              </div>
+            </div>
+
+            <div class="source-box" id="source-box" hidden>
+              <div class="field" id="source-link" hidden>
+                <label for="p-download-url">Download link</label>
+                <input id="p-download-url" name="download_url" type="url" placeholder="https://" aria-describedby="error-download">
+                <p class="error" id="error-download"></p>
+              </div>
+
+              <div class="field" id="source-file" hidden>
+                <div class="form-actions">
+                  <input class="file-input sr-only" id="p-file" type="file" accept=".mcpack,.mcaddon,.mcworld,.mctemplate,.zip">
+                  <label class="btn btn-ghost btn-small" for="p-file" id="file-pick">Choose file</label>
+                </div>
+                <p class="hint">.mcpack, .mcaddon, .mcworld, .mctemplate or .zip, up to 50 MB. Downloads of uploaded files are counted.</p>
+                <div class="file-current" id="file-current" hidden>
+                  <strong id="file-name"></strong>
+                  <span id="file-size"></span>
+                  <span class="stat" id="file-downloads" hidden></span>
+                </div>
+                <p class="error" id="error-file"></p>
+              </div>
+
+              <div class="field">
+                <label for="p-download-label">Download button title (optional)</label>
+                <input id="p-download-label" name="download_label" type="text" maxlength="40" placeholder="Download">
+                <p class="hint">Leave empty to use "Download", translated for each language.</p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="p-page-url">Project page link (optional)</label>
+                <input id="p-page-url" name="page_url" type="url" placeholder="https://" aria-describedby="error-page">
+                <p class="error" id="error-page"></p>
+              </div>
+              <div class="field">
+                <label for="p-page-label">Project page button title (optional)</label>
+                <input id="p-page-label" name="page_label" type="text" maxlength="40" placeholder="Project page">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="p-tags">Tags (optional)</label>
+              <input id="p-tags" name="tags" type="text" placeholder="Behavior pack, Script API">
+              <p class="hint">Separate tags with commas. Up to 8.</p>
+            </div>
+
+            <div class="field" role="group" aria-labelledby="images-label">
+              <span class="label" id="images-label">Images (up to 5)</span>
+              <p class="hint">With more than one image, the card slides through them every 5 seconds. The first image is shown first. Images are resized and converted to WebP, and 16:9 landscape works best.</p>
+              <div class="form-actions">
+                <input class="file-input sr-only" id="p-images" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+                <label class="btn btn-ghost btn-small" for="p-images">Add images</label>
+              </div>
+              <p class="error" id="error-images"></p>
+              <ul class="thumbs" id="thumbs"></ul>
+            </div>
+
+            <div class="field">
+              <label class="check"><input type="checkbox" name="featured"><span>Featured: pin this project to the top</span></label>
+              <label class="check"><input type="checkbox" name="is_draft"><span>Draft: hide this project from the public site</span></label>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="save" type="submit">Add project</button>
+              <button class="btn btn-ghost" id="cancel" type="button" hidden>Cancel editing</button>
+            </div>
+            <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+
+        <section class="panel" id="changelog-panel" aria-labelledby="changelog-title" hidden>
+          <h2 id="changelog-title">Changelog</h2>
+          <p class="hint">Short notes about updates, like "Updated for 1.21.50". They show on the project page, and the card shows the latest date.</p>
+          <ul class="updates" id="updates-list"></ul>
+          <div class="form-row">
+            <div class="field">
+              <label for="u-version">Title (optional)</label>
+              <input id="u-version" type="text" maxlength="60" placeholder="Updated for 1.21.50">
+            </div>
+            <div class="field">
+              <label for="u-date">Date (day/month/year)</label>
+              <input id="u-date" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY" aria-describedby="error-update-date">
+              <p class="error" id="error-update-date"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="u-notes">What changed <span class="count" id="notes-count">0 / 1000</span></label>
+            <textarea id="u-notes" maxlength="1000" aria-describedby="error-update-notes"></textarea>
+            <p class="error" id="error-update-notes"></p>
+          </div>
+          <button class="btn btn-primary btn-small" id="add-update" type="button">Add update</button>
+          <p class="form-status" id="update-status" role="status" aria-live="polite" hidden></p>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="list-title">
+          <div class="list-head">
+            <h2 id="list-title">Your projects</h2>
+            <div class="row-actions">
+              <span class="stat" id="download-total" hidden></span>
+              <button class="btn btn-ghost btn-small" id="sitemap" type="button">Download sitemap.xml</button>
+            </div>
+          </div>
+          <p class="hint">Drag the handle to reorder, or use Up and Down. Featured projects always stay on top.</p>
+          <p class="form-status is-error" id="list-status" role="status" aria-live="polite" hidden></p>
+          <ul class="project-list" id="project-list"></ul>
+        </section>
+        </div>
+        </div>
+      </div>
+
+      <section class="panel" id="pane-messages" role="tabpanel" aria-labelledby="tab-messages" hidden>
+        <div class="list-head">
+          <h2 id="messages-title">Messages</h2>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-small" id="refresh-messages" type="button">Refresh</button>
+            <button class="btn btn-ghost btn-small" id="mark-all-read" type="button">Mark all as read</button>
+          </div>
+        </div>
+        <p class="form-status is-error" id="messages-status" role="status" aria-live="polite" hidden></p>
+        <ul class="messages" id="message-list"></ul>
+      </section>
+
+      <section class="panel" id="pane-bugreports" role="tabpanel" aria-labelledby="tab-bugreports" hidden>
+        <div class="list-head">
+          <h2 id="bugreports-title">Bug Reports</h2>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-small" id="refresh-bugreports" type="button">Refresh</button>
+          </div>
+        </div>
+        <p class="form-status is-error" id="bugreports-status" role="status" aria-live="polite" hidden></p>
+        <ul class="messages" id="bugreport-list"></ul>
+      </section>
+
+      <div class="admin-app" id="pane-dictionary" role="tabpanel" aria-labelledby="tab-dictionary" hidden>
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="dict-form-title">
+          <h2 id="dict-form-title">Add a term</h2>
+          <form id="dict-form" novalidate>
+            <div class="field">
+              <label for="d-term">Term</label>
+              <input id="d-term" name="term" type="text" maxlength="80" aria-describedby="error-d-term" required>
+              <p class="error" id="error-d-term"></p>
+            </div>
+
+            <div class="field">
+              <label for="d-slug">Page address</label>
+              <input id="d-slug" name="slug" type="text" maxlength="80" autocomplete="off" aria-describedby="d-slug-hint error-d-slug" required>
+              <p class="hint" id="d-slug-hint"></p>
+              <p class="error" id="error-d-slug"></p>
+            </div>
+
+            <div class="field">
+              <div class="field-label-row">
+                <label for="d-definition">Short definition <span class="count" id="d-definition-count">0 / 400</span></label>
+                <button type="button" class="btn btn-ghost btn-tiny" id="d-definition-generate">✨ Generate</button>
+              </div>
+              <textarea id="d-definition" name="definition" maxlength="400" aria-describedby="error-d-definition" required></textarea>
+              <p class="hint">Shown in the alphabetical list and in search results.</p>
+              <p class="error" id="error-d-definition"></p>
+            </div>
+
+            <div class="field">
+              <div class="field-label-row">
+                <label for="d-long">Full definition (optional) <span class="count" id="d-long-count">0 / 3000</span></label>
+                <button type="button" class="btn btn-ghost btn-tiny" id="d-long-generate">✨ Generate</button>
+              </div>
+              <textarea id="d-long" name="long_definition" maxlength="3000" class="tall"></textarea>
+              <p class="hint">Shown on the term's own page. A blank line starts a new paragraph. Lines that start with "- " become a bullet list, lines that start with "1. " become a numbered list. Leave empty to just show the short definition.</p>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="d-date">Added date (day/month/year)</label>
+                <input id="d-date" name="added_on" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY" aria-describedby="error-d-date" required>
+                <p class="error" id="error-d-date"></p>
+              </div>
+              <div class="field">
+                <label class="check"><input type="checkbox" name="date_accurate" checked><span>Is this date accurate?</span></label>
+                <p class="hint">This is the term's date of creation. Uncheck if it's just the date of logging, i.e. when it was added here.</p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="dict-save" type="submit">Add term</button>
+              <button class="btn btn-ghost" id="dict-cancel" type="button" hidden>Cancel editing</button>
+            </div>
+            <p class="form-status" id="dict-form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="dict-list-title">
+          <div class="list-head">
+            <h2 id="dict-list-title">Terms</h2>
+            <input class="admin-search" id="dict-search" type="search" placeholder="Search terms..." aria-label="Search terms">
+          </div>
+          <p class="form-status is-error" id="dict-list-status" role="status" aria-live="polite" hidden></p>
+          <ul class="project-list" id="dict-list"></ul>
+        </section>
+        </div>
+        </div>
+      </div>
+
+      <div class="admin-app" id="pane-quotes" role="tabpanel" aria-labelledby="tab-quotes" hidden>
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="quote-form-title">
+          <h2 id="quote-form-title">Add a quote</h2>
+          <form id="quote-form" novalidate>
+            <div class="field">
+              <label for="q-quote">Quote <span class="count" id="q-quote-count">0 / 500</span></label>
+              <textarea id="q-quote" name="quote" maxlength="500" aria-describedby="error-q-quote" required></textarea>
+              <p class="error" id="error-q-quote"></p>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="q-author">Author</label>
+                <input id="q-author" name="author" type="text" maxlength="120" aria-describedby="error-q-author" required>
+                <p class="error" id="error-q-author"></p>
+              </div>
+              <div class="field">
+                <label for="q-date">Date (day/month/year)</label>
+                <input id="q-date" name="quote_date" type="text" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="DD/MM/YYYY" aria-describedby="error-q-date" required>
+                <p class="error" id="error-q-date"></p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="q-pre">Context before (optional)</label>
+                <textarea id="q-pre" name="pre_context" maxlength="300"></textarea>
+                <p class="hint">Shown in light gray above the quote, e.g. what was being talked about.</p>
+              </div>
+              <div class="field">
+                <label for="q-post">Context after (optional)</label>
+                <textarea id="q-post" name="post_context" maxlength="300"></textarea>
+                <p class="hint">Shown in light gray below the quote.</p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="quote-save" type="submit">Add quote</button>
+              <button class="btn btn-ghost" id="quote-cancel" type="button" hidden>Cancel editing</button>
+            </div>
+            <p class="form-status" id="quote-form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="quote-list-title">
+          <div class="list-head">
+            <h2 id="quote-list-title">Quotes</h2>
+            <input class="admin-search" id="quote-search" type="search" placeholder="Search quotes..." aria-label="Search quotes">
+          </div>
+          <p class="form-status is-error" id="quote-list-status" role="status" aria-live="polite" hidden></p>
+          <ul class="project-list" id="quote-list"></ul>
+        </section>
+        </div>
+        </div>
+      </div>
+
+      <div class="admin-app" id="pane-library" role="tabpanel" aria-labelledby="tab-library" hidden>
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="lib-form-title">
+          <h2 id="lib-form-title">Add a library entry</h2>
+          <form id="lib-form" novalidate>
+            <div class="field">
+              <label for="l-category">Category</label>
+              <input id="l-category" name="category" type="text" maxlength="40" aria-describedby="error-l-category" required>
+              <p class="hint">A single word, like "Biome" or "Structure". Capitalized automatically. Entries are grouped by this on the public page.</p>
+              <p class="error" id="error-l-category"></p>
+            </div>
+
+            <div class="field">
+              <label for="l-name">Name</label>
+              <input id="l-name" name="name" type="text" maxlength="80" aria-describedby="error-l-name" required>
+              <p class="hint">The name of the location, item or whatever this entry is about.</p>
+              <p class="error" id="error-l-name"></p>
+            </div>
+
+            <div class="field">
+              <label for="l-summary">Summary (optional)</label>
+              <textarea id="l-summary" name="summary" rows="2" maxlength="220" aria-describedby="error-l-summary"></textarea>
+              <p class="hint">A short blurb shown on the Library list and at the top of the entry's own page. If left blank, the first field's description is used instead.</p>
+              <p class="error" id="error-l-summary"></p>
+            </div>
+
+            <div class="field">
+              <span class="label">Fields</span>
+              <p class="hint">Each field has its own title and description. Add as many as you need.</p>
+              <div id="lib-fields"></div>
+              <button class="btn btn-ghost btn-small" id="lib-field-add" type="button">+ Add field</button>
+              <p class="error" id="error-l-fields"></p>
+            </div>
+
+            <div class="field">
+              <span class="label">Image (optional)</span>
+              <div class="lib-image-row" id="lib-image-row"></div>
+              <div class="form-actions">
+                <input class="file-input sr-only" id="l-image" name="image" type="file" accept="image/*">
+                <label class="btn btn-ghost btn-small" for="l-image">Choose image</label>
+              </div>
+              <p class="hint">Shown on the entry's own page, not in the list.</p>
+            </div>
+
+            <div class="field">
+              <span class="label">Related entries (optional, up to 10)</span>
+              <input class="admin-search" id="lib-related-search" type="search" placeholder="Search entries to relate..." aria-label="Search entries to relate">
+              <div id="lib-related" class="lib-related-list"></div>
+              <p class="hint">Pick up to 10 other entries this one is related to. The link shows on both entries.</p>
+              <p class="error" id="error-l-related"></p>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="lib-save" type="submit">Add entry</button>
+              <button class="btn btn-ghost" id="lib-cancel" type="button" hidden>Cancel editing</button>
+            </div>
+            <p class="form-status" id="lib-form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="lib-list-title">
+          <div class="list-head">
+            <h2 id="lib-list-title">Entries</h2>
+            <input class="admin-search" id="lib-search" type="search" placeholder="Search entries..." aria-label="Search entries">
+          </div>
+          <p class="form-status is-error" id="lib-list-status" role="status" aria-live="polite" hidden></p>
+          <div id="lib-list"></div>
+        </section>
+        </div>
+        </div>
+      </div>
+
+      <div class="admin-app" id="pane-events" role="tabpanel" aria-labelledby="tab-events" hidden>
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="event-form-title">
+          <h2 id="event-form-title">Add an event</h2>
+          <form id="event-form" novalidate>
+            <div class="field">
+              <label for="e-title">Title</label>
+              <input id="e-title" name="title" type="text" maxlength="80" aria-describedby="error-e-title" required>
+              <p class="error" id="error-e-title"></p>
+            </div>
+
+            <div class="field" role="radiogroup" aria-labelledby="e-type-label">
+              <span class="label" id="e-type-label">Type</span>
+              <div class="seg">
+                <label><input type="radio" name="type" value="lockout_bingo" checked><span>Lockout Bingo</span></label>
+                <label><input type="radio" name="type" value="bingo"><span>Bingo</span></label>
+                <label><input type="radio" name="type" value="tournament"><span>Tournament</span></label>
+                <label><input type="radio" name="type" value="countdown"><span>Countdown</span></label>
+                <label><input type="radio" name="type" value="poll"><span>Poll</span></label>
+              </div>
+              <p class="hint" id="e-type-hint">Lockout Bingo: everyone plays on the same shared card.</p>
+            </div>
+
+            <div class="field" id="e-size-field">
+              <label for="e-size">Grid size</label>
+              <input id="e-size" name="size" type="number" min="3" max="8" value="5" aria-describedby="error-e-size" required>
+              <p class="error" id="error-e-size"></p>
+            </div>
+
+            <div class="field" id="e-target-field" hidden>
+              <label for="e-target">Countdown target date &amp; time</label>
+              <input id="e-target" name="target_at" type="datetime-local" aria-describedby="error-e-target">
+              <p class="error" id="error-e-target"></p>
+            </div>
+
+            <div class="field" id="e-items-field">
+              <label for="e-items" id="e-items-label">Items (semicolon-separated)</label>
+              <textarea id="e-items" name="items" class="tall" aria-describedby="e-items-hint error-e-items" required></textarea>
+              <p class="hint" id="e-items-hint">Separate each item with a semicolon, like item1;item2;item3. Needs exactly size &times; size items.</p>
+              <p class="error" id="error-e-items"></p>
+            </div>
+
+            <div class="field">
+              <label for="e-description">Description (optional)</label>
+              <textarea id="e-description" name="description" maxlength="400"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="check"><input type="checkbox" name="is_active"><span>Active: show this event on the public events page</span></label>
+              <p class="hint">Off by default. Nothing shows publicly until you turn this on.</p>
+            </div>
+
+            <div class="field">
+              <label class="check"><input type="checkbox" name="featured"><span>Featured: show a red notification dot on the Extras nav link</span></label>
+              <p class="hint">Only applies while this event is also Active.</p>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="event-save" type="submit">Add event</button>
+              <button class="btn btn-ghost" id="event-cancel" type="button" hidden>Cancel editing</button>
+            </div>
+            <p class="form-status" id="event-form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="event-list-title">
+          <div class="list-head">
+            <h2 id="event-list-title">Extras</h2>
+          </div>
+          <p class="form-status is-error" id="event-list-status" role="status" aria-live="polite" hidden></p>
+          <p class="hint">Click a cell or player, then click another to swap them. Changes save right away.</p>
+          <ul class="project-list" id="event-list"></ul>
+        </section>
+        </div>
+        </div>
+      </div>
+
+      <div class="admin-app" id="pane-words" role="tabpanel" aria-labelledby="tab-words" hidden>
+        <div class="admin-split">
+        <div class="admin-split-form">
+        <section class="panel" aria-labelledby="words-form-title">
+          <h2 id="words-form-title">(not)WORDLE words</h2>
+          <p class="hint">Add 5-letter words for the daily puzzle to pick from, and words guessers are allowed to type. One word per line, or separate with commas or spaces. Duplicates (any casing) are skipped automatically.</p>
+          <form id="words-form" novalidate>
+            <div class="field">
+              <label for="w-bulk">Words to add</label>
+              <textarea id="w-bulk" name="bulk" class="tall" placeholder="crane&#10;bingo&#10;hedge" aria-describedby="error-w-bulk"></textarea>
+              <p class="error" id="error-w-bulk"></p>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="words-save" type="submit">Add words</button>
+            </div>
+            <p class="form-status" id="words-form-status" role="status" aria-live="polite" hidden></p>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="words-queue-title">
+          <h2 id="words-queue-title">Queue a word for a specific date</h2>
+          <p class="hint">Pick the exact word for one day's puzzle. That date always uses this word instead of the daily rotation, and the word is added to the guessable list automatically.</p>
+          <form id="words-queue-form" novalidate>
+            <div class="form-row">
+              <div class="field">
+                <label for="w-queue-word">Word</label>
+                <input id="w-queue-word" name="word" type="text" maxlength="5" autocomplete="off" aria-describedby="error-w-queue-word">
+                <p class="error" id="error-w-queue-word"></p>
+              </div>
+              <div class="field">
+                <label for="w-queue-date">Date</label>
+                <input id="w-queue-date" name="date" type="date" aria-describedby="error-w-queue-date">
+                <p class="error" id="error-w-queue-date"></p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="words-queue-save" type="submit">Queue word</button>
+            </div>
+            <p class="form-status" id="words-queue-status" role="status" aria-live="polite" hidden></p>
+          </form>
+          <ul class="project-list" id="words-queue-list"></ul>
+        </section>
+        </div>
+
+        <div class="admin-split-list">
+        <section class="panel" aria-labelledby="words-list-title">
+          <div class="list-head">
+            <h2 id="words-list-title">Word list <span class="count" id="words-total"></span></h2>
+            <input class="admin-search" id="words-search" type="search" placeholder="Search words..." aria-label="Search words">
+          </div>
+          <p class="form-status is-error" id="words-list-status" role="status" aria-live="polite" hidden></p>
+          <div class="word-chip-list-wrap is-collapsed" id="words-list-wrap">
+            <ul class="word-chip-list" id="words-list"></ul>
+          </div>
+          <button class="btn btn-ghost btn-small" id="words-list-toggle" type="button" hidden>Show all words</button>
+        </section>
+        </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/admin.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("../sw.js", { scope: "/admin/" }).catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" data-page="reportbug">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Report a Bug | OLLALOLL</title>
+  <meta name="description" content="Report a bug in one of OLLALOLL's Minecraft Bedrock projects.">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta property="og:title" content="Report a Bug | OLLALOLL">
+  <meta property="og:description" content="Report a bug in one of OLLALOLL's Minecraft Bedrock projects.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ollaloll.com/report-bug.html">
+  <meta property="og:url" content="https://ollaloll.com/report-bug.html">
+  <link rel="alternate" type="application/rss+xml" title="OLLALOLL — everything" href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=all">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL">
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+      <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-i18n-attr="aria-label:menu"><svg class="icon-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="nav-panel" id="nav-panel">
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+            <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="about.html" data-i18n="nav.about">About</a></li>
+            <li class="nav-item-extras"><a href="extras.html" data-i18n="nav.extras">Extras</a><span class="nav-dot" data-nav-extras-dot hidden aria-hidden="true"></span></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" data-donate href="contact.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="donate.nav">Support</span></a>
+      </div>
+    </nav>
+    <button class="search-toggle" type="button" id="global-search-toggle" aria-label="Search" data-i18n-attr="aria-label:search.toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="lang" data-lang></div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1 data-i18n="bugreport.title">Report a Bug</h1>
+      <p data-i18n="bugreport.intro">Found something broken in one of my projects? Give me the details below so I can track it down.</p>
+    </div>
+
+    <div class="wrap contact-layout">
+      <section class="panel" aria-labelledby="bug-form-title">
+        <h2 id="bug-form-title" class="sr-only" data-i18n="bugreport.title">Report a Bug</h2>
+        <form id="bug-report-form" novalidate>
+          <div class="field">
+            <span class="label" id="bug-project-label" data-i18n="bugreport.project">Which project?</span>
+            <div class="select" data-bug-project-select>
+              <button class="select-btn" id="bug-project" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="bug-project-list" aria-labelledby="bug-project-label">
+                <span class="select-value" data-i18n="bugreport.projectLoading">Loading projects...</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="select-list" id="bug-project-list" role="listbox" aria-labelledby="bug-project-label" tabindex="-1" hidden>
+                <li role="option" aria-selected="true" data-value="" data-i18n="bugreport.projectOther">Other / not listed</li>
+              </ul>
+              <input type="hidden" name="project">
+            </div>
+            <p class="error" id="error-bug-project"></p>
+          </div>
+          <div class="field">
+            <label for="bug-version" data-i18n="bugreport.version">Version (optional)</label>
+            <input id="bug-version" name="version" type="text" maxlength="40">
+          </div>
+          <div class="field">
+            <span class="label" id="bug-platform-label" data-i18n="bugreport.platform">Platform</span>
+            <div class="select" data-select>
+              <button class="select-btn" id="bug-platform" type="button" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="bug-platform-list" aria-labelledby="bug-platform-label">
+                <span class="select-value" data-i18n="bugreport.platform.android">Android</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="select-list" id="bug-platform-list" role="listbox" aria-labelledby="bug-platform-label" tabindex="-1" hidden>
+                <li id="platform-option-1" role="option" aria-selected="true" data-value="Android" data-i18n="bugreport.platform.android">Android</li>
+                <li id="platform-option-2" role="option" aria-selected="false" data-value="iOS" data-i18n="bugreport.platform.ios">iOS</li>
+                <li id="platform-option-3" role="option" aria-selected="false" data-value="Windows" data-i18n="bugreport.platform.windows">Windows</li>
+                <li id="platform-option-4" role="option" aria-selected="false" data-value="Xbox" data-i18n="bugreport.platform.xbox">Xbox</li>
+                <li id="platform-option-5" role="option" aria-selected="false" data-value="PlayStation" data-i18n="bugreport.platform.playstation">PlayStation</li>
+                <li id="platform-option-6" role="option" aria-selected="false" data-value="Nintendo Switch" data-i18n="bugreport.platform.switch">Nintendo Switch</li>
+                <li id="platform-option-7" role="option" aria-selected="false" data-value="Other" data-i18n="bugreport.platform.other">Other</li>
+              </ul>
+              <input type="hidden" name="platform" value="Android">
+            </div>
+            <p class="error" id="error-bug-platform"></p>
+          </div>
+          <div class="field">
+            <label for="bug-steps" data-i18n="bugreport.steps">Steps to reproduce</label>
+            <p class="hint" data-i18n="bugreport.stepsHint">What did you do, step by step, right before it happened?</p>
+            <textarea id="bug-steps" name="steps" aria-describedby="error-bug-steps" required></textarea>
+            <p class="error" id="error-bug-steps"></p>
+          </div>
+          <div class="field">
+            <label for="bug-expected" data-i18n="bugreport.expected">Expected behavior (optional)</label>
+            <textarea id="bug-expected" name="expected"></textarea>
+          </div>
+          <div class="field">
+            <label for="bug-actual" data-i18n="bugreport.actual">What happened instead (optional)</label>
+            <textarea id="bug-actual" name="actual"></textarea>
+          </div>
+          <div class="field">
+            <label for="bug-contact" data-i18n="bugreport.contact">Your email or Discord</label>
+            <p class="hint" data-i18n="bugreport.contactHint">So I can reach you if I need more info or when it's fixed.</p>
+            <input id="bug-contact" name="contact" type="text" maxlength="200" required aria-describedby="error-bug-contact">
+            <p class="error" id="error-bug-contact"></p>
+          </div>
+          <div class="captcha" data-captcha>
+            <label class="captcha-box">
+              <input type="checkbox" class="captcha-check" data-captcha-check>
+              <span class="captcha-mark" aria-hidden="true"></span>
+              <span class="captcha-text" data-i18n="captcha.label">I’m not a robot</span>
+            </label>
+            <span class="captcha-state" data-captcha-state role="status" aria-live="polite"></span>
+          </div>
+          <div class="trap" aria-hidden="true">
+            <label for="bug-gotcha">Leave this field empty</label>
+            <input id="bug-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button class="btn btn-primary" type="submit" data-i18n="bugreport.send">Send bug report</button>
+          <p class="form-status" id="bug-form-status" role="status" aria-live="polite" hidden></p>
+        </form>
+        <p class="hint bug-general-contact"><span data-i18n="bugreport.generalContact">Just have a question or idea instead?</span> <a href="contact.html" data-i18n="bugreport.generalContactLink">Use the general contact form</a></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+        <p class="fine" data-i18n="footer.disclaimer">Minecraft is a trademark of Mojang Synergies AB. This is a fan project and is not affiliated with Mojang or Microsoft.</p>
+        <p class="fine">&copy; <span data-year></span> <span data-site="name">OLLALOLL</span></p>
+      </div>
+      <nav aria-label="Footer" data-i18n-attr="aria-label:footer.aria">
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="about.html" data-i18n="nav.about">About</a></li>
+          <li><a href="extras.html" data-i18n="nav.extras">Extras</a></li>
+          <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+      </nav>
+      <ul class="footer-links" data-footer-links data-i18n-attr="aria-label:links.title" aria-label="Find me online"></ul>
+    </div>
+  </footer>
+  <script src="js/i18n.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
