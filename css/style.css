@@ -732,7 +732,7 @@ p {
   margin-top: 28px;
 }
 
-.stage--inline {
+.hero-actions-row .stage--inline {
   display: none;
 }
 
@@ -911,7 +911,7 @@ p {
     display: none;
   }
 
-  .stage--inline {
+  .hero-actions-row .stage--inline {
     --s: 64px;
     display: grid;
     flex: none;
