@@ -4394,7 +4394,8 @@ button.poll-option:hover {
 
 .island-card {
   margin: 0;
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
@@ -4411,6 +4412,11 @@ button.poll-option:hover {
 .island-cta {
   margin-top: 14px;
   pointer-events: none;
+  align-self: flex-start;
+}
+
+.island-card .event-card-desc {
+  flex: 1;
 }
 
 .extras-category {
