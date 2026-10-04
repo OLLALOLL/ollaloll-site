@@ -565,6 +565,26 @@ p {
   font-weight: 700;
 }
 
+@media (max-width: 820px) {
+  .lang-list {
+    width: 64px;
+    padding: 6px;
+  }
+
+  .lang-item {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .lang-item span {
+    display: none;
+  }
+
+  .lang-item[aria-current="true"]::after {
+    display: none;
+  }
+}
+
 .lang-item[aria-current="true"]::after {
   content: "";
   width: 8px;
@@ -645,8 +665,9 @@ p {
 
 .hero-realm {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 6px 10px;
   margin: 14px 0 0;
   padding: 8px 10px 8px 14px;
   border: 1px solid rgba(139, 92, 246, .35);
@@ -667,6 +688,7 @@ p {
   font-weight: 600;
   letter-spacing: .02em;
   color: #c9b8ff;
+  white-space: nowrap;
 }
 
 .hero-realm-copy {
