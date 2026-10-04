@@ -454,7 +454,7 @@
       box.replaceChildren(
         ...merged("what").map((item) => {
           const type = TYPES.includes(item.type) ? item.type : "addon";
-          return el("a", { class: "make", href: "projects.html?type=" + type }, [
+          return el("a", { class: "make", href: "/projects?type=" + type }, [
             el("span", { class: "make-title" }, [el("span", { html: icon(type) }), el("span", { text: item.title || t("types." + type) })]),
             el("p", { text: item.text || "" }),
             el("span", { class: "make-cta", text: t("see." + type) }),
@@ -657,7 +657,7 @@
       );
     }
     buttons.push(
-      el("a", { class: "btn btn-ghost btn-small", href: "report-bug.html?project=" + encodeURIComponent(project.name) }, [
+      el("a", { class: "btn btn-ghost btn-small", href: "/report-bug?project=" + encodeURIComponent(project.name) }, [
         el("span", { text: t("project.reportBug") }),
       ])
     );
@@ -694,7 +694,7 @@
       }
     }
 
-    const link = "project.html?p=" + encodeURIComponent(project.slug);
+    const link = "/project?p=" + encodeURIComponent(project.slug);
     const buttons = actionButtons(project);
     buttons.push(el("a", { class: "text-link", href: link, text: t("project.details") }));
 
@@ -826,7 +826,7 @@
       document.title = brand(name + " | OLLALOLL");
       const meta = $("meta[name=description]");
       if (meta) meta.setAttribute("content", description);
-      const url = (S.siteUrl || location.origin) + "/project.html?p=" + encodeURIComponent(slug);
+      const url = (S.siteUrl || location.origin) + "/project?p=" + encodeURIComponent(slug);
       let canonical = $("link[rel=canonical]");
       if (!canonical) {
         canonical = el("link", { rel: "canonical" });
@@ -842,7 +842,7 @@
           el("div", { class: "empty" }, [
             el("h2", { text: t("project.notFound") }),
             el("p", { text: t("project.notFoundText") }),
-            el("a", { class: "btn btn-primary btn-small", href: "projects.html", text: t("project.back") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/projects", text: t("project.back") }),
           ])
         );
       }
@@ -864,7 +864,7 @@
           el("section", { class: "callout" }, [
             el("h2", { text: t("project.install") }),
             ...richText(project.install_note),
-            el("a", { class: "text-link", href: "projects.html#install", text: t("project.guide") }),
+            el("a", { class: "text-link", href: "/projects#install", text: t("project.guide") }),
           ])
         );
       }
@@ -958,7 +958,7 @@
       });
     }
 
-    const termHref = (term) => "term.html?t=" + encodeURIComponent(term.slug);
+    const termHref = (term) => "/term?t=" + encodeURIComponent(term.slug);
 
     function termCard(term) {
       return el("li", { class: "dict-term", id: "dict-term-" + term.id }, [
@@ -1104,7 +1104,7 @@
     let state = "loading";
 
     function setMeta(name, description) {
-      const url = (S.siteUrl || location.origin) + "/term.html?t=" + encodeURIComponent(slug);
+      const url = (S.siteUrl || location.origin) + "/term?t=" + encodeURIComponent(slug);
       setPageMeta(brand(name + " | OLLALOLL"), description, url);
     }
 
@@ -1124,7 +1124,7 @@
           el("div", { class: "empty" }, [
             el("h2", { text: t("dictionary.termNotFound") }),
             el("p", { text: t("dictionary.termNotFoundText") }),
-            el("a", { class: "btn btn-primary btn-small", href: "dictionary.html", text: t("dictionary.back") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/dictionary", text: t("dictionary.back") }),
           ])
         );
       }
@@ -1200,7 +1200,7 @@
           el("p", { class: "quote-meta", text: "— " + quote.author + ", " + formatDate(quote.quote_date) }),
           el("a", {
             class: "quote-permalink",
-            href: "quote.html?q=" + encodeURIComponent(quote.slug),
+            href: "/quote?q=" + encodeURIComponent(quote.slug),
             "aria-label": t("quotes.permalink"),
             title: t("quotes.permalink"),
             html: icon("link"),
@@ -1372,7 +1372,7 @@
 
     function setMeta(text, description) {
       const title = text.length > 60 ? text.slice(0, 60) + "…" : text;
-      const url = (S.siteUrl || location.origin) + "/quote.html?q=" + encodeURIComponent(slug);
+      const url = (S.siteUrl || location.origin) + "/quote?q=" + encodeURIComponent(slug);
       setPageMeta(brand(title + " | OLLALOLL"), description, url);
     }
 
@@ -1383,7 +1383,7 @@
           el("div", { class: "empty" }, [
             el("h2", { text: t("quotes.notFound") }),
             el("p", { text: t("quotes.notFoundText") }),
-            el("a", { class: "btn btn-primary btn-small", href: "quotes.html", text: t("quotes.back") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/quotes", text: t("quotes.back") }),
           ])
         );
       }
@@ -1639,7 +1639,7 @@
       );
     }
 
-    const entryHref = (entry) => "/library-entry.html?e=" + encodeURIComponent(entry.slug);
+    const entryHref = (entry) => "/library-entry?e=" + encodeURIComponent(entry.slug);
 
     function entryCard(entry) {
       const firstField = (entry.fields || [])[0];
@@ -1678,7 +1678,7 @@
     }
 
     function backLink() {
-      return el("a", { class: "lib-back-link", href: "library.html", text: t("library.backToCategories") });
+      return el("a", { class: "lib-back-link", href: "/library", text: t("library.backToCategories") });
     }
 
     function renderList() {
@@ -1780,7 +1780,7 @@
     let state = "loading";
 
     function setMeta(name, description) {
-      const url = (S.siteUrl || location.origin) + "/library-entry.html?e=" + encodeURIComponent(slug);
+      const url = (S.siteUrl || location.origin) + "/library-entry?e=" + encodeURIComponent(slug);
       setPageMeta(brand(name + " | OLLALOLL"), description, url);
     }
 
@@ -1791,7 +1791,7 @@
           el("div", { class: "empty" }, [
             el("h2", { text: t("library.entryNotFound") }),
             el("p", { text: t("library.entryNotFoundText") }),
-            el("a", { class: "btn btn-primary btn-small", href: "library.html", text: t("library.back") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/library", text: t("library.back") }),
           ])
         );
       }
@@ -1821,7 +1821,7 @@
                   "ul",
                   { class: "lib-related-links" },
                   related.map((other) =>
-                    el("li", {}, el("a", { href: "/library-entry.html?e=" + encodeURIComponent(other.slug), text: other.name }))
+                    el("li", {}, el("a", { href: "/library-entry?e=" + encodeURIComponent(other.slug), text: other.name }))
                   )
                 ),
               ])
@@ -1949,18 +1949,18 @@
       .then(([projects, terms, quotes, libraryItems]) => {
         items = []
           .concat(
-            (projects || []).map((p) => ({ type: "project", title: p.name, href: "project.html?p=" + encodeURIComponent(p.slug), created_at: p.created_at })),
-            (terms || []).map((term) => ({ type: "term", title: term.term, href: "term.html?t=" + encodeURIComponent(term.slug), created_at: term.created_at })),
+            (projects || []).map((p) => ({ type: "project", title: p.name, href: "/project?p=" + encodeURIComponent(p.slug), created_at: p.created_at })),
+            (terms || []).map((term) => ({ type: "term", title: term.term, href: "/term?t=" + encodeURIComponent(term.slug), created_at: term.created_at })),
             (quotes || []).map((quote) => ({
               type: "quote",
               title: quote.quote.length > 60 ? quote.quote.slice(0, 60) + "…" : quote.quote,
-              href: "quote.html?q=" + encodeURIComponent(quote.slug),
+              href: "/quote?q=" + encodeURIComponent(quote.slug),
               created_at: quote.created_at,
             })),
             (libraryItems || []).map((entry) => ({
               type: "library",
               title: entry.name,
-              href: "/library-entry.html?e=" + encodeURIComponent(entry.slug),
+              href: "/library-entry?e=" + encodeURIComponent(entry.slug),
               created_at: entry.created_at,
             }))
           )
@@ -2086,13 +2086,13 @@
         .concat(
           data.projects
             .filter((p) => p.name.toLowerCase().includes(q) || (p.description || "").toLowerCase().includes(q))
-            .map((p) => ({ type: "project", title: p.name, sub: p.description || "", href: "project.html?p=" + encodeURIComponent(p.slug) })),
+            .map((p) => ({ type: "project", title: p.name, sub: p.description || "", href: "/project?p=" + encodeURIComponent(p.slug) })),
           data.terms
             .filter((term) => term.term.toLowerCase().includes(q) || term.definition.toLowerCase().includes(q))
-            .map((term) => ({ type: "term", title: term.term, sub: term.definition, href: "term.html?t=" + encodeURIComponent(term.slug) })),
+            .map((term) => ({ type: "term", title: term.term, sub: term.definition, href: "/term?t=" + encodeURIComponent(term.slug) })),
           data.quotes
             .filter((quote) => quote.quote.toLowerCase().includes(q) || quote.author.toLowerCase().includes(q))
-            .map((quote) => ({ type: "quote", title: quote.quote, sub: quote.author, href: "quote.html?q=" + encodeURIComponent(quote.slug) })),
+            .map((quote) => ({ type: "quote", title: quote.quote, sub: quote.author, href: "/quote?q=" + encodeURIComponent(quote.slug) })),
           data.library
             .filter(
               (entry) =>
@@ -2100,7 +2100,7 @@
                 entry.category.toLowerCase().includes(q) ||
                 (entry.fields || []).some((f) => (f.title || "").toLowerCase().includes(q) || (f.description || "").toLowerCase().includes(q))
             )
-            .map((entry) => ({ type: "library", title: entry.name, sub: entry.category, href: "/library-entry.html?e=" + encodeURIComponent(entry.slug) }))
+            .map((entry) => ({ type: "library", title: entry.name, sub: entry.category, href: "/library-entry?e=" + encodeURIComponent(entry.slug) }))
         )
         .slice(0, 40);
 
@@ -2436,7 +2436,7 @@
           el("span", { class: "badge", text: t("events.type.tournament") }),
         ]),
         eventRow.description ? el("p", { class: "event-card-desc", text: eventRow.description }) : null,
-        el("a", { class: "btn btn-primary btn-small", href: "tournament.html?id=" + encodeURIComponent(eventRow.id), text: t("events.viewBracket") }),
+        el("a", { class: "btn btn-primary btn-small", href: "/tournament?id=" + encodeURIComponent(eventRow.id), text: t("events.viewBracket") }),
       ]);
     }
 
@@ -2473,7 +2473,7 @@
         listRoot.replaceChildren(
           el("div", { class: "events-empty" }, [
             el("p", { class: "empty", text: t("events.emptyFormal") }),
-            el("a", { class: "btn btn-primary btn-small", href: "index.html", text: t("events.backHome") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/", text: t("events.backHome") }),
           ])
         );
         return;
@@ -2610,7 +2610,7 @@
         root.replaceChildren(
           el("div", { class: "events-empty" }, [
             el("p", { class: "empty", text: t("events.tournamentNotFound") }),
-            el("a", { class: "btn btn-primary btn-small", href: "extras.html", text: t("events.backEvents") }),
+            el("a", { class: "btn btn-primary btn-small", href: "/extras", text: t("events.backEvents") }),
           ])
         );
         return;
