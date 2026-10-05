@@ -1870,7 +1870,7 @@
         const otherIds = (rows || []).map((row) => (row.entry_a === entry.id ? row.entry_b : row.entry_a));
         if (!otherIds.length) return [];
         const filter = "(" + otherIds.join(",") + ")";
-        return fetch(SB.url + "/rest/v1/library_entries?id=in." + filter + "&select=id,name,slug", { headers: { apikey: SB.key } }).then(
+        return fetch(SB.url + "/rest/v1/library_entries?id=in." + filter + "&select=id,name,slug,category", { headers: { apikey: SB.key } }).then(
           (response) => (response.ok ? response.json() : [])
         );
       })
