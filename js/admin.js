@@ -1033,23 +1033,14 @@
   $("#sitemap").addEventListener("click", () => {
     const base = (S.siteUrl || location.origin).replace(/\/$/, "");
     const today = new Date().toISOString().slice(0, 10);
-    const urls = ["/", "/projects.html", "/about.html", "/contact.html", "/dictionary.html"].map((path) => ({ loc: base + path, lastmod: today }));
-    projects
-      .filter((project) => !project.is_draft)
-      .forEach((project) =>
-        urls.push({
-          loc: base + "/project.html?p=" + encodeURIComponent(project.slug),
-          lastmod: String(project.updated_at || project.created_at || today).slice(0, 10),
-        })
-      );
-    dictTerms.forEach((term) =>
-      urls.push({
-        loc: base + "/term.html?t=" + encodeURIComponent(term.slug),
-        lastmod: String(term.updated_at || term.created_at || today).slice(0, 10),
-      })
+    // Clean (no .html, no query-string) section pages only — matches the site's
+    // actual URL scheme and the hand-maintained sitemap.xml it ships with.
+    // Deep per-project/per-term/per-library-entry pages are intentionally left
+    // out: they're reachable by crawling their index page and churn too often
+    // to track individual lastmod dates for here.
+    const urls = ["/", "/projects", "/about", "/contact", "/report-bug", "/dictionary", "/quotes", "/extras", "/library", "/notwordle"].map(
+      (path) => ({ loc: base + path, lastmod: today })
     );
-    // Individual quote pages are intentionally left out of the sitemap — quotes are
-    // reachable via their permalink but shouldn't be crawled/indexed individually.
     const xml =
       '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
       urls.map((url) => "  <url>\n    <loc>" + xmlEscape(url.loc) + "</loc>\n    <lastmod>" + url.lastmod + "</lastmod>\n  </url>\n").join("") +
