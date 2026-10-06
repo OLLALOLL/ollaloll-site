@@ -2536,8 +2536,8 @@ a.link-row:hover {
   display: grid;
   grid-template-columns: 28px 112px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 16px;
+  padding: 18px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.03);
@@ -2572,18 +2572,25 @@ a.link-row:hover {
 
 .row-info strong {
   display: block;
+  margin-bottom: 4px;
   overflow-wrap: anywhere;
 }
 
 .row-info > span {
   display: block;
+  margin-top: 4px;
   color: var(--muted);
   font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .row-actions {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: center;
+  gap: 8px 10px;
+  max-width: 230px;
 }
 
 @media (max-width: 720px) {
@@ -2601,6 +2608,8 @@ a.link-row:hover {
 
   .row-actions {
     grid-column: 1 / -1;
+    max-width: none;
+    justify-content: flex-start;
   }
 }
 
