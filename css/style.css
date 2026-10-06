@@ -2546,6 +2546,7 @@ a.link-row:hover {
 .row-thumb {
   display: grid;
   place-items: center;
+  align-self: center;
   width: 112px;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -2557,12 +2558,16 @@ a.link-row:hover {
 .row-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .row-thumb svg {
   width: 24px;
   height: 24px;
+}
+
+.row-info {
+  align-self: center;
 }
 
 .row-info strong {
