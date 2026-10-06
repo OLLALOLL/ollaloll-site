@@ -645,7 +645,7 @@
         },
         [el("span", { html: icon("download") }), el("span", { text: project.download_label || t("project.download") })]
       );
-      if (isFile) button.addEventListener("click", () => trackDownload(project));
+      button.addEventListener("click", () => trackDownload(project));
       buttons.push(button);
     }
     if (isWebUrl(project.page_url)) {

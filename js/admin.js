@@ -962,7 +962,13 @@
         ])
       );
     } else if (project.download_url) {
-      info.push(el("span", { text: "Download link (downloads are not counted for links)" }));
+      const clicks = downloadCount(project);
+      info.push(
+        el("span", {}, [
+          el("span", { class: "stat", text: clicks + (clicks === 1 ? " click" : " clicks") }),
+          document.createTextNode(" \u00b7 Download link"),
+        ])
+      );
     }
     const updates = (project.project_updates || []).length;
     if (updates) info.push(el("span", { text: updates + (updates === 1 ? " changelog entry" : " changelog entries") }));
@@ -988,10 +994,10 @@
     $("#project-list").replaceChildren(
       ...(projects.length ? projects.map(projectRow) : [el("li", { class: "empty", text: "No projects yet. Add your first one above." })])
     );
-    const withFiles = projects.filter((project) => project.file_path);
-    const total = withFiles.reduce((sum, project) => sum + downloadCount(project), 0);
+    const tracked = projects.filter((project) => project.file_path || project.download_url);
+    const total = tracked.reduce((sum, project) => sum + downloadCount(project), 0);
     const totalNode = $("#download-total");
-    totalNode.hidden = !withFiles.length;
+    totalNode.hidden = !tracked.length;
     totalNode.textContent = "Total downloads: " + total;
   }
 
