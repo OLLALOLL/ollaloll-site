@@ -518,20 +518,31 @@
 
   const cleanups = [];
 
+  // Builds a background (blurred, cropped) + foreground (uncropped,
+  // contain-fitted) image pair so letterboxed space around a photo shows a
+  // blurred copy of that same photo instead of a flat gradient.
+  function imgPair(src, alt, extra) {
+    return [
+      el("img", Object.assign({ src, alt: "", "aria-hidden": "true", class: "img-blur-bg", decoding: "async" }, extra && extra.bg)),
+      el("img", Object.assign({ src, alt, class: "img-contain-fg" }, extra && extra.fg)),
+    ];
+  }
+
   function slider(images, name, type) {
     const total = images.length;
     const track = el("div", { class: "track" });
     images.forEach((src, n) =>
       track.append(
-        el("img", {
-          src,
-          alt: t("project.imageAlt", { name, n: n + 1, total }),
-          loading: n ? false : "lazy",
-          decoding: "async",
-        })
+        el(
+          "div",
+          { class: "track-slide" },
+          imgPair(src, t("project.imageAlt", { name, n: n + 1, total }), {
+            fg: { loading: n ? false : "lazy", decoding: "async" },
+          })
+        )
       )
     );
-    track.append(el("img", { src: images[0], alt: "", "aria-hidden": "true", decoding: "async" }));
+    track.append(el("div", { class: "track-slide", "aria-hidden": "true" }, imgPair(images[0], "")));
 
     const dots = images.map((_, n) => el("button", { type: "button", class: "dot", "aria-label": t("project.showImage", { n: n + 1, total }) }));
     const thumb = el(
@@ -688,7 +699,9 @@
     } else {
       thumb = el("div", { class: "thumb thumb--" + type });
       if (images.length) {
-        thumb.append(el("img", { src: images[0], alt: t("project.singleImage", { name: project.name }), loading: "lazy", decoding: "async" }));
+        thumb.append(
+          ...imgPair(images[0], t("project.singleImage", { name: project.name }), { fg: { loading: "lazy", decoding: "async" } })
+        );
       } else {
         thumb.append(el("span", { class: "thumb-icon", html: icon(type) }));
       }
@@ -710,8 +723,9 @@
 
   function gallery(images, name) {
     let index = 0;
-    const main = el("img", { alt: "" });
-    const stage = el("div", { class: "gallery-stage" }, main);
+    const mainBg = el("img", { alt: "", "aria-hidden": "true", class: "img-blur-bg" });
+    const main = el("img", { alt: "", class: "img-contain-fg" });
+    const stage = el("div", { class: "gallery-stage" }, [mainBg, main]);
     const many = images.length > 1;
     const thumbs = images.map((src, n) =>
       el("button", { class: "gallery-thumb", type: "button", "aria-label": t("project.thumb", { n: n + 1 }) }, el("img", { src, alt: "", loading: "lazy" }))
@@ -719,6 +733,7 @@
 
     function show(next) {
       index = (next + images.length) % images.length;
+      mainBg.src = images[index];
       main.src = images[index];
       main.alt = t("project.imageAlt", { name, n: index + 1, total: images.length });
       thumbs.forEach((button, n) => {

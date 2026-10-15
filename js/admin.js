@@ -976,7 +976,16 @@
     const handle = el("span", { class: "drag-handle", "aria-hidden": "true", html: GRIP });
     rowNode.append(
       handle,
-      el("div", { class: "row-thumb" }, first ? el("img", { src: first, alt: "" }) : el("span", { html: TYPE_ICON })),
+      el(
+        "div",
+        { class: "row-thumb" },
+        first
+          ? [
+              el("img", { src: first, alt: "", "aria-hidden": "true", class: "img-blur-bg" }),
+              el("img", { src: first, alt: "", class: "img-contain-fg" }),
+            ]
+          : el("span", { html: TYPE_ICON })
+      ),
       el("div", { class: "row-info" }, info),
       el("div", { class: "row-actions" }, [
         act("Up", () => moveBy(project, -1)),
