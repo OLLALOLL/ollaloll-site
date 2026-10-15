@@ -55,6 +55,7 @@
       { id: "youtube", label: "YouTube", handle: "", url: "" },
       { id: "github", label: "GitHub", handle: "", url: "" },
       { id: "x", label: "X (Twitter)", handle: "@gerog12345", url: "https://x.com/gerog12345" },
+      { id: "tiktok", label: "TikTok", handle: "@ollaloll", url: "https://www.tiktok.com/@ollaloll" },
     ],
     donate: { url: "" },
   };
@@ -83,6 +84,7 @@
     youtube: '<rect x="3" y="5" width="18" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/>',
     github: '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/>',
     x: '<path d="M5 5l14 14M19 5L5 19"/>',
+    tiktok: '<path d="M15 3v11a4 4 0 1 1-3-3.87"/><path d="M15 7a5 5 0 0 0 5 5"/>',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     external: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
     download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
