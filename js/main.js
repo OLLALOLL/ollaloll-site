@@ -858,12 +858,12 @@
         : el("div", { class: "thumb thumb--" + type }, el("span", { class: "thumb-icon", html: icon(type) }));
 
       const body = [];
-      if (project.details) body.push(el("section", { class: "rich" }, richText(project.details)));
+      if (project.details) body.push(el("section", { class: "rich" }, richTextLite(project.details)));
       if (project.install_note) {
         body.push(
           el("section", { class: "callout" }, [
             el("h2", { text: t("project.install") }),
-            ...richText(project.install_note),
+            ...richTextLite(project.install_note),
             el("a", { class: "text-link", href: "/projects#install", text: t("project.guide") }),
           ])
         );
