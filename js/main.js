@@ -172,6 +172,60 @@
     } catch (error) {}
   }
 
+  // Saves a form's own typed-in values to localStorage as the person types
+  // (debounced) and restores them on load, so an accidental reload or
+  // back-swipe mid-message doesn't lose a half-written contact message or
+  // bug report. Skips the honeypot and any hidden field — those back
+  // custom dropdowns (project/platform) or auth tokens (discordProof)
+  // whose visible UI wouldn't be kept in sync by a raw value restore, and
+  // a hidden field is never something the person actually typed anyway.
+  function initFormDraft(form, keySuffix) {
+    if (!form) return { clear: () => {} };
+    const key = "draft:" + keySuffix;
+    const fieldList = () =>
+      Array.from(form.elements).filter(
+        (field) => field.name && field.name !== "_gotcha" && !["hidden", "submit", "button", "file"].includes(field.type)
+      );
+
+    function save() {
+      const data = {};
+      fieldList().forEach((field) => {
+        if (field.type === "checkbox") data[field.name] = field.checked;
+        else if (field.type === "radio") {
+          if (field.checked) data[field.name] = field.value;
+        } else data[field.name] = field.value;
+      });
+      writeStorage(key, JSON.stringify(data));
+    }
+
+    function restore() {
+      const raw = readStorage(key);
+      if (!raw) return;
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (error) {
+        return;
+      }
+      fieldList().forEach((field) => {
+        if (!(field.name in data)) return;
+        if (field.type === "checkbox") field.checked = Boolean(data[field.name]);
+        else if (field.type === "radio") field.checked = field.value === data[field.name];
+        else field.value = data[field.name];
+      });
+    }
+
+    function clear() {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {}
+    }
+
+    restore();
+    form.addEventListener("input", debounce(save, 400));
+    return { clear };
+  }
+
   function el(tag, attrs = {}, kids = []) {
     const node = document.createElement(tag);
     for (const [key, value] of Object.entries(attrs)) {
@@ -3261,6 +3315,7 @@
   function initForm() {
     const form = $("#contact-form");
     if (!form) return;
+    const draft = initFormDraft(form, "contact");
     const status = $("#form-status", form);
     const submit = $("button[type=submit]", form);
     const captcha = $("[data-captcha]", form);
@@ -3554,6 +3609,7 @@
         proof = null;
         setCaptcha("idle");
         form.reset();
+        draft.clear();
         clearDiscordVerification();
         renderMethod();
         setStatus(t(method === "discord" ? "form.sent.discord" : "form.sent"));
@@ -3593,6 +3649,7 @@
   function initBugReportForm() {
     const form = $("#bug-report-form");
     if (!form) return;
+    const draft = initFormDraft(form, "bug-report");
     const status = $("#bug-form-status", form);
     const submit = $("button[type=submit]", form);
     const captcha = $("[data-captcha]", form);
@@ -3884,6 +3941,7 @@
         form.elements.expected.value = "";
         form.elements.actual.value = "";
         form.elements.contact.value = "";
+        draft.clear();
         setStatus(t("bugreport.sent"));
       } catch (error) {
         if (error.code === "rate") {
@@ -4018,6 +4076,62 @@
     });
   }
 
+  // The manifest is fully set up (icons, maskable, standalone display) but
+  // nothing ever surfaces an install option — beforeinstallprompt fires
+  // and is just discarded by default, so on Android the only way in is
+  // digging through the browser's own menu. This shows a small dismissable
+  // pill once the browser says installing is actually possible.
+  function initInstallPrompt() {
+    if (readStorage("installPromptDismissed")) return;
+    let deferredEvent = null;
+    let pill = null;
+
+    function remove() {
+      if (pill) pill.remove();
+      pill = null;
+    }
+
+    function dismiss() {
+      writeStorage("installPromptDismissed", "1");
+      remove();
+    }
+
+    function show() {
+      if (pill) return;
+      pill = el("div", { class: "install-prompt" }, [
+        el(
+          "button",
+          { class: "install-prompt-btn", type: "button" },
+          [el("span", { html: icon("download") }), el("span", { text: t("pwa.install") })]
+        ),
+        el("button", { class: "install-prompt-close", type: "button", "aria-label": t("close") }, el("span", { html: icon("close") })),
+      ]);
+      document.body.append(pill);
+      requestAnimationFrame(() => pill.classList.add("is-visible"));
+
+      $(".install-prompt-btn", pill).addEventListener("click", async () => {
+        if (!deferredEvent) return;
+        deferredEvent.prompt();
+        const choice = await deferredEvent.userChoice.catch(() => null);
+        deferredEvent = null;
+        remove();
+        if (!choice || choice.outcome !== "accepted") writeStorage("installPromptDismissed", "1");
+      });
+      $(".install-prompt-close", pill).addEventListener("click", dismiss);
+    }
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredEvent = event;
+      show();
+    });
+    window.addEventListener("appinstalled", () => {
+      deferredEvent = null;
+      remove();
+      writeStorage("installPromptDismissed", "1");
+    });
+  }
+
   const VAPID_PUBLIC_KEY = "BLgsV3h4QeDmlsulruH0VsGcfGeje7XBq1cdWxzYo9gSgWejPcjz4fxKUF--fq_DhKTNnP1gG_x04GJ9z842WSQ";
 
   function urlBase64ToUint8Array(base64) {
@@ -4130,6 +4244,7 @@
     initWebPush();
     initOfflineBanner();
     initScrollRestore();
+    initInstallPrompt();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();

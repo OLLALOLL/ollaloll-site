@@ -4261,6 +4261,80 @@ button.poll-option:hover {
   border-color: var(--violet-3);
 }
 
+.install-prompt {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  transform: translateX(-50%) translateY(16px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(20, 16, 36, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.install-prompt.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.install-prompt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #1a1030;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.install-prompt-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.install-prompt-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.install-prompt-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.install-prompt-close:hover,
+.install-prompt-close:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-prompt {
+    transition: opacity 0.01s linear;
+  }
+}
+
 .offline-banner {
   position: fixed;
   top: 0;

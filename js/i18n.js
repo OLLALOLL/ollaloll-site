@@ -49,6 +49,7 @@ window.I18N = {
     "offline.banner": "You're offline — showing saved content",
     "offline.backOnline": "Back online",
     "sw.updateAvailable": "New version available — tap to refresh",
+    "pwa.install": "Install app",
     "nav.aria": "Main",
     "nav.home": "Home",
     "nav.projects": "Projects",
