@@ -29,6 +29,8 @@
 }
 
 html {
+  /* No blue/grey flash box when tapping things on mobile. */
+  -webkit-tap-highlight-color: transparent;
   scrollbar-color: var(--violet-2) rgba(255, 255, 255, 0.06);
   scrollbar-width: thin;
 }
