@@ -48,6 +48,7 @@ window.I18N = {
     "lang": "Language",
     "offline.banner": "You're offline — showing saved content",
     "offline.backOnline": "Back online",
+    "sw.updateAvailable": "New version available — tap to refresh",
     "nav.aria": "Main",
     "nav.home": "Home",
     "nav.projects": "Projects",

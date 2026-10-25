@@ -710,6 +710,7 @@ p {
 }
 
 .hero-realm-copy {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -721,6 +722,14 @@ p {
   color: var(--muted);
   cursor: pointer;
   transition: background .15s ease, color .15s ease;
+}
+
+/* Keeps the visible button at its designed 28px while still giving it a
+   touch-friendly ~44px tap target, per mobile touch-target guidelines. */
+.hero-realm-copy::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
 }
 
 .hero-realm-copy svg {
@@ -4242,6 +4251,16 @@ button.poll-option:hover {
   }
 }
 
+.toast.is-update {
+  border-color: rgba(201, 184, 255, 0.5);
+  background: rgba(32, 22, 56, 0.95);
+}
+
+.toast.is-update:hover,
+.toast.is-update:focus-visible {
+  border-color: var(--violet-3);
+}
+
 .offline-banner {
   position: fixed;
   top: 0;
@@ -4781,13 +4800,16 @@ button.poll-option:hover {
   }
 
   .nav-toggle {
-    width: 34px;
-    height: 34px;
+    /* Matches the 44px minimum touch target used by .search-toggle and
+       .lang-btn at this breakpoint — was 34px, below guidelines for a
+       control tapped on every page. */
+    width: 44px;
+    height: 44px;
   }
 
   .nav-toggle svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -4850,6 +4872,7 @@ button.poll-option:hover {
 }
 
 .global-search-close {
+  position: relative;
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -4861,6 +4884,14 @@ button.poll-option:hover {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
+}
+
+/* Visual size stays 32px (keeps it from crowding the search box), but the
+   tap target grows to the ~44px touch-target guideline. */
+.global-search-close::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
 }
 
 .global-search-close:hover {

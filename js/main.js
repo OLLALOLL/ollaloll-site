@@ -3906,9 +3906,42 @@
 
   function initServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
+    // sw.js calls skipWaiting()/clients.claim() on every install, so a new
+    // deploy takes over fast — but a tab that's been open since before the
+    // deploy is still running the old page/JS until it reloads. "hadController"
+    // is true only once this tab was already being served by a worker, so we
+    // don't show "update available" on a first-ever visit — only on a real
+    // takeover by a newer one.
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    let shown = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!hadController || shown) return;
+      shown = true;
+      showUpdateToast();
+    });
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {});
     });
+  }
+
+  function showUpdateToast() {
+    const stack = ensureToastStack();
+    const toast = el(
+      "div",
+      { class: "toast is-update", tabindex: "0", role: "button", "aria-label": t("sw.updateAvailable") },
+      el("span", { text: t("sw.updateAvailable") })
+    );
+    toast.addEventListener("click", () => location.reload());
+    toast.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        location.reload();
+      }
+    });
+    stack.append(toast);
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
+    // No auto-dismiss — an update prompt should stay until acted on, not
+    // disappear on its own like a transient confirmation toast.
   }
 
   // Pages like /projects, /library and /dictionary render their list from
