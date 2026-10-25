@@ -66,12 +66,16 @@ html {
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Stop scrolling past the top/bottom of a page from chaining into the
+     browser's own pull-to-refresh / rubber-band gesture on mobile. */
+  overscroll-behavior-y: contain;
 }
 
 body {
   position: relative;
   margin: 0;
   min-height: 100vh;
+  overscroll-behavior-y: contain;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -4238,6 +4242,46 @@ button.poll-option:hover {
   }
 }
 
+.offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px;
+  background: rgba(234, 179, 8, 0.16);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #facc15;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+
+.offline-banner svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.offline-banner.is-visible {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-banner {
+    transition: none;
+  }
+}
+
 .skeleton-group {
   display: flex;
   flex-direction: column;
@@ -4245,9 +4289,12 @@ button.poll-option:hover {
 }
 
 .skeleton-card {
-  padding: 16px;
+  /* Matches the padding/radius of the real cards it stands in for
+     (.quote-card, .dict-term, .lib-island) so content doesn't visibly
+     shift when the skeleton is swapped out. */
+  padding: 20px 22px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 18px;
   background: var(--glass);
   display: flex;
   flex-direction: column;

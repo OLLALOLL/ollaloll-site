@@ -46,6 +46,8 @@ window.I18N = {
     "menu": "Menu",
     "close": "Close",
     "lang": "Language",
+    "offline.banner": "You're offline — showing saved content",
+    "offline.backOnline": "Back online",
     "nav.aria": "Main",
     "nav.home": "Home",
     "nav.projects": "Projects",

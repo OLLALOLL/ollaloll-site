@@ -101,6 +101,7 @@
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     bell: '<path d="M6 10a6 6 0 0 1 12 0v4l2 3H4l2-3z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0"/>',
     rss: '<path d="M5 5a14 14 0 0 1 14 14"/><path d="M5 11a8 8 0 0 1 8 8"/><circle cx="6" cy="18" r="1.5"/>',
+    offline: '<path d="M8 16a4 4 0 0 1 .5-7.95A5.5 5.5 0 0 1 18.9 10 3.5 3.5 0 0 1 18.5 16"/><path d="M4 4l16 16"/>',
   };
 
   const icon = (name) =>
@@ -123,6 +124,51 @@
   function writeStorage(key, value) {
     try {
       localStorage.setItem(key, String(value));
+    } catch (error) {}
+  }
+
+  function debounce(fn, wait) {
+    let timer = null;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), wait);
+    };
+  }
+
+  // Shares text via the native share sheet when available (mobile, and
+  // modern desktop browsers); otherwise copies it to the clipboard. Only
+  // flashes the "copied" feedback for the clipboard path — the OS share
+  // sheet appearing is its own confirmation, so nothing is copied there.
+  function shareOrCopy(text, { button, copiedLabel, resetDelay = 1500 } = {}) {
+    const flashCopied = () => {
+      if (!button) return;
+      const original = button.dataset.shareOriginal ?? button.textContent;
+      button.dataset.shareOriginal = original;
+      button.classList.add("is-copied");
+      if (copiedLabel) button.textContent = copiedLabel;
+      setTimeout(() => {
+        button.classList.remove("is-copied");
+        if (copiedLabel) button.textContent = button.dataset.shareOriginal;
+      }, resetDelay);
+    };
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(flashCopied).catch(() => {});
+      return;
+    }
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      flashCopied();
     } catch (error) {}
   }
 
@@ -1065,7 +1111,8 @@
     }
 
     if (searchInput) {
-      searchInput.addEventListener("input", () => renderSuggestions(searchInput.value.trim()));
+      const debouncedSuggestions = debounce((value) => renderSuggestions(value), 180);
+      searchInput.addEventListener("input", () => debouncedSuggestions(searchInput.value.trim()));
       searchInput.addEventListener("focus", () => {
         if (searchInput.value.trim()) renderSuggestions(searchInput.value.trim());
       });
@@ -1330,7 +1377,8 @@
     }
 
     if (searchInput) {
-      searchInput.addEventListener("input", () => renderSuggestions(searchInput.value.trim()));
+      const debouncedSuggestions = debounce((value) => renderSuggestions(value), 180);
+      searchInput.addEventListener("input", () => debouncedSuggestions(searchInput.value.trim()));
       searchInput.addEventListener("focus", () => {
         if (searchInput.value.trim()) renderSuggestions(searchInput.value.trim());
       });
@@ -1769,7 +1817,7 @@
         renderList();
       });
     }
-    if (searchInput) searchInput.addEventListener("input", renderList);
+    if (searchInput) searchInput.addEventListener("input", debounce(renderList, 180));
 
     renderers.push(updateSortButton, renderList);
     if (!SB.url) {
@@ -2054,7 +2102,7 @@
           first.focus();
         }
       });
-      input.addEventListener("input", () => renderResults(input.value.trim()));
+      input.addEventListener("input", debounce(() => renderResults(input.value.trim()), 180));
       input.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           close();
@@ -2564,26 +2612,7 @@
     const code = $("[data-realm-code]");
     if (!btn || !code) return;
     btn.addEventListener("click", () => {
-      const text = code.textContent.trim();
-      const done = () => {
-        btn.classList.add("is-copied");
-        setTimeout(() => btn.classList.remove("is-copied"), 1500);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done).catch(() => {});
-        return;
-      }
-      try {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        done();
-      } catch (error) {}
+      shareOrCopy(code.textContent.trim(), { button: btn });
     });
   }
 
@@ -2980,25 +3009,7 @@
         .join("\n");
       const scoreLabel = status === "won" ? String(guesses.length) : "X";
       const text = "(not)WORDLE " + t("notwordle.day", { n: dayNumber }) + " " + scoreLabel + "/" + MAX_GUESSES + "\n\n" + emojiRows;
-      const done = () => {
-        button.textContent = t("notwordle.shareCopied");
-        setTimeout(() => (button.textContent = t("notwordle.share")), 2000);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done).catch(() => {});
-        return;
-      }
-      try {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        done();
-      } catch (error) {}
+      shareOrCopy(text, { button, copiedLabel: t("notwordle.shareCopied"), resetDelay: 2000 });
     }
 
     function statsPanel() {
@@ -3900,6 +3911,80 @@
     });
   }
 
+  // Pages like /projects, /library and /dictionary render their list from
+  // an async fetch, so by the time the browser's own scroll-restoration
+  // tries to put you back where you were on a back/forward navigation, the
+  // page is still short (empty list) and it snaps to the top instead. We
+  // take restoration over manually: save scroll position per URL as the
+  // user scrolls/leaves, and on load, poll until the page has grown tall
+  // enough to actually hold that position before jumping to it.
+  function initScrollRestore() {
+    try {
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    } catch (error) {}
+
+    const key = "scrollpos:" + location.pathname + location.search;
+    const saveNow = () => writeStorage(key, Math.round(window.scrollY));
+
+    window.addEventListener("scroll", debounce(saveNow, 150), { passive: true });
+    window.addEventListener("pagehide", saveNow);
+
+    const raw = readStorage(key);
+    const target = raw == null ? NaN : parseFloat(raw);
+    if (!Number.isFinite(target) || target <= 0) return;
+
+    const deadline = Date.now() + 1500;
+    function attempt() {
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (maxScroll >= target - 2 || Date.now() > deadline) {
+        window.scrollTo(0, Math.min(target, maxScroll));
+        return;
+      }
+      requestAnimationFrame(attempt);
+    }
+    requestAnimationFrame(attempt);
+  }
+
+  // sw.js caches pages + the Project/Dictionary/Library data for offline
+  // reading, but gives no visual cue that's what's happening — a visitor
+  // with no signal just sees content with no explanation of why nothing
+  // updates. This banner makes that state visible, and clears itself (with
+  // a brief confirmation toast) once the connection comes back.
+  function initOfflineBanner() {
+    let banner = null;
+    let wasOffline = !navigator.onLine;
+
+    function ensureBanner() {
+      if (banner && banner.isConnected) return banner;
+      banner = el("div", { class: "offline-banner", role: "status", "aria-live": "polite" }, [
+        el("span", { html: icon("offline") }),
+        el("span", { text: t("offline.banner") }),
+      ]);
+      document.body.prepend(banner);
+      return banner;
+    }
+
+    function show() {
+      ensureBanner().classList.add("is-visible");
+    }
+
+    function hide() {
+      if (banner) banner.classList.remove("is-visible");
+    }
+
+    if (wasOffline) show();
+
+    window.addEventListener("offline", () => {
+      wasOffline = true;
+      show();
+    });
+    window.addEventListener("online", () => {
+      hide();
+      if (wasOffline) showToast(t("offline.backOnline"));
+      wasOffline = false;
+    });
+  }
+
   const VAPID_PUBLIC_KEY = "BLgsV3h4QeDmlsulruH0VsGcfGeje7XBq1cdWxzYo9gSgWejPcjz4fxKUF--fq_DhKTNnP1gG_x04GJ9z842WSQ";
 
   function urlBase64ToUint8Array(base64) {
@@ -4010,6 +4095,8 @@
     initGlobalSearch();
     initServiceWorker();
     initWebPush();
+    initOfflineBanner();
+    initScrollRestore();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();
