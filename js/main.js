@@ -4580,6 +4580,565 @@
     renderPreview();
   }
 
+  // Bedrock /effect command IDs. Sourced against DigMinecraft's PE/Bedrock
+  // effect list, cross-checked against the Hero of the Village page for the
+  // Bedrock-specific "village_hero" id (Java uses "hero_of_the_village").
+  const EFFECT_LIST = [
+    { id: "absorption", i18n: "cmdbuilder.effectName.absorption" },
+    { id: "bad_omen", i18n: "cmdbuilder.effectName.badOmen" },
+    { id: "blindness", i18n: "cmdbuilder.effectName.blindness" },
+    { id: "breath_of_the_nautilus", i18n: "cmdbuilder.effectName.breathOfTheNautilus" },
+    { id: "conduit_power", i18n: "cmdbuilder.effectName.conduitPower" },
+    { id: "darkness", i18n: "cmdbuilder.effectName.darkness" },
+    { id: "dolphins_grace", i18n: "cmdbuilder.effectName.dolphinsGrace" },
+    { id: "fatal_poison", i18n: "cmdbuilder.effectName.fatalPoison" },
+    { id: "fire_resistance", i18n: "cmdbuilder.effectName.fireResistance" },
+    { id: "glowing", i18n: "cmdbuilder.effectName.glowing" },
+    { id: "haste", i18n: "cmdbuilder.effectName.haste" },
+    { id: "health_boost", i18n: "cmdbuilder.effectName.healthBoost" },
+    { id: "hunger", i18n: "cmdbuilder.effectName.hunger" },
+    { id: "infested", i18n: "cmdbuilder.effectName.infested" },
+    { id: "instant_damage", i18n: "cmdbuilder.effectName.instantDamage" },
+    { id: "instant_health", i18n: "cmdbuilder.effectName.instantHealth" },
+    { id: "invisibility", i18n: "cmdbuilder.effectName.invisibility" },
+    { id: "jump_boost", i18n: "cmdbuilder.effectName.jumpBoost" },
+    { id: "levitation", i18n: "cmdbuilder.effectName.levitation" },
+    { id: "mining_fatigue", i18n: "cmdbuilder.effectName.miningFatigue" },
+    { id: "nausea", i18n: "cmdbuilder.effectName.nausea" },
+    { id: "night_vision", i18n: "cmdbuilder.effectName.nightVision" },
+    { id: "oozing", i18n: "cmdbuilder.effectName.oozing" },
+    { id: "poison", i18n: "cmdbuilder.effectName.poison" },
+    { id: "raid_omen", i18n: "cmdbuilder.effectName.raidOmen" },
+    { id: "regeneration", i18n: "cmdbuilder.effectName.regeneration" },
+    { id: "resistance", i18n: "cmdbuilder.effectName.resistance" },
+    { id: "saturation", i18n: "cmdbuilder.effectName.saturation" },
+    { id: "slow_falling", i18n: "cmdbuilder.effectName.slowFalling" },
+    { id: "slowness", i18n: "cmdbuilder.effectName.slowness" },
+    { id: "speed", i18n: "cmdbuilder.effectName.speed" },
+    { id: "strength", i18n: "cmdbuilder.effectName.strength" },
+    { id: "trial_omen", i18n: "cmdbuilder.effectName.trialOmen" },
+    { id: "village_hero", i18n: "cmdbuilder.effectName.villageHero" },
+    { id: "water_breathing", i18n: "cmdbuilder.effectName.waterBreathing" },
+    { id: "weakness", i18n: "cmdbuilder.effectName.weakness" },
+    { id: "weaving", i18n: "cmdbuilder.effectName.weaving" },
+    { id: "wind_charged", i18n: "cmdbuilder.effectName.windCharged" },
+    { id: "wither", i18n: "cmdbuilder.effectName.wither" },
+  ];
+
+  const SUMMON_ENTITY_SUGGESTIONS = [
+    "zombie", "skeleton", "creeper", "spider", "enderman", "cow", "pig", "sheep",
+    "chicken", "wolf", "cat", "horse", "villager", "iron_golem", "snow_golem",
+    "slime", "witch", "drowned", "husk", "piglin", "hoglin", "blaze", "ghast",
+    "panda", "fox", "bee", "parrot", "dolphin", "turtle", "polar_bear",
+    "armor_stand", "item", "olla:bear", "olla:lion", "olla:moose", "olla:deer", "olla:walrus",
+  ];
+
+  // Bedrock /execute step grammar, sourced from Microsoft's official command
+  // reference (learn.microsoft.com/.../commands/execute) and cross-checked
+  // against the community execute-rewrite writeup for the 1.19.70+ syntax
+  // (as/at/in, positioned/align/anchored/rotated/facing, if/unless).
+  const EXEC_STEP_TYPES = {
+    as: {
+      group: "context",
+      label: "cmdbuilder.execute.step.as",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      build: (v) => `as ${v.target || "@s"}`,
+    },
+    at: {
+      group: "context",
+      label: "cmdbuilder.execute.step.at",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      build: (v) => `at ${v.target || "@s"}`,
+    },
+    in: {
+      group: "context",
+      label: "cmdbuilder.execute.step.in",
+      fields: [
+        {
+          key: "dimension",
+          label: "cmdbuilder.execute.field.dimension",
+          type: "select",
+          options: [
+            { value: "overworld", label: "cmdbuilder.execute.dim.overworld" },
+            { value: "nether", label: "cmdbuilder.execute.dim.nether" },
+            { value: "the_end", label: "cmdbuilder.execute.dim.theEnd" },
+          ],
+          default: "overworld",
+        },
+      ],
+      build: (v) => `in ${v.dimension || "overworld"}`,
+    },
+    positioned: {
+      group: "position",
+      label: "cmdbuilder.execute.step.positioned",
+      fields: [
+        { key: "x", label: "X", default: "~" },
+        { key: "y", label: "Y", default: "~" },
+        { key: "z", label: "Z", default: "~" },
+      ],
+      build: (v) => `positioned ${v.x || "~"} ${v.y || "~"} ${v.z || "~"}`,
+    },
+    positionedAs: {
+      group: "position",
+      label: "cmdbuilder.execute.step.positionedAs",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      build: (v) => `positioned as ${v.target || "@s"}`,
+    },
+    align: {
+      group: "position",
+      label: "cmdbuilder.execute.step.align",
+      fields: [{ key: "axes", label: "cmdbuilder.execute.field.axes", type: "checkboxAxes", default: ["x", "y", "z"] }],
+      build: (v) => `align ${(v.axes && v.axes.length ? v.axes : ["x", "y", "z"]).join("")}`,
+    },
+    anchored: {
+      group: "position",
+      label: "cmdbuilder.execute.step.anchored",
+      fields: [
+        {
+          key: "anchor",
+          label: "cmdbuilder.execute.field.anchor",
+          type: "select",
+          options: [
+            { value: "feet", label: "cmdbuilder.anchor.feet" },
+            { value: "eyes", label: "cmdbuilder.anchor.eyes" },
+          ],
+          default: "feet",
+        },
+      ],
+      build: (v) => `anchored ${v.anchor || "feet"}`,
+    },
+    rotated: {
+      group: "position",
+      label: "cmdbuilder.execute.step.rotated",
+      fields: [
+        { key: "yaw", label: "cmdbuilder.summon.yaw", default: "~" },
+        { key: "pitch", label: "cmdbuilder.summon.pitch", default: "~" },
+      ],
+      build: (v) => `rotated ${v.yaw || "~"} ${v.pitch || "~"}`,
+    },
+    rotatedAs: {
+      group: "position",
+      label: "cmdbuilder.execute.step.rotatedAs",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      build: (v) => `rotated as ${v.target || "@s"}`,
+    },
+    facing: {
+      group: "position",
+      label: "cmdbuilder.execute.step.facing",
+      fields: [
+        { key: "x", label: "X", default: "~" },
+        { key: "y", label: "Y", default: "~" },
+        { key: "z", label: "Z", default: "~" },
+      ],
+      build: (v) => `facing ${v.x || "~"} ${v.y || "~"} ${v.z || "~"}`,
+    },
+    facingEntity: {
+      group: "position",
+      label: "cmdbuilder.execute.step.facingEntity",
+      fields: [
+        { key: "target", label: "cmdbuilder.execute.field.target", default: "@p" },
+        {
+          key: "anchor",
+          label: "cmdbuilder.execute.field.anchor",
+          type: "select",
+          options: [
+            { value: "eyes", label: "cmdbuilder.anchor.eyes" },
+            { value: "feet", label: "cmdbuilder.anchor.feet" },
+          ],
+          default: "eyes",
+        },
+      ],
+      build: (v) => `facing entity ${v.target || "@p"} ${v.anchor || "eyes"}`,
+    },
+    ifEntity: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.ifEntity",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@p" }],
+      build: (v) => `if entity ${v.target || "@p"}`,
+    },
+    unlessEntity: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.unlessEntity",
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@p" }],
+      build: (v) => `unless entity ${v.target || "@p"}`,
+    },
+    ifBlock: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.ifBlock",
+      fields: [
+        { key: "x", label: "X", default: "~" },
+        { key: "y", label: "Y", default: "~-1" },
+        { key: "z", label: "Z", default: "~" },
+        { key: "block", label: "cmdbuilder.execute.field.block", default: "minecraft:stone" },
+      ],
+      build: (v) => `if block ${v.x || "~"} ${v.y || "~-1"} ${v.z || "~"} ${v.block || "minecraft:stone"}`,
+    },
+    unlessBlock: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.unlessBlock",
+      fields: [
+        { key: "x", label: "X", default: "~" },
+        { key: "y", label: "Y", default: "~-1" },
+        { key: "z", label: "Z", default: "~" },
+        { key: "block", label: "cmdbuilder.execute.field.block", default: "minecraft:stone" },
+      ],
+      build: (v) => `unless block ${v.x || "~"} ${v.y || "~-1"} ${v.z || "~"} ${v.block || "minecraft:stone"}`,
+    },
+    ifScoreMatches: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.ifScoreMatches",
+      fields: [
+        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+        { key: "range", label: "cmdbuilder.execute.field.range", default: "1.." },
+      ],
+      build: (v) => `if score ${v.target || "@s"} ${v.objective || "myObjective"} matches ${v.range || "1.."}`,
+    },
+    unlessScoreMatches: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.unlessScoreMatches",
+      fields: [
+        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+        { key: "range", label: "cmdbuilder.execute.field.range", default: "1.." },
+      ],
+      build: (v) => `unless score ${v.target || "@s"} ${v.objective || "myObjective"} matches ${v.range || "1.."}`,
+    },
+    ifScoreCompare: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.ifScoreCompare",
+      fields: [
+        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+        {
+          key: "op",
+          label: "cmdbuilder.execute.field.op",
+          type: "select",
+          options: [
+            { value: "=", label: "cmdbuilder.execute.op.eq" },
+            { value: "<", label: "cmdbuilder.execute.op.lt" },
+            { value: "<=", label: "cmdbuilder.execute.op.lte" },
+            { value: ">", label: "cmdbuilder.execute.op.gt" },
+            { value: ">=", label: "cmdbuilder.execute.op.gte" },
+          ],
+          default: "=",
+        },
+        { key: "target2", label: "cmdbuilder.execute.field.target2", default: "@p" },
+        { key: "objective2", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+      ],
+      build: (v) =>
+        `if score ${v.target || "@s"} ${v.objective || "myObjective"} ${v.op || "="} ${v.target2 || "@p"} ${v.objective2 || "myObjective"}`,
+    },
+    unlessScoreCompare: {
+      group: "condition",
+      label: "cmdbuilder.execute.step.unlessScoreCompare",
+      fields: [
+        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+        {
+          key: "op",
+          label: "cmdbuilder.execute.field.op",
+          type: "select",
+          options: [
+            { value: "=", label: "cmdbuilder.execute.op.eq" },
+            { value: "<", label: "cmdbuilder.execute.op.lt" },
+            { value: "<=", label: "cmdbuilder.execute.op.lte" },
+            { value: ">", label: "cmdbuilder.execute.op.gt" },
+            { value: ">=", label: "cmdbuilder.execute.op.gte" },
+          ],
+          default: "=",
+        },
+        { key: "target2", label: "cmdbuilder.execute.field.target2", default: "@p" },
+        { key: "objective2", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
+      ],
+      build: (v) =>
+        `unless score ${v.target || "@s"} ${v.objective || "myObjective"} ${v.op || "="} ${v.target2 || "@p"} ${v.objective2 || "myObjective"}`,
+    },
+  };
+
+  function cmdQuoteIfNeeded(str) {
+    if (!str) return "";
+    return /\s/.test(str) ? '"' + str.replace(/"/g, '\\"') + '"' : str;
+  }
+
+  function initCommandBuilder() {
+    const tabsWrap = $("[data-cmd-tabs]");
+    if (!tabsWrap) return;
+
+    const tabs = $$("[data-cmd-tab]");
+    const panels = $$("[data-cmd-panel]");
+    tabs.forEach((tabBtn) => {
+      tabBtn.addEventListener("click", () => {
+        const target = tabBtn.dataset.cmdTab;
+        tabs.forEach((b) => b.classList.toggle("is-active", b === tabBtn));
+        panels.forEach((p) => {
+          p.hidden = p.dataset.cmdPanel !== target;
+        });
+      });
+    });
+
+    $$("[data-cmd-copy]").forEach((btn) => {
+      const key = btn.dataset.cmdCopy;
+      btn.addEventListener("click", () => {
+        const codeEl = $('[data-cmd-output="' + key + '"]');
+        if (!codeEl) return;
+        shareOrCopy(codeEl.textContent, { button: btn, copiedLabel: t("cmdbuilder.copied"), resetDelay: 1500 });
+      });
+    });
+
+    // --- /effect ---
+    (function initEffectBuilder() {
+      const modeButtons = $$("[data-effect-mode]");
+      const giveFields = $("[data-effect-give-fields]");
+      const targetInput = $("[data-effect-target]");
+      const nameSelect = $("[data-effect-name]");
+      const secondsInput = $("[data-effect-seconds]");
+      const amplifierInput = $("[data-effect-amplifier]");
+      const hideParticlesInput = $("[data-effect-hide-particles]");
+      const infiniteInput = $("[data-effect-infinite]");
+      const output = $('[data-cmd-output="effect"]');
+      if (!targetInput || !nameSelect || !output) return;
+
+      EFFECT_LIST.forEach((effect) => {
+        nameSelect.appendChild(el("option", { value: effect.id, text: t(effect.i18n) }));
+      });
+      nameSelect.value = "speed";
+
+      let mode = "give";
+      modeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          mode = btn.dataset.effectMode;
+          modeButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+          giveFields.hidden = mode !== "give";
+          recompute();
+        });
+      });
+
+      $$('[data-cmd-quickpick-for="effect-target"] button').forEach((btn) => {
+        btn.addEventListener("click", () => {
+          targetInput.value = btn.textContent;
+          recompute();
+        });
+      });
+
+      function recompute() {
+        const target = targetInput.value.trim() || "@s";
+        if (mode === "clear") {
+          output.textContent = `/effect ${target} clear`;
+          return;
+        }
+        const effectId = nameSelect.value;
+        const amplifier = Math.max(0, Math.min(255, parseInt(amplifierInput.value, 10) || 0));
+        const hide = hideParticlesInput.checked ? "true" : "false";
+        const seconds = infiniteInput.checked ? "infinite" : Math.max(1, parseInt(secondsInput.value, 10) || 30);
+        secondsInput.disabled = infiniteInput.checked;
+        output.textContent = `/effect ${target} ${effectId} ${seconds} ${amplifier} ${hide}`;
+      }
+
+      [targetInput, nameSelect, secondsInput, amplifierInput].forEach((elm) => elm.addEventListener("input", recompute));
+      [hideParticlesInput, infiniteInput].forEach((elm) => elm.addEventListener("change", recompute));
+      recompute();
+    })();
+
+    // --- /summon ---
+    (function initSummonBuilder() {
+      const entityInput = $("[data-summon-entity]");
+      const entityList = $("[data-summon-entity-list]");
+      const output = $('[data-cmd-output="summon"]');
+      if (!entityInput || !output) return;
+
+      SUMMON_ENTITY_SUGGESTIONS.forEach((id) => entityList.appendChild(el("option", { value: id })));
+
+      const posInputs = {};
+      $$("[data-summon-pos]").forEach((input) => (posInputs[input.dataset.summonPos] = input));
+      const yawInput = $("[data-summon-yaw]");
+      const pitchInput = $("[data-summon-pitch]");
+      const faceInputs = {};
+      $$("[data-summon-face]").forEach((input) => (faceInputs[input.dataset.summonFace] = input));
+      const faceTargetInput = $("[data-summon-face-target]");
+      const faceAnchorSelect = $("[data-summon-face-anchor]");
+      const eventInput = $("[data-summon-event]");
+      const nameTagInput = $("[data-summon-nametag]");
+      const rotModeButtons = $$("[data-summon-rot-mode]");
+      const rotFieldGroups = {};
+      $$("[data-summon-rot-fields]").forEach((group) => (rotFieldGroups[group.dataset.summonRotFields] = group));
+
+      let rotMode = "none";
+      rotModeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          rotMode = btn.dataset.summonRotMode;
+          rotModeButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+          Object.entries(rotFieldGroups).forEach(([key, group]) => {
+            group.hidden = key !== rotMode;
+          });
+          recompute();
+        });
+      });
+
+      function recompute() {
+        const entity = entityInput.value.trim() || "zombie";
+        const parts = ["/summon", entity, posInputs.x.value || "~", posInputs.y.value || "~", posInputs.z.value || "~"];
+
+        if (rotMode === "yawpitch") {
+          parts.push(yawInput.value || "~", pitchInput.value || "~");
+        } else if (rotMode === "facingpos") {
+          parts.push("facing", faceInputs.x.value || "~", faceInputs.y.value || "~", faceInputs.z.value || "~");
+        } else if (rotMode === "facingentity") {
+          parts.push("facing", "entity", faceTargetInput.value.trim() || "@p", faceAnchorSelect.value);
+        }
+
+        const spawnEvent = eventInput.value.trim();
+        const nameTag = nameTagInput.value.trim();
+        if (spawnEvent) parts.push(cmdQuoteIfNeeded(spawnEvent));
+        if (nameTag) parts.push(cmdQuoteIfNeeded(nameTag));
+
+        output.textContent = parts.join(" ");
+      }
+
+      [
+        entityInput,
+        posInputs.x,
+        posInputs.y,
+        posInputs.z,
+        yawInput,
+        pitchInput,
+        faceInputs.x,
+        faceInputs.y,
+        faceInputs.z,
+        faceTargetInput,
+        eventInput,
+        nameTagInput,
+      ].forEach((input) => input && input.addEventListener("input", recompute));
+      faceAnchorSelect.addEventListener("change", recompute);
+
+      recompute();
+    })();
+
+    // --- /execute ---
+    (function initExecuteBuilder() {
+      const stepsContainer = $("[data-exec-steps]");
+      const addBtn = $("[data-exec-add]");
+      const runInput = $("[data-exec-run]");
+      const output = $('[data-cmd-output="execute"]');
+      if (!stepsContainer || !output) return;
+
+      const groupOrder = ["context", "position", "condition"];
+      const stepRows = [];
+
+      function recompute() {
+        const tokens = stepRows.map((row) => EXEC_STEP_TYPES[row.select.value].build(row.getValues()));
+        let cmd = "/execute";
+        if (tokens.length) cmd += " " + tokens.join(" ");
+        const runVal = runInput.value.trim();
+        if (runVal) cmd += " run " + runVal;
+        output.textContent = cmd;
+      }
+
+      function renderStepFields(container, stepDef, values) {
+        container.innerHTML = "";
+        stepDef.fields.forEach((f) => {
+          if (f.type === "checkboxAxes") {
+            values[f.key] = values[f.key] || f.default.slice();
+            const wrap = el("div", { class: "field" }, [el("label", { text: t(f.label) })]);
+            const group = el("div", { class: "cmd-quickpicks" });
+            ["x", "y", "z"].forEach((axis) => {
+              const label = el("label", { class: "cmd-checkbox-inline", style: "margin:0;" });
+              const cb = el("input", { type: "checkbox" });
+              cb.checked = values[f.key].includes(axis);
+              cb.addEventListener("change", () => {
+                const set = new Set(values[f.key]);
+                if (cb.checked) set.add(axis);
+                else set.delete(axis);
+                values[f.key] = ["x", "y", "z"].filter((a) => set.has(a));
+                recompute();
+              });
+              label.append(cb, el("span", { text: axis.toUpperCase() }));
+              group.appendChild(label);
+            });
+            wrap.appendChild(group);
+            container.appendChild(wrap);
+          } else if (f.type === "select") {
+            values[f.key] = values[f.key] || f.default;
+            const wrap = el("div", { class: "field" }, [el("label", { text: t(f.label) })]);
+            const select = el("select", {});
+            f.options.forEach((opt) => {
+              const o = el("option", { value: opt.value, text: t(opt.label) });
+              if (opt.value === values[f.key]) o.selected = true;
+              select.appendChild(o);
+            });
+            select.addEventListener("change", () => {
+              values[f.key] = select.value;
+              recompute();
+            });
+            wrap.appendChild(select);
+            container.appendChild(wrap);
+          } else {
+            values[f.key] = values[f.key] || f.default || "";
+            const wrap = el("div", { class: "field" }, [el("label", { text: f.label && f.label.includes(".") ? t(f.label) : f.label })]);
+            const input = el("input", { type: "text", value: values[f.key] });
+            input.addEventListener("input", () => {
+              values[f.key] = input.value;
+              recompute();
+            });
+            wrap.appendChild(input);
+            container.appendChild(wrap);
+          }
+        });
+      }
+
+      function addStep(initialType) {
+        const row = el("div", { class: "cmd-step" });
+        const head = el("div", { class: "cmd-step-head" });
+        const select = el("select", {});
+        groupOrder.forEach((group) => {
+          const optgroup = el("optgroup", { label: t("cmdbuilder.execute.group." + group) });
+          Object.entries(EXEC_STEP_TYPES)
+            .filter(([, def]) => def.group === group)
+            .forEach(([key, def]) => optgroup.appendChild(el("option", { value: key, text: t(def.label) })));
+          select.appendChild(optgroup);
+        });
+        select.value = initialType;
+        const removeBtn = el("button", {
+          type: "button",
+          class: "btn btn-ghost btn-small cmd-step-remove",
+          "aria-label": t("cmdbuilder.execute.removeStep"),
+          text: "×",
+        });
+        head.append(select, removeBtn);
+        const fieldsWrap = el("div", { class: "cmd-step-fields" });
+        row.append(head, fieldsWrap);
+
+        let values = {};
+        const rowEntry = { row, select, getValues: () => values };
+
+        select.addEventListener("change", () => {
+          values = {};
+          renderStepFields(fieldsWrap, EXEC_STEP_TYPES[select.value], values);
+          recompute();
+        });
+        removeBtn.addEventListener("click", () => {
+          row.remove();
+          const idx = stepRows.indexOf(rowEntry);
+          if (idx !== -1) stepRows.splice(idx, 1);
+          recompute();
+        });
+
+        stepsContainer.appendChild(row);
+        stepRows.push(rowEntry);
+        renderStepFields(fieldsWrap, EXEC_STEP_TYPES[initialType], values);
+      }
+
+      addBtn.addEventListener("click", () => {
+        addStep("as");
+        recompute();
+      });
+      runInput.addEventListener("input", recompute);
+
+      addStep("as");
+      recompute();
+    })();
+  }
+
   // sw.js caches pages + the Project/Dictionary/Library data for offline
   // reading, but gives no visual cue that's what's happening — a visitor
   // with no signal just sees content with no explanation of why nothing
@@ -4738,6 +5297,7 @@
     initAnvilPlanner();
     initLootOdds();
     initMotdFormatter();
+    initCommandBuilder();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();

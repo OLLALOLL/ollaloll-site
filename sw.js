@@ -5,8 +5,8 @@
 // features (Bingo, Polls, Tournament, downloads) always need a live
 // network round-trip and are left alone so their own "reconnect to play"
 // messaging can take over.
-const CACHE = "ollaloll-public-v16";
-const RUNTIME_CACHE = "ollaloll-public-runtime-v16";
+const CACHE = "ollaloll-public-v17";
+const RUNTIME_CACHE = "ollaloll-public-runtime-v17";
 
 const SHELL = [
   "/",
@@ -27,6 +27,7 @@ const SHELL = [
   "/tools/anvil-planner",
   "/tools/loot-odds",
   "/tools/motd-formatter",
+  "/tools/command-builder",
   "/notwordle",
   "/tournament",
   "/contact",

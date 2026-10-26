@@ -5200,3 +5200,183 @@ button.poll-option:hover {
   border-bottom: 1px dashed currentColor;
   letter-spacing: 0.02em;
 }
+
+/* Tools / Command Syntax Builder */
+
+.cmd-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.cmd-mode-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cmd-tabs button.is-active,
+.cmd-mode-toggle button.is-active {
+  border-color: var(--violet-2);
+  color: var(--violet-2);
+  background: var(--glass-strong);
+}
+
+.cmd-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.cmd-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.cmd-grid-3 .field,
+.cmd-grid-2 .field {
+  margin-bottom: 0;
+}
+
+.cmd-checkbox-field {
+  display: flex;
+  align-items: center;
+}
+
+.cmd-checkbox-field label,
+.cmd-checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cmd-checkbox-inline {
+  margin: 4px 0 12px;
+}
+
+.cmd-quickpicks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cmd-fieldset {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.cmd-fieldset legend {
+  padding: 0 6px;
+  font-weight: 700;
+  color: var(--violet-3);
+}
+
+.cmd-optional {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
+.cmd-output {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #0a0712;
+}
+
+.cmd-output code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  word-break: break-word;
+  color: var(--ink);
+}
+
+.cmd-output button {
+  flex-shrink: 0;
+}
+
+.cmd-disclaimer {
+  margin-top: 20px;
+}
+
+.cmd-steps {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.cmd-step {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--glass);
+}
+
+.cmd-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cmd-step-head select {
+  flex: 1;
+}
+
+.cmd-step-remove {
+  flex-shrink: 0;
+  width: 40px;
+  padding: 0.8rem 0;
+  text-align: center;
+}
+
+.cmd-step-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cmd-step-fields .field {
+  flex: 1;
+  min-width: 110px;
+  margin-bottom: 0;
+}
+
+.cmd-run-field {
+  margin: 16px 0;
+}
+
+@media (max-width: 700px) {
+  .cmd-grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cmd-output {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cmd-output button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .cmd-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
