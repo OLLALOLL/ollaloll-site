@@ -39,6 +39,7 @@
         ],
         items: [
           { title: "Genghis Tiers", text: "A PvP tier list and leaderboard with per-gamemode ratings.", url: "https://ollaloll.com/genghistiers" },
+          { title: "Beaver Transceiver", text: "A mobile-first, Discord-like group chat app with accounts, friends and realtime DMs.", url: "https://ollaloll.com/beaver" },
           { title: "Extras", text: "Active bingo cards, tournaments and other live extras — including the daily (not)WORDLE word game.", url: "https://ollaloll.com/extras" },
         ],
       },
