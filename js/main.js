@@ -4076,62 +4076,6 @@
     });
   }
 
-  // The manifest is fully set up (icons, maskable, standalone display) but
-  // nothing ever surfaces an install option — beforeinstallprompt fires
-  // and is just discarded by default, so on Android the only way in is
-  // digging through the browser's own menu. This shows a small dismissable
-  // pill once the browser says installing is actually possible.
-  function initInstallPrompt() {
-    if (readStorage("installPromptDismissed")) return;
-    let deferredEvent = null;
-    let pill = null;
-
-    function remove() {
-      if (pill) pill.remove();
-      pill = null;
-    }
-
-    function dismiss() {
-      writeStorage("installPromptDismissed", "1");
-      remove();
-    }
-
-    function show() {
-      if (pill) return;
-      pill = el("div", { class: "install-prompt" }, [
-        el(
-          "button",
-          { class: "install-prompt-btn", type: "button" },
-          [el("span", { html: icon("download") }), el("span", { text: t("pwa.install") })]
-        ),
-        el("button", { class: "install-prompt-close", type: "button", "aria-label": t("close") }, el("span", { html: icon("close") })),
-      ]);
-      document.body.append(pill);
-      requestAnimationFrame(() => pill.classList.add("is-visible"));
-
-      $(".install-prompt-btn", pill).addEventListener("click", async () => {
-        if (!deferredEvent) return;
-        deferredEvent.prompt();
-        const choice = await deferredEvent.userChoice.catch(() => null);
-        deferredEvent = null;
-        remove();
-        if (!choice || choice.outcome !== "accepted") writeStorage("installPromptDismissed", "1");
-      });
-      $(".install-prompt-close", pill).addEventListener("click", dismiss);
-    }
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      deferredEvent = event;
-      show();
-    });
-    window.addEventListener("appinstalled", () => {
-      deferredEvent = null;
-      remove();
-      writeStorage("installPromptDismissed", "1");
-    });
-  }
-
   const VAPID_PUBLIC_KEY = "BLgsV3h4QeDmlsulruH0VsGcfGeje7XBq1cdWxzYo9gSgWejPcjz4fxKUF--fq_DhKTNnP1gG_x04GJ9z842WSQ";
 
   function urlBase64ToUint8Array(base64) {
@@ -4244,7 +4188,6 @@
     initWebPush();
     initOfflineBanner();
     initScrollRestore();
-    initInstallPrompt();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();
