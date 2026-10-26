@@ -4180,6 +4180,406 @@
     fromOverworld();
   }
 
+  // The /tools/redstone-timer page: turn a target delay into the shortest
+  // chain of repeaters (each 1-4 redstone ticks) that produces it.
+  function initRedstoneTimer() {
+    const delayInput = $("#rs-delay");
+    if (!delayInput) return;
+    const unitValue = $("#rs-unit-value");
+    const unitList = $("#rs-unit-list");
+    const output = $("[data-rs-output]");
+    const summaryEl = $("[data-rs-summary]");
+    const chainEl = $("[data-rs-repeaters]");
+    const chainIntroEl = $("[data-rs-chain-intro]");
+    const noteEl = $("[data-rs-note]");
+    const errorEl = $("[data-rs-error]");
+
+    function recompute() {
+      errorEl.textContent = "";
+      const raw = parseFloat(delayInput.value);
+      if (!Number.isFinite(raw) || raw < 0) {
+        output.hidden = true;
+        if (delayInput.value.trim() !== "") errorEl.textContent = t("redstone.error") || "";
+        return;
+      }
+
+      const unit = unitValue ? unitValue.value : "seconds";
+      let redstoneTicksExact;
+      if (unit === "seconds") redstoneTicksExact = raw * 10;
+      else if (unit === "gameticks") redstoneTicksExact = raw / 2;
+      else redstoneTicksExact = raw;
+
+      const redstoneTicks = Math.round(redstoneTicksExact * 1000) / 1000;
+      const wholeTicks = Math.floor(redstoneTicks);
+      const isExact = Math.abs(redstoneTicks - wholeTicks) < 1e-6;
+      const gameTicks = wholeTicks * 2;
+      const seconds = Math.round(wholeTicks * 0.1 * 1000) / 1000;
+
+      output.hidden = false;
+      summaryEl.textContent = t("redstone.summary", { redstoneTicks: wholeTicks, gameTicks, seconds });
+
+      chainEl.innerHTML = "";
+      if (wholeTicks <= 0) {
+        chainIntroEl.textContent = "";
+        noteEl.textContent = t("redstone.zero");
+      } else {
+        let remaining = wholeTicks;
+        const steps = [];
+        while (remaining > 0) {
+          const step = Math.min(4, remaining);
+          steps.push(step);
+          remaining -= step;
+        }
+        steps.forEach((ticks) => {
+          chainEl.appendChild(
+            el("span", { class: "btn btn-ghost btn-small redstone-chip", role: "listitem", text: t("redstone.repeaterLabel", { ticks }) })
+          );
+        });
+
+        chainIntroEl.textContent = t("redstone.chainIntro", { count: steps.length });
+        const notes = [];
+        if (!isExact) notes.push(t("redstone.oddWarning"));
+        if (steps.length > 8) notes.push(t("redstone.manyWarning", { count: steps.length }));
+        noteEl.textContent = notes.join(" ");
+      }
+    }
+
+    delayInput.addEventListener("input", recompute);
+    if (unitList) unitList.addEventListener("click", recompute);
+
+    recompute();
+  }
+
+  // The /tools/anvil-planner page: total XP-level cost of a set of
+  // enchantments applied to one item, using the standard anvil cost model
+  // (rarity multiplier x level, book cost halved, prior-work penalty
+  // doubling each time an item is the result of a combine).
+  function initAnvilPlanner() {
+    const rowsEl = $("[data-anvil-rows]");
+    if (!rowsEl) return;
+    const addBtn = $("[data-anvil-add]");
+    const resetBtn = $("[data-anvil-reset]");
+    const priorInput = $("#anvil-prior-count");
+    const priorNoteEl = $("[data-anvil-prior-note]");
+    const totalEl = $("[data-anvil-total]");
+    const xpEl = $("[data-anvil-xp]");
+
+    function xpForLevel(level) {
+      if (level <= 0) return 0;
+      if (level <= 16) return level * level + 6 * level;
+      if (level <= 31) return 2.5 * level * level - 40.5 * level + 360;
+      return 4.5 * level * level - 162.5 * level + 2220;
+    }
+
+    function rowCost(row) {
+      const level = Math.max(0, parseInt($("[data-anvil-level]", row).value, 10) || 0);
+      const rarity = parseInt($("[data-anvil-rarity]", row).value, 10) || 1;
+      const source = $("[data-anvil-source]", row).value;
+      const mult = source === "book" ? Math.max(1, Math.round(rarity / 2)) : rarity;
+      return mult * level;
+    }
+
+    function makeRow() {
+      const row = el("div", { class: "anvil-row", "data-anvil-row": "" }, [
+        el("div", { class: "anvil-row-grid" }, [
+          el("div", { class: "field" }, [
+            el("label", { text: t("anvil.row.name") }),
+            el("input", { type: "text", "data-anvil-name": "", placeholder: t("anvil.row.namePlaceholder") }),
+          ]),
+          el("div", { class: "field" }, [
+            el("label", { text: t("anvil.row.level") }),
+            el("input", { type: "number", min: "1", step: "1", value: "1", "data-anvil-level": "" }),
+          ]),
+          el("div", { class: "field" }, [
+            el("label", { text: t("anvil.row.rarity") }),
+            el("select", { "data-anvil-rarity": "" }, [
+              el("option", { value: "1", text: t("anvil.row.rarity.common") }),
+              el("option", { value: "2", text: t("anvil.row.rarity.uncommon") }),
+              el("option", { value: "4", text: t("anvil.row.rarity.rare") }),
+              el("option", { value: "8", text: t("anvil.row.rarity.veryRare") }),
+            ]),
+          ]),
+          el("div", { class: "field" }, [
+            el("label", { text: t("anvil.row.source") }),
+            el("select", { "data-anvil-source": "" }, [
+              el("option", { value: "book", text: t("anvil.row.source.book") }),
+              el("option", { value: "item", text: t("anvil.row.source.item") }),
+            ]),
+          ]),
+        ]),
+        el("div", { class: "anvil-row-footer" }, [
+          el("span", { class: "hint", "data-anvil-row-cost": "" }),
+          el("button", { type: "button", class: "btn btn-ghost btn-tiny", "data-anvil-remove": "", text: t("anvil.row.remove") }),
+        ]),
+      ]);
+
+      $$("input, select", row).forEach((field) => field.addEventListener("input", recompute));
+      $("[data-anvil-remove]", row).addEventListener("click", () => {
+        row.remove();
+        recompute();
+      });
+
+      return row;
+    }
+
+    function recompute() {
+      let enchantTotal = 0;
+      $$("[data-anvil-row]", rowsEl).forEach((row) => {
+        const cost = rowCost(row);
+        enchantTotal += cost;
+        $("[data-anvil-row-cost]", row).textContent = t("anvil.row.cost", { levels: cost });
+      });
+
+      const priorCount = Math.max(0, parseInt(priorInput.value, 10) || 0);
+      const penalty = Math.pow(2, priorCount) - 1;
+      priorNoteEl.textContent = t("anvil.priorWork.note", { penalty });
+
+      const total = enchantTotal + penalty;
+      totalEl.textContent = t("anvil.total.summary", { total, enchantTotal, penalty });
+      xpEl.textContent = t("anvil.total.xp", { xp: Math.round(xpForLevel(total)), total });
+    }
+
+    addBtn.addEventListener("click", () => {
+      rowsEl.appendChild(makeRow());
+      recompute();
+    });
+
+    priorInput.addEventListener("input", recompute);
+
+    resetBtn.addEventListener("click", () => {
+      rowsEl.innerHTML = "";
+      rowsEl.appendChild(makeRow());
+      priorInput.value = 0;
+      recompute();
+    });
+
+    rowsEl.appendChild(makeRow());
+    recompute();
+  }
+
+  // The /tools/loot-odds page: binomial probability calculator for "will I
+  // get this drop in N attempts" — works for any user-entered drop chance,
+  // rather than trying to hardcode every mob/chest loot table.
+  function initLootOdds() {
+    const chanceInput = $("#loot-chance");
+    if (!chanceInput) return;
+    const oneInNInput = $("#loot-oneinn");
+    const attemptsInput = $("#loot-attempts");
+    const atLeastEl = $("[data-loot-atleast]");
+    const expectedEl = $("[data-loot-expected]");
+    const confidenceEl = $("[data-loot-confidence]");
+
+    const round = (n, d) => Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+
+    function fromChance() {
+      const chance = parseFloat(chanceInput.value);
+      if (Number.isFinite(chance) && chance > 0) oneInNInput.value = round(100 / chance, 2);
+      else oneInNInput.value = "";
+      recompute();
+    }
+
+    function fromOneInN() {
+      const n = parseFloat(oneInNInput.value);
+      if (Number.isFinite(n) && n > 0) chanceInput.value = round(100 / n, 4);
+      recompute();
+    }
+
+    function recompute() {
+      const chance = parseFloat(chanceInput.value);
+      const attempts = Math.max(0, parseInt(attemptsInput.value, 10) || 0);
+      if (!Number.isFinite(chance) || chance < 0 || chance > 100) {
+        atLeastEl.textContent = "";
+        expectedEl.textContent = "";
+        confidenceEl.innerHTML = "";
+        return;
+      }
+
+      const p = chance / 100;
+      const probAtLeastOne = 1 - Math.pow(1 - p, attempts);
+      atLeastEl.textContent = t("loot.atleast", {
+        attempts,
+        chance: round(chance, 4),
+        probability: round(probAtLeastOne * 100, 2),
+      });
+      expectedEl.textContent = t("loot.expected", { expected: round(attempts * p, 2) });
+
+      confidenceEl.innerHTML = "";
+      [50, 90, 95, 99].forEach((percent) => {
+        let label;
+        if (p <= 0) {
+          label = t("loot.confidence.impossible", { percent });
+        } else if (p >= 1) {
+          label = t("loot.confidence.chip", { percent, attempts: 1 });
+        } else {
+          const needed = Math.ceil(Math.log(1 - percent / 100) / Math.log(1 - p));
+          label = t("loot.confidence.chip", { percent, attempts: needed });
+        }
+        confidenceEl.appendChild(el("span", { class: "btn btn-ghost btn-small redstone-chip", role: "listitem", text: label }));
+      });
+    }
+
+    chanceInput.addEventListener("input", fromChance);
+    oneInNInput.addEventListener("input", fromOneInN);
+    attemptsInput.addEventListener("input", recompute);
+
+    fromChance();
+  }
+
+  // The /tools/motd-formatter page: click color/format swatches to insert
+  // §-codes into a text box, with a live styled preview and a copy button.
+  // The 16 standard colors are exact; the Bedrock-exclusive "material"
+  // colors (added in recent versions) use the correct §-codes but an
+  // approximate preview swatch, called out in the page copy.
+  const MOTD_STANDARD_COLORS = [
+    { code: "0", i18n: "motd.color.black", hex: "#000000" },
+    { code: "1", i18n: "motd.color.darkBlue", hex: "#0000AA" },
+    { code: "2", i18n: "motd.color.darkGreen", hex: "#00AA00" },
+    { code: "3", i18n: "motd.color.darkAqua", hex: "#00AAAA" },
+    { code: "4", i18n: "motd.color.darkRed", hex: "#AA0000" },
+    { code: "5", i18n: "motd.color.darkPurple", hex: "#AA00AA" },
+    { code: "6", i18n: "motd.color.gold", hex: "#FFAA00" },
+    { code: "7", i18n: "motd.color.gray", hex: "#AAAAAA" },
+    { code: "8", i18n: "motd.color.darkGray", hex: "#555555" },
+    { code: "9", i18n: "motd.color.blue", hex: "#5555FF" },
+    { code: "a", i18n: "motd.color.green", hex: "#55FF55" },
+    { code: "b", i18n: "motd.color.aqua", hex: "#55FFFF" },
+    { code: "c", i18n: "motd.color.red", hex: "#FF5555" },
+    { code: "d", i18n: "motd.color.lightPurple", hex: "#FF55FF" },
+    { code: "e", i18n: "motd.color.yellow", hex: "#FFFF55" },
+    { code: "f", i18n: "motd.color.white", hex: "#FFFFFF" },
+  ];
+
+  const MOTD_BEDROCK_COLORS = [
+    { code: "g", i18n: "motd.color.minecoinGold", hex: "#DDD605" },
+    { code: "h", i18n: "motd.color.quartz", hex: "#E3D4D1" },
+    { code: "i", i18n: "motd.color.iron", hex: "#CECACA" },
+    { code: "j", i18n: "motd.color.netherite", hex: "#443A3D" },
+    { code: "m", i18n: "motd.color.redstone", hex: "#971607" },
+    { code: "n", i18n: "motd.color.copper", hex: "#B4684D" },
+    { code: "p", i18n: "motd.color.matGold", hex: "#DEB12D" },
+    { code: "q", i18n: "motd.color.emerald", hex: "#47A036" },
+    { code: "s", i18n: "motd.color.diamond", hex: "#2EE8DC" },
+    { code: "t", i18n: "motd.color.lapis", hex: "#21497B" },
+    { code: "u", i18n: "motd.color.amethyst", hex: "#9A5CC6" },
+    { code: "v", i18n: "motd.color.resin", hex: "#CB6F32" },
+  ];
+
+  const MOTD_FORMATS = [
+    { code: "l", i18n: "motd.format.bold" },
+    { code: "o", i18n: "motd.format.italic" },
+    { code: "k", i18n: "motd.format.obfuscated" },
+    { code: "r", i18n: "motd.format.reset" },
+  ];
+
+  function initMotdFormatter() {
+    const input = $("[data-motd-input]");
+    if (!input) return;
+    const formatsEl = $("[data-motd-formats]");
+    const colorsEl = $("[data-motd-colors]");
+    const bedrockColorsEl = $("[data-motd-bedrock-colors]");
+    const previewEl = $("[data-motd-preview]");
+    const copyBtn = $("[data-motd-copy]");
+    const clearBtn = $("[data-motd-clear]");
+
+    const colorHexByCode = {};
+    [...MOTD_STANDARD_COLORS, ...MOTD_BEDROCK_COLORS].forEach((c) => (colorHexByCode[c.code] = c.hex));
+
+    function insertCode(code) {
+      const start = input.selectionStart ?? input.value.length;
+      const end = input.selectionEnd ?? input.value.length;
+      const insertion = "§" + code;
+      input.value = input.value.slice(0, start) + insertion + input.value.slice(end);
+      const pos = start + insertion.length;
+      input.focus();
+      input.setSelectionRange(pos, pos);
+      renderPreview();
+    }
+
+    function renderPreview() {
+      previewEl.innerHTML = "";
+      const parts = input.value.split("§");
+      let color = null;
+      let bold = false;
+      let italic = false;
+      let obfuscated = false;
+
+      function appendSpan(text) {
+        if (!text) return;
+        previewEl.appendChild(
+          el("span", {
+            text,
+            style:
+              (color ? "color:" + color + ";" : "") +
+              (bold ? "font-weight:700;" : "") +
+              (italic ? "font-style:italic;" : ""),
+            class: obfuscated ? "motd-obfuscated" : null,
+          })
+        );
+      }
+
+      parts.forEach((part, i) => {
+        if (i === 0) {
+          appendSpan(part);
+          return;
+        }
+        const code = (part[0] || "").toLowerCase();
+        const rest = part.slice(1);
+        if (code === "r") {
+          color = null;
+          bold = false;
+          italic = false;
+          obfuscated = false;
+        } else if (code === "l") {
+          bold = true;
+        } else if (code === "o") {
+          italic = true;
+        } else if (code === "k") {
+          obfuscated = true;
+        } else if (colorHexByCode[code]) {
+          color = colorHexByCode[code];
+          bold = false;
+          italic = false;
+          obfuscated = false;
+        }
+        appendSpan(rest);
+      });
+    }
+
+    function buildSwatches(container, list, isColor) {
+      list.forEach((entry) => {
+        const button = el("button", {
+          type: "button",
+          class: isColor ? "motd-swatch" : "btn btn-ghost btn-small redstone-chip",
+          role: "listitem",
+          title: t(entry.i18n),
+          "aria-label": t(entry.i18n),
+          style: isColor ? "background:" + entry.hex + ";" : null,
+          text: isColor ? null : t(entry.i18n),
+        });
+        button.addEventListener("click", () => insertCode(entry.code));
+        container.appendChild(button);
+      });
+    }
+
+    buildSwatches(formatsEl, MOTD_FORMATS, false);
+    buildSwatches(colorsEl, MOTD_STANDARD_COLORS, true);
+    buildSwatches(bedrockColorsEl, MOTD_BEDROCK_COLORS, true);
+
+    input.addEventListener("input", renderPreview);
+
+    copyBtn.addEventListener("click", () => {
+      shareOrCopy(input.value, { button: copyBtn, copiedLabel: t("motd.copied"), resetDelay: 1500 });
+    });
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      renderPreview();
+      input.focus();
+    });
+
+    renderPreview();
+  }
+
   // sw.js caches pages + the Project/Dictionary/Library data for offline
   // reading, but gives no visual cue that's what's happening — a visitor
   // with no signal just sees content with no explanation of why nothing
@@ -4334,6 +4734,10 @@
     initScrollRestore();
     initSkinPreview();
     initCoordsCalc();
+    initRedstoneTimer();
+    initAnvilPlanner();
+    initLootOdds();
+    initMotdFormatter();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();

@@ -5081,3 +5081,122 @@ button.poll-option:hover {
     transform: rotate(90deg);
   }
 }
+
+/* Tools / Redstone Timer */
+
+.redstone-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.redstone-chip {
+  cursor: default;
+  font-family: var(--font-mono);
+  min-width: 44px;
+  justify-content: center;
+}
+
+.redstone-chip:hover {
+  border-color: var(--line);
+  background: var(--glass);
+}
+
+/* Tools / Anvil Planner */
+
+.anvil-row {
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--glass);
+}
+
+.anvil-row-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 1fr 1fr;
+  gap: 12px;
+}
+
+.anvil-row-grid .field {
+  margin-bottom: 0;
+}
+
+.anvil-row-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.anvil-row-footer .hint {
+  margin: 0;
+  font-weight: 700;
+  color: var(--violet-3);
+}
+
+.anvil-disclaimer {
+  margin-top: 14px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 700px) {
+  .anvil-row-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Tools / Color Code & MOTD Formatter */
+
+#motd-input {
+  font-family: var(--font-mono);
+}
+
+.motd-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.motd-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.motd-swatch:hover,
+.motd-swatch:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--violet-2);
+  outline: none;
+}
+
+.motd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.motd-preview {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #0a0712;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  word-break: break-word;
+  min-height: 48px;
+}
+
+.motd-obfuscated {
+  border-bottom: 1px dashed currentColor;
+  letter-spacing: 0.02em;
+}
