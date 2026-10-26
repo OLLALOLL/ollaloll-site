@@ -3241,6 +3241,12 @@
       const options = $$('[role="option"]', list);
       const selected = () => Math.max(0, options.findIndex((o) => o.getAttribute("aria-selected") === "true"));
       let active = selected();
+      // .panel has a backdrop-filter, which makes it its own stacking
+      // context — so when this list pops open and overflows past the
+      // panel's edge, a later sibling .panel (also its own stacking
+      // context) paints over it regardless of the list's own z-index.
+      // Lifting the whole panel above its siblings while open fixes that.
+      const elevateHost = root.closest(".panel");
 
       function highlight(index) {
         active = Math.min(options.length - 1, Math.max(0, index));
@@ -3258,6 +3264,7 @@
       function open() {
         list.hidden = false;
         root.classList.add("is-open");
+        if (elevateHost) elevateHost.classList.add("has-open-select");
         button.setAttribute("aria-expanded", "true");
         highlight(selected());
       }
@@ -3265,6 +3272,7 @@
       function close() {
         list.hidden = true;
         root.classList.remove("is-open");
+        if (elevateHost) elevateHost.classList.remove("has-open-select");
         button.setAttribute("aria-expanded", "false");
         button.removeAttribute("aria-activedescendant");
       }
