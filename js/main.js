@@ -4037,6 +4037,107 @@
     requestAnimationFrame(attempt);
   }
 
+  // The /tools/skin-preview page: upload a Minecraft skin PNG and spin it
+  // around in 3D via the skinview3d library (loaded from a CDN script tag
+  // on that page only). Everything happens client-side — the file never
+  // leaves the browser.
+  function initSkinPreview() {
+    const canvas = $("[data-skin-canvas]");
+    if (!canvas) return;
+
+    const statusEl = $("[data-skin-status]");
+    const errorEl = $("[data-skin-error]");
+    const fileInput = $("[data-skin-file-input]");
+    const modelButtons = $$("[data-skin-model]");
+    const rotateBtn = $("[data-skin-rotate]");
+    const resetBtn = $("[data-skin-reset]");
+
+    if (!window.skinview3d) {
+      if (statusEl) statusEl.textContent = t("skinpreview.loadFailed");
+      return;
+    }
+
+    let currentModel = "auto-detect";
+    let objectUrl = null;
+
+    function sizeCanvas() {
+      const wrap = canvas.parentElement;
+      const width = Math.max(240, Math.round(wrap.clientWidth));
+      const height = Math.round(width * (4 / 3));
+      viewer.width = width;
+      viewer.height = height;
+    }
+
+    const viewer = new window.skinview3d.SkinViewer({
+      canvas,
+      width: 300,
+      height: 400,
+      skin: "../../assets/skin-preview-default.png",
+    });
+    viewer.autoRotate = true;
+    viewer.zoom = 0.85;
+    viewer.fov = 50;
+
+    sizeCanvas();
+    window.addEventListener("resize", debounce(sizeCanvas, 150));
+
+    if (statusEl) statusEl.textContent = t("skinpreview.placeholderNote");
+
+    function setError(message) {
+      if (errorEl) errorEl.textContent = message || "";
+    }
+
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      setError("");
+
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = URL.createObjectURL(file);
+
+      viewer
+        .loadSkin(objectUrl, { model: currentModel })
+        .then(() => {
+          if (statusEl) statusEl.textContent = t("skinpreview.loaded");
+        })
+        .catch(() => {
+          setError(t("skinpreview.error"));
+        });
+    });
+
+    modelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        currentModel = button.getAttribute("data-skin-model");
+        modelButtons.forEach((b) => {
+          b.classList.toggle("is-active", b === button);
+          b.setAttribute("aria-pressed", b === button ? "true" : "false");
+        });
+        const file = fileInput?.files && fileInput.files[0];
+        if (file) {
+          viewer.loadSkin(objectUrl, { model: currentModel }).catch(() => setError(t("skinpreview.error")));
+        } else {
+          viewer.loadSkin("../../assets/skin-preview-default.png", { model: currentModel }).catch(() => {});
+        }
+      });
+    });
+
+    rotateBtn?.addEventListener("click", () => {
+      viewer.autoRotate = !viewer.autoRotate;
+      rotateBtn.setAttribute("aria-pressed", viewer.autoRotate ? "true" : "false");
+      rotateBtn.classList.toggle("is-active", viewer.autoRotate);
+    });
+
+    resetBtn?.addEventListener("click", () => {
+      viewer.autoRotate = true;
+      viewer.zoom = 0.85;
+      if (rotateBtn) {
+        rotateBtn.setAttribute("aria-pressed", "true");
+        rotateBtn.classList.add("is-active");
+      }
+      if (viewer.playerObject) viewer.playerObject.rotation.y = 0;
+    });
+  }
+
   // sw.js caches pages + the Project/Dictionary/Library data for offline
   // reading, but gives no visual cue that's what's happening — a visitor
   // with no signal just sees content with no explanation of why nothing
@@ -4189,6 +4290,7 @@
     initWebPush();
     initOfflineBanner();
     initScrollRestore();
+    initSkinPreview();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();
