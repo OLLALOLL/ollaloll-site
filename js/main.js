@@ -4138,6 +4138,48 @@
     });
   }
 
+  // The /tools/coordinates page: a live two-way Overworld <-> Nether
+  // coordinate converter. Typing in either side updates the other
+  // (Nether = Overworld / 8, Overworld = Nether * 8); Y is unaffected by
+  // the conversion so it isn't shown here.
+  function initCoordsCalc() {
+    const owX = $("[data-coords='ow-x']");
+    if (!owX) return;
+    const owZ = $("[data-coords='ow-z']");
+    const netX = $("[data-coords='nether-x']");
+    const netZ = $("[data-coords='nether-z']");
+    const resetBtn = $("[data-coords-reset]");
+
+    const round = (n) => Math.round(n * 100) / 100;
+
+    function fromOverworld() {
+      const x = parseFloat(owX.value);
+      const z = parseFloat(owZ.value);
+      if (Number.isFinite(x)) netX.value = round(x / 8);
+      if (Number.isFinite(z)) netZ.value = round(z / 8);
+    }
+
+    function fromNether() {
+      const x = parseFloat(netX.value);
+      const z = parseFloat(netZ.value);
+      if (Number.isFinite(x)) owX.value = round(x * 8);
+      if (Number.isFinite(z)) owZ.value = round(z * 8);
+    }
+
+    [owX, owZ].forEach((input) => input.addEventListener("input", fromOverworld));
+    [netX, netZ].forEach((input) => input.addEventListener("input", fromNether));
+
+    resetBtn?.addEventListener("click", () => {
+      owX.value = 0;
+      owZ.value = 0;
+      netX.value = 0;
+      netZ.value = 0;
+      owX.focus();
+    });
+
+    fromOverworld();
+  }
+
   // sw.js caches pages + the Project/Dictionary/Library data for offline
   // reading, but gives no visual cue that's what's happening — a visitor
   // with no signal just sees content with no explanation of why nothing
@@ -4291,6 +4333,7 @@
     initOfflineBanner();
     initScrollRestore();
     initSkinPreview();
+    initCoordsCalc();
 
     renderers.push(renderLinks, renderMakes, renderAbout);
     applyStatic();

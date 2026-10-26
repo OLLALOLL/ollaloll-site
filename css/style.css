@@ -5017,6 +5017,13 @@ button.poll-option:hover {
   gap: 10px;
 }
 
+.field [data-skin-file-input] {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+}
+
 .skinpreview-model-toggle button.is-active,
 .skinpreview-actions button.is-active {
   border-color: var(--violet-2);
@@ -5027,5 +5034,50 @@ button.poll-option:hover {
 @media (max-width: 860px) {
   .skinpreview-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Tools / Coordinates */
+
+.coords-layout {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.coords-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.coords-inputs .field {
+  margin-bottom: 0;
+}
+
+.coords-arrow {
+  display: flex;
+  justify-content: center;
+  color: var(--violet-2);
+}
+
+.coords-arrow svg {
+  width: 28px;
+  height: 28px;
+}
+
+.coords-note {
+  margin-top: 20px;
+}
+
+@media (max-width: 760px) {
+  .coords-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .coords-arrow {
+    transform: rotate(90deg);
   }
 }
