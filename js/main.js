@@ -4649,13 +4649,13 @@
     as: {
       group: "context",
       label: "cmdbuilder.execute.step.as",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" }],
       build: (v) => `as ${v.target || "@s"}`,
     },
     at: {
       group: "context",
       label: "cmdbuilder.execute.step.at",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" }],
       build: (v) => `at ${v.target || "@s"}`,
     },
     in: {
@@ -4689,7 +4689,7 @@
     positionedAs: {
       group: "position",
       label: "cmdbuilder.execute.step.positionedAs",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" }],
       build: (v) => `positioned as ${v.target || "@s"}`,
     },
     align: {
@@ -4727,7 +4727,7 @@
     rotatedAs: {
       group: "position",
       label: "cmdbuilder.execute.step.rotatedAs",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@s" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" }],
       build: (v) => `rotated as ${v.target || "@s"}`,
     },
     facing: {
@@ -4744,7 +4744,7 @@
       group: "position",
       label: "cmdbuilder.execute.step.facingEntity",
       fields: [
-        { key: "target", label: "cmdbuilder.execute.field.target", default: "@p" },
+        { key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@p" },
         {
           key: "anchor",
           label: "cmdbuilder.execute.field.anchor",
@@ -4761,13 +4761,13 @@
     ifEntity: {
       group: "condition",
       label: "cmdbuilder.execute.step.ifEntity",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@p" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@p" }],
       build: (v) => `if entity ${v.target || "@p"}`,
     },
     unlessEntity: {
       group: "condition",
       label: "cmdbuilder.execute.step.unlessEntity",
-      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", default: "@p" }],
+      fields: [{ key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@p" }],
       build: (v) => `unless entity ${v.target || "@p"}`,
     },
     ifBlock: {
@@ -4777,7 +4777,7 @@
         { key: "x", label: "X", default: "~" },
         { key: "y", label: "Y", default: "~-1" },
         { key: "z", label: "Z", default: "~" },
-        { key: "block", label: "cmdbuilder.execute.field.block", default: "minecraft:stone" },
+        { key: "block", label: "cmdbuilder.execute.field.block", type: "block", default: "minecraft:stone" },
       ],
       build: (v) => `if block ${v.x || "~"} ${v.y || "~-1"} ${v.z || "~"} ${v.block || "minecraft:stone"}`,
     },
@@ -4788,7 +4788,7 @@
         { key: "x", label: "X", default: "~" },
         { key: "y", label: "Y", default: "~-1" },
         { key: "z", label: "Z", default: "~" },
-        { key: "block", label: "cmdbuilder.execute.field.block", default: "minecraft:stone" },
+        { key: "block", label: "cmdbuilder.execute.field.block", type: "block", default: "minecraft:stone" },
       ],
       build: (v) => `unless block ${v.x || "~"} ${v.y || "~-1"} ${v.z || "~"} ${v.block || "minecraft:stone"}`,
     },
@@ -4796,7 +4796,7 @@
       group: "condition",
       label: "cmdbuilder.execute.step.ifScoreMatches",
       fields: [
-        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" },
         { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
         { key: "range", label: "cmdbuilder.execute.field.range", default: "1.." },
       ],
@@ -4806,7 +4806,7 @@
       group: "condition",
       label: "cmdbuilder.execute.step.unlessScoreMatches",
       fields: [
-        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" },
         { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
         { key: "range", label: "cmdbuilder.execute.field.range", default: "1.." },
       ],
@@ -4816,7 +4816,7 @@
       group: "condition",
       label: "cmdbuilder.execute.step.ifScoreCompare",
       fields: [
-        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" },
         { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
         {
           key: "op",
@@ -4831,7 +4831,7 @@
           ],
           default: "=",
         },
-        { key: "target2", label: "cmdbuilder.execute.field.target2", default: "@p" },
+        { key: "target2", label: "cmdbuilder.execute.field.target2", type: "target", default: "@p" },
         { key: "objective2", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
       ],
       build: (v) =>
@@ -4841,7 +4841,7 @@
       group: "condition",
       label: "cmdbuilder.execute.step.unlessScoreCompare",
       fields: [
-        { key: "target", label: "cmdbuilder.execute.field.target", default: "@s" },
+        { key: "target", label: "cmdbuilder.execute.field.target", type: "target", default: "@s" },
         { key: "objective", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
         {
           key: "op",
@@ -4856,7 +4856,7 @@
           ],
           default: "=",
         },
-        { key: "target2", label: "cmdbuilder.execute.field.target2", default: "@p" },
+        { key: "target2", label: "cmdbuilder.execute.field.target2", type: "target", default: "@p" },
         { key: "objective2", label: "cmdbuilder.execute.field.objective", default: "myObjective" },
       ],
       build: (v) =>
@@ -4868,6 +4868,62 @@
     if (!str) return "";
     return /\s/.test(str) ? '"' + str.replace(/"/g, '\\"') + '"' : str;
   }
+
+  const CMD_TARGET_PRESETS = [
+    { value: "@s", i18n: "cmdbuilder.targetPreset.self" },
+    { value: "@p", i18n: "cmdbuilder.targetPreset.nearestPlayer" },
+    { value: "@a", i18n: "cmdbuilder.targetPreset.allPlayers" },
+    { value: "@r", i18n: "cmdbuilder.targetPreset.randomPlayer" },
+    { value: "@e", i18n: "cmdbuilder.targetPreset.allEntities" },
+  ];
+
+  // Target selector field: a dropdown of the common selectors plus a
+  // "Custom selector..." option that reveals a free-text input, so people
+  // who just want @p/@a/@e don't have to type it, but @e[type=cow,r=10]
+  // style selectors still work.
+  function buildTargetField(labelText, initialValue, onChange) {
+    const wrap = el("div", { class: "field" }, [el("label", { text: labelText })]);
+    const select = el("select", { class: "cmd-target-select" });
+    CMD_TARGET_PRESETS.forEach((preset) => {
+      select.appendChild(el("option", { value: preset.value, text: `${t(preset.i18n)} (${preset.value})` }));
+    });
+    select.appendChild(el("option", { value: "__custom__", text: t("cmdbuilder.targetPreset.custom") }));
+
+    const customInput = el("input", { type: "text", class: "cmd-target-custom", placeholder: "@e[type=cow,r=10]" });
+
+    const isPreset = CMD_TARGET_PRESETS.some((preset) => preset.value === initialValue);
+    select.value = isPreset ? initialValue : "__custom__";
+    customInput.value = isPreset ? "" : initialValue || "";
+    customInput.hidden = isPreset;
+
+    function currentValue() {
+      return select.value === "__custom__" ? customInput.value.trim() || "@s" : select.value;
+    }
+
+    select.addEventListener("change", () => {
+      customInput.hidden = select.value !== "__custom__";
+      if (select.value === "__custom__") customInput.focus();
+      onChange(currentValue());
+    });
+    customInput.addEventListener("input", () => onChange(currentValue()));
+
+    wrap.append(select, customInput);
+    return { wrap, getValue: currentValue };
+  }
+
+  // Common Bedrock block ids, offered as autofill suggestions on block
+  // fields (users can still type any other id — this is a datalist, not a
+  // closed list).
+  const CMD_COMMON_BLOCKS = [
+    "minecraft:stone", "minecraft:dirt", "minecraft:grass_block", "minecraft:grass_path",
+    "minecraft:cobblestone", "minecraft:oak_planks", "minecraft:glass", "minecraft:sand",
+    "minecraft:gravel", "minecraft:water", "minecraft:lava", "minecraft:bedrock",
+    "minecraft:obsidian", "minecraft:netherrack", "minecraft:end_stone", "minecraft:diamond_block",
+    "minecraft:iron_block", "minecraft:gold_block", "minecraft:redstone_block", "minecraft:air",
+    "minecraft:barrier", "minecraft:sea_lantern", "minecraft:glowstone", "minecraft:crafting_table",
+    "minecraft:chest", "minecraft:furnace", "minecraft:bookshelf", "minecraft:ice",
+    "minecraft:packed_ice", "minecraft:soul_sand", "minecraft:magma", "minecraft:snow",
+  ];
 
   function initCommandBuilder() {
     const tabsWrap = $("[data-cmd-tabs]");
@@ -4898,19 +4954,26 @@
     (function initEffectBuilder() {
       const modeButtons = $$("[data-effect-mode]");
       const giveFields = $("[data-effect-give-fields]");
-      const targetInput = $("[data-effect-target]");
+      const targetFieldWrap = $("[data-effect-target-field]");
       const nameSelect = $("[data-effect-name]");
       const secondsInput = $("[data-effect-seconds]");
       const amplifierInput = $("[data-effect-amplifier]");
       const hideParticlesInput = $("[data-effect-hide-particles]");
       const infiniteInput = $("[data-effect-infinite]");
       const output = $('[data-cmd-output="effect"]');
-      if (!targetInput || !nameSelect || !output) return;
+      if (!targetFieldWrap || !nameSelect || !output) return;
 
       EFFECT_LIST.forEach((effect) => {
         nameSelect.appendChild(el("option", { value: effect.id, text: t(effect.i18n) }));
       });
       nameSelect.value = "speed";
+
+      let targetValue = "@s";
+      const targetField = buildTargetField(t("cmdbuilder.target"), targetValue, (value) => {
+        targetValue = value;
+        recompute();
+      });
+      targetFieldWrap.appendChild(targetField.wrap);
 
       let mode = "give";
       modeButtons.forEach((btn) => {
@@ -4922,15 +4985,8 @@
         });
       });
 
-      $$('[data-cmd-quickpick-for="effect-target"] button').forEach((btn) => {
-        btn.addEventListener("click", () => {
-          targetInput.value = btn.textContent;
-          recompute();
-        });
-      });
-
       function recompute() {
-        const target = targetInput.value.trim() || "@s";
+        const target = targetValue || "@s";
         if (mode === "clear") {
           output.textContent = `/effect ${target} clear`;
           return;
@@ -4943,7 +4999,7 @@
         output.textContent = `/effect ${target} ${effectId} ${seconds} ${amplifier} ${hide}`;
       }
 
-      [targetInput, nameSelect, secondsInput, amplifierInput].forEach((elm) => elm.addEventListener("input", recompute));
+      [nameSelect, secondsInput, amplifierInput].forEach((elm) => elm.addEventListener("input", recompute));
       [hideParticlesInput, infiniteInput].forEach((elm) => elm.addEventListener("change", recompute));
       recompute();
     })();
@@ -4963,13 +5019,20 @@
       const pitchInput = $("[data-summon-pitch]");
       const faceInputs = {};
       $$("[data-summon-face]").forEach((input) => (faceInputs[input.dataset.summonFace] = input));
-      const faceTargetInput = $("[data-summon-face-target]");
+      const faceTargetFieldWrap = $("[data-summon-face-target-field]");
       const faceAnchorSelect = $("[data-summon-face-anchor]");
       const eventInput = $("[data-summon-event]");
       const nameTagInput = $("[data-summon-nametag]");
       const rotModeButtons = $$("[data-summon-rot-mode]");
       const rotFieldGroups = {};
       $$("[data-summon-rot-fields]").forEach((group) => (rotFieldGroups[group.dataset.summonRotFields] = group));
+
+      let faceTargetValue = "@p";
+      const faceTargetField = buildTargetField(t("cmdbuilder.target"), faceTargetValue, (value) => {
+        faceTargetValue = value;
+        recompute();
+      });
+      faceTargetFieldWrap.appendChild(faceTargetField.wrap);
 
       let rotMode = "none";
       rotModeButtons.forEach((btn) => {
@@ -4992,7 +5055,7 @@
         } else if (rotMode === "facingpos") {
           parts.push("facing", faceInputs.x.value || "~", faceInputs.y.value || "~", faceInputs.z.value || "~");
         } else if (rotMode === "facingentity") {
-          parts.push("facing", "entity", faceTargetInput.value.trim() || "@p", faceAnchorSelect.value);
+          parts.push("facing", "entity", faceTargetValue || "@p", faceAnchorSelect.value);
         }
 
         const spawnEvent = eventInput.value.trim();
@@ -5013,7 +5076,6 @@
         faceInputs.x,
         faceInputs.y,
         faceInputs.z,
-        faceTargetInput,
         eventInput,
         nameTagInput,
       ].forEach((input) => input && input.addEventListener("input", recompute));
@@ -5029,6 +5091,12 @@
       const runInput = $("[data-exec-run]");
       const output = $('[data-cmd-output="execute"]');
       if (!stepsContainer || !output) return;
+
+      if (!document.getElementById("cmd-block-list")) {
+        const blockList = el("datalist", { id: "cmd-block-list" });
+        CMD_COMMON_BLOCKS.forEach((id) => blockList.appendChild(el("option", { value: id })));
+        document.body.appendChild(blockList);
+      }
 
       const groupOrder = ["context", "position", "condition"];
       const stepRows = [];
@@ -5079,6 +5147,23 @@
               recompute();
             });
             wrap.appendChild(select);
+            container.appendChild(wrap);
+          } else if (f.type === "target") {
+            values[f.key] = values[f.key] || f.default;
+            const field = buildTargetField(t(f.label), values[f.key], (value) => {
+              values[f.key] = value;
+              recompute();
+            });
+            container.appendChild(field.wrap);
+          } else if (f.type === "block") {
+            values[f.key] = values[f.key] || f.default || "";
+            const wrap = el("div", { class: "field" }, [el("label", { text: t(f.label) })]);
+            const input = el("input", { type: "text", value: values[f.key], list: "cmd-block-list" });
+            input.addEventListener("input", () => {
+              values[f.key] = input.value;
+              recompute();
+            });
+            wrap.appendChild(input);
             container.appendChild(wrap);
           } else {
             values[f.key] = values[f.key] || f.default || "";

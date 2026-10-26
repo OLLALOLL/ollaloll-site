@@ -5,8 +5,8 @@
 // features (Bingo, Polls, Tournament, downloads) always need a live
 // network round-trip and are left alone so their own "reconnect to play"
 // messaging can take over.
-const CACHE = "ollaloll-public-v18";
-const RUNTIME_CACHE = "ollaloll-public-runtime-v18";
+const CACHE = "ollaloll-public-v19";
+const RUNTIME_CACHE = "ollaloll-public-runtime-v19";
 
 const SHELL = [
   "/",

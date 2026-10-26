@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
-  <link rel="stylesheet" href="../../css/style.css?v=15">
+  <link rel="stylesheet" href="../../css/style.css?v=16">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
@@ -67,16 +67,7 @@
           <button type="button" class="btn btn-ghost btn-small" data-effect-mode="clear" data-i18n="cmdbuilder.effect.clear">Clear effects</button>
         </div>
 
-        <div class="field">
-          <label for="effect-target" data-i18n="cmdbuilder.target">Target</label>
-          <input id="effect-target" type="text" value="@s" data-effect-target>
-          <div class="cmd-quickpicks" data-cmd-quickpick-for="effect-target">
-            <button type="button" class="btn btn-ghost btn-small">@s</button>
-            <button type="button" class="btn btn-ghost btn-small">@p</button>
-            <button type="button" class="btn btn-ghost btn-small">@a</button>
-            <button type="button" class="btn btn-ghost btn-small">@e</button>
-          </div>
-        </div>
+        <div data-effect-target-field></div>
 
         <div data-effect-give-fields>
           <div class="field">
@@ -171,10 +162,7 @@
           </div>
 
           <div class="cmd-grid-2" data-summon-rot-fields="facingentity" hidden>
-            <div class="field">
-              <label for="summon-face-target" data-i18n="cmdbuilder.target">Target</label>
-              <input id="summon-face-target" type="text" value="@p" data-summon-face-target>
-            </div>
+            <div data-summon-face-target-field></div>
             <div class="field">
               <label for="summon-face-anchor" data-i18n="cmdbuilder.summon.anchor">Anchor</label>
               <select id="summon-face-anchor" data-summon-face-anchor>
