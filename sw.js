@@ -5,8 +5,8 @@
 // features (Bingo, Polls, Tournament, downloads) always need a live
 // network round-trip and are left alone so their own "reconnect to play"
 // messaging can take over.
-const CACHE = "ollaloll-public-v20";
-const RUNTIME_CACHE = "ollaloll-public-runtime-v20";
+const CACHE = "ollaloll-public-v21";
+const RUNTIME_CACHE = "ollaloll-public-runtime-v21";
 
 const SHELL = [
   "/",
@@ -22,6 +22,7 @@ const SHELL = [
   "/extras",
   "/notwordle",
   "/tournament",
+  "/geo",
   "/contact",
   "/report-bug",
   "/404.html",

@@ -55,6 +55,7 @@ window.I18N = {
     "nav.about": "About",
     "nav.contact": "Contact",
     "nav.extras": "Extras",
+    "nav.geo": "GEO",
     "donate.nav": "Support",
     "donate.cta": "Support my work",
     "hero.browse": "Browse projects",
