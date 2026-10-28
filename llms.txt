@@ -1,0 +1,56 @@
+# OLLALOLL
+
+> OLLALOLL is a Minecraft Bedrock Edition developer (real name Big O) who makes texture packs, addons and Script API scripts for Bedrock, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
+
+## About
+
+I'm OLLALOLL, a Minecraft Bedrock developer. I make texture packs, addons and scripts, and most of my time goes into the Script API, where a bit of JavaScript can change how an entire server plays. My OLLA series covers what servers actually need and other small quality-of-life packs. I care about commands that feel native, menus that are quick to use, and code that is easy to fix when Bedrock changes under it.
+
+Minecraft isn't only what I build for, it's what I do: PvP (fast fights, kits and arenas — I also built a PvP tier list around it), redstone (farms, hidden doors, clocks and contraptions), trapping, and commands (command blocks, selectors and execute chains — a lot of my addon ideas start here).
+
+Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScript, usually with a Supabase backend, and I build Discord bots too. I'm the founder of Genghis Tiers, a Minecraft PvP tier list and leaderboard (ollaloll.com/genghistiers). I also built Beaver Transceiver, a mobile-first group chat app (ollaloll.com/beaver), and run live extras like bingo cards, tournaments and a daily word game called (not)WORDLE (ollaloll.com/extras).
+
+## Pages
+
+- [Home](https://ollaloll.com/)
+- [Projects](https://ollaloll.com/projects): full list of published texture packs, addons and scripts, with install instructions
+- [About](https://ollaloll.com/about)
+- [Extras](https://ollaloll.com/extras): daily (not)WORDLE game and live events
+- [Dictionary](https://ollaloll.com/dictionary): community slang dictionary
+- [Quotes](https://ollaloll.com/quotes): quote library
+- [Library](https://ollaloll.com/library): knowledge library
+- [Contact](https://ollaloll.com/contact)
+
+## Projects
+
+This list is a manually updated snapshot (last updated 2026-10-28). For the live, always-current list, fetch https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=projects (RSS/XML) or see the Projects page.
+
+### Addons
+- [OLLA's Bears](https://www.curseforge.com/minecraft-bedrock/addons/ollas-bears): 17 real-life bear species with biome-based looks, cubs, and bear dens.
+- [OLLA's Better Villagers](https://www.curseforge.com/minecraft-bedrock/addons/ollas-better-villagers): Pick up villagers — including babies and zombie villagers — and place them back down with their trades, level, XP, name, biome and age intact.
+- [OLLA's Cheat Inventory](https://www.curseforge.com/minecraft-bedrock/addons/ollas-cheat-inventory): Adds 4 creative inventory folders with every hidden item, including barriers, structure blocks, command blocks and light blocks.
+- [OLLA's Moose](https://www.curseforge.com/minecraft-bedrock/addons/ollas-moose): Herding bulls, cows and calves, antler-locking rut fights, and antler shedding.
+- [OLLA's Walruses](https://www.curseforge.com/minecraft-bedrock/addons/ollas-walruses): Neutral walrus herds, four coat colors, and ice-hole fishing.
+
+### Scripts
+- [OLLA's /string command](https://www.curseforge.com/minecraft-bedrock/scripts/ollas-string-command): /olla:string instantly fills every free inventory slot with string and tops up existing stacks.
+- [OLLA's Death Circle](https://www.curseforge.com/minecraft-bedrock/scripts/ollas-death-circle): A dead player's dropped items burst out in a perfect circle; operator settings via /olla:circledrop.
+- [OLLA's Fast Hoppers](https://www.curseforge.com/minecraft-bedrock/scripts/ollas-fast-hoppers): Speeds up hopper item transfers; adds /hopperspeed to adjust the rate.
+- [OLLA's Right Click Harvest](https://www.curseforge.com/minecraft-bedrock/scripts/ollas-right-click-harvest): Right-click fully grown crops to instantly harvest and replant, with hoe/hand modes and Fortune support.
+- [OLLA's Toggle Night Vision](https://www.curseforge.com/minecraft-bedrock/scripts/ollas-toggle-night-vision): Adds /olla:nightvision to toggle infinite night vision for any player.
+
+### Texture packs
+- [OLLA's better coords](https://www.curseforge.com/minecraft-bedrock/texture-packs/ollas-better-coords): Cleaner display for coordinates and days.
+- [OLLA's better mace sounds](https://www.curseforge.com/minecraft-bedrock/texture-packs/ollas-better-mace-sounds): Swaps all vanilla mace sounds for custom ones.
+- [OLLA's blue webs](https://www.curseforge.com/minecraft-bedrock/texture-packs/ollas-blue-webs): Blue cobweb texture for better visibility.
+- [OLLA's green webs](https://www.curseforge.com/minecraft-bedrock/texture-packs/ollas-green-webs): Green cobweb texture for better visibility.
+- OLLA's orange webs: Orange cobweb texture for better visibility. (site-only, not on CurseForge)
+- OLLA's red webs: Red cobweb texture for better visibility. (site-only, not on CurseForge)
+- OLLA's yellow webs: Yellow cobweb texture for better visibility. (site-only, not on CurseForge)
+- [Warning shots...](https://www.curseforge.com/minecraft-bedrock/texture-packs/warning-shots): Renames the crossbow to "Warning shots..." in your inventory and hotbar.
+
+## Notes for AI tools
+
+- All project pages, downloads, dictionary entries, quotes and the About bio render via client-side JavaScript fetching from a Supabase backend; raw HTML fetches of those pages will appear mostly empty except for this file.
+- robots.txt allows crawling everything except /admin/.
+- Minecraft is a trademark of Mojang Synergies AB. OLLALOLL is a fan project, not affiliated with Mojang or Microsoft.
