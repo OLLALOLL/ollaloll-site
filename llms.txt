@@ -1,6 +1,6 @@
 # OLLALOLL
 
-> OLLALOLL is a Minecraft Bedrock Edition developer (real name Big O) who makes texture packs, addons and Script API scripts for Bedrock, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
+> OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
 
 ## About
 
