@@ -20,7 +20,7 @@
 </head>
 <body>
   <h1>OLLALOLL</h1>
-  <p>OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, plus a few unrelated web projects.</p>
+  <p>OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, and runs free browser tools for Bedrock creators, plus a few unrelated web projects.</p>
   <p class="note">This page exists because the rest of ollaloll.com renders its real content (project list, About bio, dictionary, quotes) with client-side JavaScript fetching from a Supabase backend. A tool that fetches those pages without running JavaScript only gets empty placeholders. This page is plain static HTML with the same information written directly into it, so any tool — AI assistant, crawler, or script — gets the real content on a simple fetch. A matching <a href="/llms.txt">/llms.txt</a> exists for tools that specifically support that convention. The live, always-current project list is also available as RSS/XML at <a href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=projects">this feed URL</a>. (This page is linked in the site footer as "GEO" — short for Generative Engine Optimization, the practice this page is an example of.)</p>
 
   <h2>About</h2>
@@ -47,8 +47,19 @@
     <li><a href="https://ollaloll.com/contact">Contact</a></li>
   </ul>
 
+  <h2>Free tools</h2>
+  <p>Browser-based tools for Minecraft Bedrock creators, listed at <a href="https://ollaloll.com/tools">/tools</a>. They run entirely in the visitor's browser, so nothing a visitor adds is uploaded. The tools generate files; they cannot check inside Minecraft that an item exists, so a typo in an item name is only caught by the game.</p>
+  <ul>
+    <li><a href="https://ollaloll.com/tools/skin">Skin Pack Builder</a> — Turns PNG skins (64×64 or 128×128, classic or slim arms) into a Minecraft Bedrock skin pack (.mcpack). Add as many skins as you like, name and reorder them, preview front and back, set a pack icon, and download. Each download gets fresh pack IDs unless you enter your own.</li>
+    <li><a href="https://ollaloll.com/tools/convert">Image Converter</a> — Converts JPEG (and WebP, GIF, BMP) images to PNG, many at a time, with a zip download for batches.</li>
+    <li><a href="https://ollaloll.com/tools/uuid">UUID Generator</a> — Generates a pack UUID and a module UUID for a Bedrock manifest.json, plus a ready-made manifest for resource packs, behavior packs and skin packs, and a bulk UUID list.</li>
+    <li><a href="https://ollaloll.com/tools/loot">Loot Table Builder</a> — Builds a Bedrock loot table JSON from pools, rolls, item weights and amounts, including empty entries and references to other loot tables.</li>
+    <li><a href="https://ollaloll.com/tools/recipe">Recipe Builder</a> — Builds Bedrock shaped, shapeless and furnace recipe JSON from a 3×3 grid, with an option to replace a vanilla recipe by its ID.</li>
+    <li><a href="https://ollaloll.com/tools/trades">Trading Table Builder</a> — Builds a Bedrock villager trade table JSON from items, prices and trade limits, with tiers, random trade selection and a live preview, plus the entity components that attach it to a mob.</li>
+  </ul>
+
   <h2>Projects</h2>
-  <p class="note">Snapshot as of 2026-10-28. For the current list, use the RSS feed linked above or the Projects page.</p>
+  <p class="note">Snapshot as of 2026-10-30. For the current list, use the RSS feed linked above or the Projects page.</p>
 
   <h3>Addons</h3>
   <ul>

@@ -1,6 +1,6 @@
 # OLLALOLL
 
-> OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
+> OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, and runs free browser tools for Bedrock creators, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
 
 ## About
 
@@ -28,9 +28,20 @@ Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScrip
 - [Trading Table Builder](https://ollaloll.com/tools/trades): free in-browser builder for Minecraft Bedrock villager trade tables with a live preview
 - [Contact](https://ollaloll.com/contact)
 
+## Free tools
+
+Browser-based tools for Minecraft Bedrock creators, indexed at https://ollaloll.com/tools. They run entirely in the visitor's browser, so nothing a visitor adds is uploaded. They generate files and cannot check inside Minecraft that an item exists, so a typo in an item name is only caught by the game.
+
+- [Skin Pack Builder](https://ollaloll.com/tools/skin): Turns PNG skins (64×64 or 128×128, classic or slim arms) into a Minecraft Bedrock skin pack (.mcpack). Add as many skins as you like, name and reorder them, preview front and back, set a pack icon, and download. Each download gets fresh pack IDs unless you enter your own.
+- [Image Converter](https://ollaloll.com/tools/convert): Converts JPEG (and WebP, GIF, BMP) images to PNG, many at a time, with a zip download for batches.
+- [UUID Generator](https://ollaloll.com/tools/uuid): Generates a pack UUID and a module UUID for a Bedrock manifest.json, plus a ready-made manifest for resource packs, behavior packs and skin packs, and a bulk UUID list.
+- [Loot Table Builder](https://ollaloll.com/tools/loot): Builds a Bedrock loot table JSON from pools, rolls, item weights and amounts, including empty entries and references to other loot tables.
+- [Recipe Builder](https://ollaloll.com/tools/recipe): Builds Bedrock shaped, shapeless and furnace recipe JSON from a 3×3 grid, with an option to replace a vanilla recipe by its ID.
+- [Trading Table Builder](https://ollaloll.com/tools/trades): Builds a Bedrock villager trade table JSON from items, prices and trade limits, with tiers, random trade selection and a live preview, plus the entity components that attach it to a mob.
+
 ## Projects
 
-This list is a manually updated snapshot (last updated 2026-10-28). For the live, always-current list, fetch https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=projects (RSS/XML) or see the Projects page.
+This list is a manually updated snapshot (last updated 2026-10-30). For the live, always-current list, fetch https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=projects (RSS/XML) or see the Projects page.
 
 ### Addons
 - [OLLA's Bears](https://www.curseforge.com/minecraft-bedrock/addons/ollas-bears): 17 real-life bear species with biome-based looks, cubs, and bear dens.
