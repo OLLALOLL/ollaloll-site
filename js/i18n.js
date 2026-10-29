@@ -417,6 +417,10 @@ window.I18N = {
     "meta.convert.title": "JPEG to PNG Converter | OLLALOLL",
     "meta.convert.desc": "Convert JPEG images to PNG for free. Everything runs in your browser, nothing is uploaded.",
     "meta.uuid.title": "UUID Generator | OLLALOLL",
-    "meta.uuid.desc": "Generate pack and module UUIDs for Minecraft Bedrock manifest.json files. Free, runs in your browser."
+    "meta.uuid.desc": "Generate pack and module UUIDs for Minecraft Bedrock manifest.json files. Free, runs in your browser.",
+    "meta.loot.title": "Loot Table Builder | OLLALOLL",
+    "meta.loot.desc": "Build a Minecraft Bedrock loot table JSON with weights, rolls and amounts. Free, runs in your browser.",
+    "meta.recipe.title": "Recipe Builder | OLLALOLL",
+    "meta.recipe.desc": "Build Minecraft Bedrock shaped, shapeless and furnace recipe JSON with a 3x3 grid. Free, runs in your browser."
   }
 };

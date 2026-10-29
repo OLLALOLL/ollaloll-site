@@ -5,8 +5,8 @@
 // features (Bingo, Polls, Tournament, downloads) always need a live
 // network round-trip and are left alone so their own "reconnect to play"
 // messaging can take over.
-const CACHE = "ollaloll-public-v27";
-const RUNTIME_CACHE = "ollaloll-public-runtime-v27";
+const CACHE = "ollaloll-public-v28";
+const RUNTIME_CACHE = "ollaloll-public-runtime-v28";
 
 const SHELL = [
   "/",
@@ -26,6 +26,8 @@ const SHELL = [
   "/tools/skin",
   "/tools/convert",
   "/tools/uuid",
+  "/tools/loot",
+  "/tools/recipe",
   "/contact",
   "/report-bug",
   "/404.html",
@@ -35,9 +37,13 @@ const SHELL = [
   "/css/skin-builder.css",
   "/css/convert.css",
   "/css/uuid.css",
+  "/css/builders.css",
   "/js/skin-builder.js",
   "/js/convert.js",
   "/js/uuid.js",
+  "/js/mc-common.js",
+  "/js/loot.js",
+  "/js/recipe.js",
   "/manifest.webmanifest",
   "/assets/icon-192.png",
   "/assets/icon-512.png",

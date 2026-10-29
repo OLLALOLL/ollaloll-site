@@ -22,6 +22,8 @@ Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScrip
 - [Skin Pack Builder](https://ollaloll.com/tools/skin): free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack)
 - [JPEG to PNG Converter](https://ollaloll.com/tools/convert): free in-browser tool that converts JPEG (and WebP, GIF, BMP) images to PNG; nothing is uploaded
 - [UUID Generator](https://ollaloll.com/tools/uuid): free in-browser generator for Minecraft Bedrock pack and module UUIDs, with a ready-made manifest.json
+- [Loot Table Builder](https://ollaloll.com/tools/loot): free in-browser builder for Minecraft Bedrock loot table JSON (pools, weights, amounts)
+- [Recipe Builder](https://ollaloll.com/tools/recipe): free in-browser builder for Minecraft Bedrock shaped, shapeless and furnace recipe JSON
 - [Contact](https://ollaloll.com/contact)
 
 ## Projects

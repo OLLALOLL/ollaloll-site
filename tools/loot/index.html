@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" data-page="loot">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Loot Table Builder | OLLALOLL</title>
+  <meta name="description" content="Build a Minecraft Bedrock loot table JSON with weights, rolls and amounts. Free, runs in your browser.">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta property="og:title" content="Loot Table Builder | OLLALOLL">
+  <meta property="og:description" content="Build a Minecraft Bedrock loot table JSON with weights, rolls and amounts. Free, runs in your browser.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ollaloll.com/tools/loot">
+  <meta property="og:url" content="https://ollaloll.com/tools/loot">
+  <link rel="alternate" type="application/rss+xml" title="OLLALOLL — everything" href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=all">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL">
+  <link rel="icon" href="../../assets/favicon.ico" sizes="any">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css?v=17">
+  <link rel="stylesheet" href="../../css/builders.css?v=1">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+      <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-i18n-attr="aria-label:menu"><svg class="icon-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="nav-panel" id="nav-panel">
+        <ul class="nav-links">
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="/about" data-i18n="nav.about">About</a></li>
+            <li class="nav-item-extras"><a href="/extras" data-i18n="nav.extras">Extras</a><span class="nav-dot" data-nav-extras-dot hidden aria-hidden="true"></span></li>
+            <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" data-donate href="/contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="donate.nav">Support</span></a>
+      </div>
+    </nav>
+    <button class="search-toggle" type="button" id="global-search-toggle" aria-label="Search" data-i18n-attr="aria-label:search.toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="lang" data-lang></div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1>Loot Table Builder</h1>
+      <p>Add items with weights and amounts and get a loot table JSON for your Bedrock behavior pack. It all happens in your browser.</p>
+    </div>
+    <div class="wrap">
+      <div class="bd" data-lt>
+        <div data-lt-pools></div>
+        <button type="button" class="btn btn-ghost bd-addpool" data-lt-addpool>+ Add another pool</button>
+
+        <section class="panel bd-panel" aria-labelledby="lt-out-title">
+          <h2 id="lt-out-title">Your loot table</h2>
+          <div class="field bd-path">
+            <label for="lt-path">File name <small>optional</small></label>
+            <input id="lt-path" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="chests/my_loot" data-lt-path>
+          </div>
+          <p class="bd-hint" data-lt-pathnote></p>
+          <div class="bd-errors" role="alert" data-lt-errors hidden></div>
+          <pre class="bd-code" tabindex="0"><code data-lt-out></code></pre>
+          <div class="bd-btns">
+            <button type="button" class="btn btn-primary" data-lt-copy aria-disabled="true">Copy JSON</button>
+            <button type="button" class="btn btn-ghost" data-lt-download aria-disabled="true">Download .json</button>
+            <button type="button" class="btn btn-ghost" data-lt-reset>Start over</button>
+          </div>
+        </section>
+
+        <section class="panel bd-panel bd-help" aria-labelledby="lt-help-title">
+          <h2 id="lt-help-title">How to use it</h2>
+          <ul>
+            <li><strong>Weight</strong> is the relative chance. An entry with weight 20 is picked twice as often as one with weight 10.</li>
+            <li><strong>Rolls</strong> is how many times the game picks from the pool. Use several pools for separate drops.</li>
+            <li>Use <strong>Nothing</strong> to make a pool sometimes give no item.</li>
+            <li>Use it from a <code>/loot</code> command, a chest, a mob&rsquo;s drops or fishing: point to <code>loot_tables/&hellip;json</code>.</li>
+            <li>The tool checks the format, not whether an item exists. If a typo slips in, Minecraft logs an error and skips it. Custom items use their own namespace, like <code>mypack:ruby</code>.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="bd-toast" role="status" aria-live="polite" data-bd-toast hidden></div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+        <p class="fine" data-i18n="footer.disclaimer">Minecraft is a trademark of Mojang Synergies AB. This is a fan project and is not affiliated with Mojang or Microsoft.</p>
+        <p class="fine">&copy; <span data-year></span> <span data-site="name">OLLALOLL</span></p>
+      </div>
+      <nav aria-label="Footer" data-i18n-attr="aria-label:footer.aria">
+        <ul class="footer-links">
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="/about" data-i18n="nav.about">About</a></li>
+          <li><a href="/extras" data-i18n="nav.extras">Extras</a></li>
+          <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+          <li><a href="/geo" data-i18n="nav.geo">GEO</a></li>
+        </ul>
+      </nav>
+      <ul class="footer-links" data-footer-links data-i18n-attr="aria-label:links.title" aria-label="Find me online"></ul>
+    </div>
+  </footer>
+  <script src="../../js/i18n.js?v=4"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/mc-common.js?v=1"></script>
+  <script src="../../js/loot.js?v=1"></script>
+</body>
+</html>

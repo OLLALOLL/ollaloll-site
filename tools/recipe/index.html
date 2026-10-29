@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-page="recipe">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Recipe Builder | OLLALOLL</title>
+  <meta name="description" content="Build Minecraft Bedrock shaped, shapeless and furnace recipe JSON with a 3x3 grid. Free, runs in your browser.">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta property="og:title" content="Recipe Builder | OLLALOLL">
+  <meta property="og:description" content="Build Minecraft Bedrock shaped, shapeless and furnace recipe JSON with a 3x3 grid. Free, runs in your browser.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ollaloll.com/tools/recipe">
+  <meta property="og:url" content="https://ollaloll.com/tools/recipe">
+  <link rel="alternate" type="application/rss+xml" title="OLLALOLL — everything" href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=all">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL">
+  <link rel="icon" href="../../assets/favicon.ico" sizes="any">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css?v=17">
+  <link rel="stylesheet" href="../../css/builders.css?v=1">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+      <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-i18n-attr="aria-label:menu"><svg class="icon-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="nav-panel" id="nav-panel">
+        <ul class="nav-links">
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="/about" data-i18n="nav.about">About</a></li>
+            <li class="nav-item-extras"><a href="/extras" data-i18n="nav.extras">Extras</a><span class="nav-dot" data-nav-extras-dot hidden aria-hidden="true"></span></li>
+            <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" data-donate href="/contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="donate.nav">Support</span></a>
+      </div>
+    </nav>
+    <button class="search-toggle" type="button" id="global-search-toggle" aria-label="Search" data-i18n-attr="aria-label:search.toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="lang" data-lang></div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1>Recipe Builder</h1>
+      <p>Click a 3&times;3 grid, choose the result and get a recipe JSON for your Bedrock behavior pack. Shaped, shapeless and furnace recipes. It all happens in your browser.</p>
+    </div>
+    <div class="wrap">
+      <div class="bd" data-rc>
+        <section class="panel bd-panel" aria-labelledby="rc-type-title">
+          <h2 id="rc-type-title">Recipe type</h2>
+          <div class="bd-seg" role="radiogroup" aria-label="Recipe type">
+            <label><input type="radio" name="rc-type" value="shaped" checked><span>Shaped</span></label>
+            <label><input type="radio" name="rc-type" value="shapeless"><span>Shapeless</span></label>
+            <label><input type="radio" name="rc-type" value="furnace"><span>Furnace</span></label>
+          </div>
+          <div class="field bd-path">
+            <label for="rc-id">Recipe ID <small>your own namespace</small></label>
+            <input id="rc-id" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="mypack:diamond_sword" data-rc-id>
+          </div>
+        </section>
+
+        <section class="panel bd-panel" data-rc-craft aria-labelledby="rc-grid-title">
+          <h2 id="rc-grid-title">Ingredients</h2>
+          <p class="bd-hint" data-rc-grid-hint></p>
+          <div class="bd-grid" data-rc-grid role="group" aria-label="Crafting grid"></div>
+          <div class="bd-slot">
+            <label class="bd-f bd-wide"><span class="bd-f-l" data-rc-slot-label></span>
+              <input type="text" list="mc-items" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="next" placeholder="minecraft:stick" data-rc-slot aria-label="Item for the selected slot"></label>
+            <div class="bd-btns bd-btns-tight">
+              <button type="button" class="btn btn-ghost btn-small" data-rc-clear-slot>Clear slot</button>
+              <button type="button" class="btn btn-ghost btn-small" data-rc-clear-all>Clear grid</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel bd-panel" data-rc-result-box aria-labelledby="rc-res-title">
+          <h2 id="rc-res-title">Result</h2>
+          <div class="bd-entry-row">
+            <label class="bd-f bd-wide"><span class="bd-f-l">Item</span>
+              <input type="text" list="mc-items" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="minecraft:diamond_sword" data-rc-result></label>
+            <label class="bd-f"><span class="bd-f-l">Amount</span>
+              <input type="text" inputmode="numeric" autocomplete="off" data-rc-count></label>
+          </div>
+        </section>
+
+        <section class="panel bd-panel" data-rc-furnace hidden aria-labelledby="rc-fur-title">
+          <h2 id="rc-fur-title">Cooking</h2>
+          <div class="bd-entry-row">
+            <label class="bd-f bd-wide"><span class="bd-f-l">Input</span>
+              <input type="text" list="mc-items" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="next" placeholder="minecraft:iron_ore" data-rc-fin></label>
+            <label class="bd-f bd-wide"><span class="bd-f-l">Output</span>
+              <input type="text" list="mc-items" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="minecraft:iron_ingot" data-rc-fout></label>
+          </div>
+          <p class="bd-hint">Cooked in:</p>
+          <div class="bd-chips" data-rc-furn></div>
+        </section>
+
+        <section class="panel bd-panel" aria-labelledby="rc-out-title">
+          <h2 id="rc-out-title">Your recipe</h2>
+          <p class="bd-hint" data-rc-pathnote></p>
+          <div class="bd-errors" role="alert" data-rc-errors hidden></div>
+          <pre class="bd-code" tabindex="0"><code data-rc-out></code></pre>
+          <div class="bd-btns">
+            <button type="button" class="btn btn-primary" data-rc-copy aria-disabled="true">Copy JSON</button>
+            <button type="button" class="btn btn-ghost" data-rc-download aria-disabled="true">Download .json</button>
+            <button type="button" class="btn btn-ghost" data-rc-reset>Start over</button>
+          </div>
+        </section>
+
+        <section class="panel bd-panel bd-help" aria-labelledby="rc-help-title">
+          <h2 id="rc-help-title">Good to know</h2>
+          <ul>
+            <li>Recipes go in a <code>recipes</code> folder in your <strong>behavior pack</strong>.</li>
+            <li>Use your own namespace in the recipe ID (not <code>minecraft:</code>), so it never clashes with a vanilla recipe.</li>
+            <li>Item names can be typed without <code>minecraft:</code>. The tool adds it. Custom items use their own namespace, like <code>mypack:ruby</code>.</li>
+            <li>The tool checks the format, not whether an item exists. If a typo slips in, Minecraft logs an error and skips the recipe.</li>
+            <li>Shaped recipes are trimmed to the smallest box around your items, so a 2&times;2 recipe stays 2&times;2.</li>
+            <li>Items with data values (like coloured wool as one item) aren&rsquo;t supported &mdash; use the modern item names (<code>minecraft:red_wool</code>).</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="bd-toast" role="status" aria-live="polite" data-bd-toast hidden></div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+        <p class="fine" data-i18n="footer.disclaimer">Minecraft is a trademark of Mojang Synergies AB. This is a fan project and is not affiliated with Mojang or Microsoft.</p>
+        <p class="fine">&copy; <span data-year></span> <span data-site="name">OLLALOLL</span></p>
+      </div>
+      <nav aria-label="Footer" data-i18n-attr="aria-label:footer.aria">
+        <ul class="footer-links">
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="/about" data-i18n="nav.about">About</a></li>
+          <li><a href="/extras" data-i18n="nav.extras">Extras</a></li>
+          <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+          <li><a href="/geo" data-i18n="nav.geo">GEO</a></li>
+        </ul>
+      </nav>
+      <ul class="footer-links" data-footer-links data-i18n-attr="aria-label:links.title" aria-label="Find me online"></ul>
+    </div>
+  </footer>
+  <script src="../../js/i18n.js?v=4"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/mc-common.js?v=1"></script>
+  <script src="../../js/recipe.js?v=1"></script>
+</body>
+</html>
