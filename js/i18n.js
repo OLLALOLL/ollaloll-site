@@ -423,6 +423,8 @@ window.I18N = {
     "meta.recipe.title": "Recipe Builder | OLLALOLL",
     "meta.recipe.desc": "Build Minecraft Bedrock shaped, shapeless and furnace recipe JSON with a 3x3 grid. Free, runs in your browser.",
     "meta.trades.title": "Trading Table Builder | OLLALOLL",
-    "meta.trades.desc": "Build Minecraft Bedrock villager trade tables from items, prices and trade limits, with a live preview. Free, runs in your browser."
+    "meta.trades.desc": "Build Minecraft Bedrock villager trade tables from items, prices and trade limits, with a live preview. Free, runs in your browser.",
+    "meta.tools.title": "Minecraft Bedrock Tools | OLLALOLL",
+    "meta.tools.desc": "Free browser tools for Minecraft Bedrock creators: skin packs, loot tables, recipes, trades, UUIDs and image conversion. Nothing is uploaded."
   }
 };
