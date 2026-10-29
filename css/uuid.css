@@ -74,3 +74,5 @@
   .uu-val .btn { width: 100%; }
   .uu-btns .btn { flex: 1; }
 }
+
+.uu .mc-dd { flex: none; width: 100%; }

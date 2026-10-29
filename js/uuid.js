@@ -16,6 +16,7 @@
     return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
   }
 
+  if (window.MC && MC.dropdown) MC.dropdown(typeSel);
   let pair = { pack: uuid4(), module: uuid4() };
   const fmt = (u) => (upper.checked ? u.toUpperCase() : u.toLowerCase());
 

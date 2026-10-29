@@ -66,7 +66,78 @@
     };
   }
 
+
+  /** Replace a native <select> with a fully styled dropdown. The select stays in the DOM (hidden) and keeps the value. */
+  let ddId = 0;
+  function dropdown(sel) {
+    const id = "mc-dd-" + ++ddId;
+    const wrap = el("div", "mc-dd");
+    const btn = el("button", "mc-dd-btn"); btn.type = "button";
+    btn.setAttribute("aria-haspopup", "listbox"); btn.setAttribute("aria-expanded", "false");
+    const lab = sel.getAttribute("aria-label") || (sel.id && (document.querySelector('label[for="' + sel.id + '"]') || {}).textContent) || "";
+    if (lab) btn.setAttribute("aria-label", lab);
+    const txt = el("span", "mc-dd-text");
+    btn.append(txt);
+    btn.insertAdjacentHTML("beforeend", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>');
+    const list = el("ul", "mc-dd-list"); list.id = id; list.setAttribute("role", "listbox"); list.hidden = true; list.tabIndex = -1;
+    const opts = [...sel.options];
+    const lis = opts.map((o, i) => {
+      const li = el("li", "mc-dd-opt", o.textContent); li.id = id + "-" + i; li.setAttribute("role", "option"); li.dataset.i = i;
+      list.append(li); return li;
+    });
+    sel.hidden = true; sel.tabIndex = -1; sel.setAttribute("aria-hidden", "true");
+    let active = 0, open = false;
+    const paint = () => {
+      txt.textContent = opts[sel.selectedIndex] ? opts[sel.selectedIndex].textContent : "";
+      lis.forEach((li, i) => { li.setAttribute("aria-selected", i === sel.selectedIndex ? "true" : "false"); li.classList.toggle("is-active", open && i === active); });
+      if (open) btn.setAttribute("aria-activedescendant", id + "-" + active); else btn.removeAttribute("aria-activedescendant");
+    };
+    function setOpen(v) {
+      open = v; list.hidden = !v; btn.setAttribute("aria-expanded", v ? "true" : "false");
+      wrap.classList.toggle("is-open", v);
+      if (v) {
+        active = Math.max(0, sel.selectedIndex);
+        wrap.classList.remove("is-up");
+        const r = btn.getBoundingClientRect();
+        if (window.innerHeight - r.bottom < list.offsetHeight + 16 && r.top > list.offsetHeight + 16) wrap.classList.add("is-up");
+        const a = lis[active]; if (a) a.scrollIntoView({ block: "nearest" });
+      }
+      paint();
+    }
+    function choose(i) {
+      setOpen(false);
+      if (i !== sel.selectedIndex) { sel.selectedIndex = i; sel.dispatchEvent(new Event("change", { bubbles: true })); }
+      paint(); btn.focus({ preventScroll: true });
+    }
+    btn.addEventListener("click", () => setOpen(!open));
+    btn.addEventListener("keydown", (e) => {
+      const k = e.key;
+      if (!open && (k === "ArrowDown" || k === "ArrowUp")) { e.preventDefault(); setOpen(true); return; }
+      if (!open) return;
+      if (k === "ArrowDown") { e.preventDefault(); active = Math.min(lis.length - 1, active + 1); }
+      else if (k === "ArrowUp") { e.preventDefault(); active = Math.max(0, active - 1); }
+      else if (k === "Home") { e.preventDefault(); active = 0; }
+      else if (k === "End") { e.preventDefault(); active = lis.length - 1; }
+      else if (k === "Enter" || k === " ") { e.preventDefault(); choose(active); return; }
+      else if (k === "Escape") { e.preventDefault(); setOpen(false); return; }
+      else if (k === "Tab") { setOpen(false); return; }
+      else return;
+      paint(); lis[active].scrollIntoView({ block: "nearest" });
+    });
+    list.addEventListener("pointerdown", (e) => e.preventDefault()); // keep focus on the button
+    list.addEventListener("click", (e) => { const li = e.target.closest(".mc-dd-opt"); if (li) choose(+li.dataset.i); });
+    list.addEventListener("pointermove", (e) => { const li = e.target.closest(".mc-dd-opt"); if (li && +li.dataset.i !== active) { active = +li.dataset.i; paint(); } });
+    document.addEventListener("pointerdown", (e) => { if (open && !wrap.contains(e.target)) setOpen(false); });
+    btn.addEventListener("blur", () => setTimeout(() => { if (open && !wrap.contains(document.activeElement)) setOpen(false); }, 0));
+    sel.addEventListener("change", paint);
+    wrap.append(btn, list);
+    if (sel.parentNode) { sel.parentNode.insertBefore(wrap, sel); }
+    wrap.append(sel);
+    paint();
+    return wrap;
+  }
+
   const isInt = (v) => /^-?\d+$/.test(String(v).trim());
 
-  window.MC = { ITEMS, ITEM_RE, normItem, el, addItemList, say, copyText, downloadText, store, isInt };
+  window.MC = { dropdown, ITEMS, ITEM_RE, normItem, el, addItemList, say, copyText, downloadText, store, isInt };
 })();

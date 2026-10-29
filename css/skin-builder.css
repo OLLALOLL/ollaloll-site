@@ -1111,3 +1111,16 @@
     padding: 36px 16px;
   }
 }
+
+.skb select option,
+.skb-select option {
+  background: #1a1530 linear-gradient(#1a1530, #1a1530);
+  color: #e9e4fb;
+}
+.skb select option:checked,
+.skb-select option:checked,
+.skb select option:hover,
+.skb-select option:hover {
+  background: #3b2a78 linear-gradient(#3b2a78, #3b2a78);
+  color: #fff;
+}

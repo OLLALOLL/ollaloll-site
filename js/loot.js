@@ -133,7 +133,7 @@
         [["item", "Item"], ["empty", "Nothing"], ["loot_table", "Other loot table"]].forEach(([v, t]) => { const o = el("option", null, t); o.value = v; if (en.type === v) o.selected = true; sel.append(o); });
         sel.setAttribute("aria-label", "Entry type");
         sel.addEventListener("change", () => { en.type = sel.value; render(); update(); });
-        top.append(sel);
+        top.append(MC.dropdown(sel));
         const rm = el("button", "bd-rm", "×"); rm.type = "button"; rm.setAttribute("aria-label", "Remove entry " + (ei + 1));
         rm.addEventListener("click", () => { pool.entries.splice(ei, 1); render(); update(); });
         top.append(rm);

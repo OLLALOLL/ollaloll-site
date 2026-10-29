@@ -85,3 +85,31 @@
   .bd-btns-tight .btn { flex: 1; }
   .bd-seg span { padding: .75rem .3rem; font-size: .88rem; }
 }
+
+/* Custom dropdown */
+.mc-dd { position: relative; flex: 1; min-width: 0; }
+.mc-dd-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 48px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, .05); color: var(--ink);
+  font: inherit; font-size: 16px; text-align: left; cursor: pointer; touch-action: manipulation;
+}
+.mc-dd-btn:hover { background: rgba(255, 255, 255, .08); }
+.mc-dd-btn:focus-visible, .mc-dd.is-open .mc-dd-btn { outline: 2px solid var(--violet-3); outline-offset: 2px; }
+.mc-dd-btn svg { flex: none; width: 18px; height: 18px; color: var(--violet-3); transition: transform .2s ease; }
+.mc-dd.is-open .mc-dd-btn svg { transform: rotate(180deg); }
+.mc-dd-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mc-dd-list {
+  position: absolute; z-index: 60; top: calc(100% + 6px); right: 0; left: 0; max-height: 260px; margin: 0; padding: 6px; overflow-y: auto;
+  border: 1px solid rgba(201, 184, 255, .35); border-radius: 16px; background: #1a1530; box-shadow: 0 16px 40px rgba(0, 0, 0, .55);
+  list-style: none; -webkit-overflow-scrolling: touch;
+}
+.mc-dd-list[hidden] { display: none; }
+.mc-dd.is-up .mc-dd-list { top: auto; bottom: calc(100% + 6px); }
+.mc-dd-opt {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; padding: 0 12px;
+  border-radius: 10px; color: var(--ink); font-size: 1rem; cursor: pointer;
+}
+.mc-dd-opt.is-active { background: rgba(154, 120, 255, .2); }
+.mc-dd-opt[aria-selected="true"] { color: #fff; font-weight: 700; }
+.mc-dd-opt[aria-selected="true"]::after { content: ""; flex: none; width: 16px; height: 16px; background: var(--violet-3); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center / contain no-repeat; }
+@media (prefers-reduced-motion: reduce) { .mc-dd-btn svg { transition: none; } }
