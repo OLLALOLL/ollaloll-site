@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
   <link rel="stylesheet" href="../../css/style.css?v=17">
-  <link rel="stylesheet" href="../../css/builders.css?v=3">
+  <link rel="stylesheet" href="../../css/builders.css?v=4">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
@@ -66,6 +66,8 @@
             <label for="rc-id">Recipe ID <small>your own namespace</small></label>
             <input id="rc-id" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" placeholder="mypack:diamond_sword" data-rc-id>
           </div>
+          <label class="bd-switch"><input type="checkbox" data-rc-vanilla><span class="bd-track" aria-hidden="true"></span><span class="bd-switch-text">Replace a vanilla recipe</span></label>
+          <p class="bd-hint" data-rc-vanilla-hint hidden>Use the vanilla recipe&rsquo;s exact ID, like <code>minecraft:diamond_sword</code>. A recipe with the same ID replaces the original. The ID must match exactly, or you&rsquo;ll just add a second recipe instead.</p>
         </section>
 
         <section class="panel bd-panel" data-rc-craft aria-labelledby="rc-grid-title">
@@ -120,7 +122,7 @@
           <h2 id="rc-help-title">Good to know</h2>
           <ul>
             <li>Recipes go in a <code>recipes</code> folder in your <strong>behavior pack</strong>.</li>
-            <li>Use your own namespace in the recipe ID (not <code>minecraft:</code>), so it never clashes with a vanilla recipe.</li>
+            <li>Use your own namespace in the recipe ID (like <code>mypack:ruby_sword</code>) to add a new recipe. To change a vanilla one, switch on &ldquo;Replace a vanilla recipe&rdquo; and use its exact <code>minecraft:</code> ID.</li>
             <li>Item names can be typed without <code>minecraft:</code>. The tool adds it. Custom items use their own namespace, like <code>mypack:ruby</code>.</li>
             <li>The tool checks the format, not whether an item exists. If a typo slips in, Minecraft logs an error and skips the recipe.</li>
             <li>Shaped recipes are trimmed to the smallest box around your items, so a 2&times;2 recipe stays 2&times;2.</li>
@@ -156,6 +158,6 @@
   <script src="../../js/i18n.js?v=4"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/mc-common.js?v=2"></script>
-  <script src="../../js/recipe.js?v=2"></script>
+  <script src="../../js/recipe.js?v=3"></script>
 </body>
 </html>

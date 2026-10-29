@@ -9,6 +9,7 @@
   const gridEl = $("[data-rc-grid]"), slotIn = $("[data-rc-slot]"), slotLabel = $("[data-rc-slot-label]");
   const outEl = $("[data-rc-out]"), errBox = $("[data-rc-errors]");
   const copyBtn = $("[data-rc-copy]"), dlBtn = $("[data-rc-download]");
+  const vanIn = $("[data-rc-vanilla]"), vanHint = $("[data-rc-vanilla-hint]");
   const idIn = $("[data-rc-id]"), pathNote = $("[data-rc-pathnote]");
   const resIn = $("[data-rc-result]"), cntIn = $("[data-rc-count]");
   const fin = $("[data-rc-fin]"), fout = $("[data-rc-fout]");
@@ -18,9 +19,10 @@
   const POS = ["top left", "top middle", "top right", "middle left", "centre", "middle right", "bottom left", "bottom middle", "bottom right"];
   let st = saved.load();
   if (!st || typeof st !== "object" || !Array.isArray(st.slots) || st.slots.length !== 9) {
-    st = { type: "shaped", slots: Array(9).fill(""), sel: 0, id: "", result: "", count: "1", fin: "", fout: "", furn: ["furnace"] };
+    st = { type: "shaped", slots: Array(9).fill(""), sel: 0, id: "", result: "", count: "1", fin: "", fout: "", furn: ["furnace"], vanilla: false };
   }
   if (!["shaped", "shapeless", "furnace"].includes(st.type)) st.type = "shaped";
+  st.vanilla = st.vanilla === true;
   if (!Array.isArray(st.furn)) st.furn = ["furnace"];
   ["id", "result", "count", "fin", "fout"].forEach((k) => { if (typeof st[k] !== "string") st[k] = k === "count" ? "1" : ""; });
   if (!(st.sel >= 0 && st.sel < 9)) st.sel = 0;
@@ -37,7 +39,7 @@
     const id = st.id.trim();
     if (!id) errors.push("Give the recipe an ID, like mypack:diamond_sword.");
     else if (!/^[a-z0-9_]+:[a-z0-9_]+$/.test(id)) errors.push("The recipe ID must look like namespace:name, in lowercase letters, digits and underscores.");
-    else if (id.startsWith("minecraft:")) errors.push("Don't use the minecraft: namespace for your own recipe. Use your own, like mypack:" + id.split(":")[1] + ".");
+    else if (id.startsWith("minecraft:") && !st.vanilla) errors.push("minecraft: recipes are vanilla ones. To replace a vanilla recipe, switch on “Replace a vanilla recipe”. For a new recipe, use your own namespace, like mypack:" + id.split(":")[1] + ".");
 
     let body = null, key = null;
     if (st.type === "furnace") {
@@ -90,6 +92,7 @@
     [copyBtn, dlBtn].forEach((b) => b.setAttribute("aria-disabled", ok ? "false" : "true"));
     const name = /^[a-z0-9_]+:([a-z0-9_]+)$/.test(st.id.trim()) ? st.id.trim().split(":")[1] : "my_recipe";
     pathNote.textContent = "Save as recipes/" + name + ".json in your behavior pack.";
+    vanHint.hidden = !st.vanilla;
     store("ollaloll.recipe.v1").save(st);
     return { json, ok, name };
   }
@@ -137,6 +140,8 @@
   const bind = (inp, key) => { inp.value = st[key]; inp.addEventListener("input", () => { st[key] = inp.value; update(); }); inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); inp.blur(); } }); };
   bind(idIn, "id"); bind(resIn, "result"); bind(cntIn, "count"); bind(fin, "fin"); bind(fout, "fout");
 
+  vanIn.checked = st.vanilla;
+  vanIn.addEventListener("change", () => { st.vanilla = vanIn.checked; update(); });
   const furnBox = $("[data-rc-furn]");
   FUR.forEach(([v, t]) => {
     const l = el("label", "bd-chip"); const c = el("input"); c.type = "checkbox"; c.value = v; c.checked = st.furn.includes(v);
@@ -148,7 +153,8 @@
   dlBtn.addEventListener("click", () => { if (dlBtn.getAttribute("aria-disabled") === "true") return explain(); downloadText(outEl.textContent, update().name + ".json"); });
   function explain() { MC.say("Fix the problems listed first."); errBox.scrollIntoView({ block: "center", behavior: "smooth" }); }
   $("[data-rc-reset]").addEventListener("click", () => {
-    st = { type: "shaped", slots: Array(9).fill(""), sel: 0, id: "", result: "", count: "1", fin: "", fout: "", furn: ["furnace"] };
+    st = { type: "shaped", slots: Array(9).fill(""), sel: 0, id: "", result: "", count: "1", fin: "", fout: "", furn: ["furnace"], vanilla: false };
+    vanIn.checked = false;
     [["id", idIn], ["result", resIn], ["count", cntIn], ["fin", fin], ["fout", fout]].forEach(([k, i]) => { i.value = st[k]; });
     furnBox.querySelectorAll("input").forEach((c) => { c.checked = st.furn.includes(c.value); });
     showType(); drawCells(); update();
