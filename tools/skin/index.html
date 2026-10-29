@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" data-page="skin-builder">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Skin Pack Builder | OLLALOLL</title>
+  <meta name="description" content="Build a Minecraft Bedrock skin pack (.mcpack) from your own PNG skins. Everything runs in your browser.">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta property="og:title" content="Skin Pack Builder | OLLALOLL">
+  <meta property="og:description" content="Build a Minecraft Bedrock skin pack (.mcpack) from your own PNG skins. Everything runs in your browser.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ollaloll.com/tools/skin">
+  <meta property="og:url" content="https://ollaloll.com/tools/skin">
+  <link rel="alternate" type="application/rss+xml" title="OLLALOLL — everything" href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=all">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL">
+  <link rel="icon" href="../../assets/favicon.ico" sizes="any">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css?v=17">
+  <link rel="stylesheet" href="../../css/skin-builder.css?v=2">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+      <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-i18n-attr="aria-label:menu"><svg class="icon-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="nav-panel" id="nav-panel">
+        <ul class="nav-links">
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="/about" data-i18n="nav.about">About</a></li>
+            <li class="nav-item-extras"><a href="/extras" data-i18n="nav.extras">Extras</a><span class="nav-dot" data-nav-extras-dot hidden aria-hidden="true"></span></li>
+            <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" data-donate href="/contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="donate.nav">Support</span></a>
+      </div>
+    </nav>
+    <button class="search-toggle" type="button" id="global-search-toggle" aria-label="Search" data-i18n-attr="aria-label:search.toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="lang" data-lang></div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1>Skin Pack Builder</h1>
+      <p>Turn your PNG skins into a Minecraft Bedrock skin pack. Everything happens in your browser &mdash; your skins are never uploaded.</p>
+    </div>
+
+    <div class="wrap">
+      <div class="skb" data-skb>
+        <div class="skb-main">
+
+          <!-- Step 1: pack details -->
+          <section class="panel" aria-labelledby="skb-details-title">
+            <div class="skb-head"><span class="skb-num" aria-hidden="true">1</span><h2 id="skb-details-title">Pack details</h2></div>
+
+            <div class="skb-fields">
+              <div class="field">
+                <label for="skb-name">Pack name <span class="skb-req">required</span></label>
+                <input id="skb-name" type="text" maxlength="48" autocomplete="off" placeholder="e.g. My Cool Skins" data-skb-name>
+              </div>
+              <div class="field">
+                <label for="skb-author">Author <span class="skb-opt">optional</span></label>
+                <input id="skb-author" type="text" maxlength="48" autocomplete="off" placeholder="Your name or username" data-skb-author>
+              </div>
+            </div>
+            <div class="field">
+              <label for="skb-desc">Description <span class="skb-opt">optional</span></label>
+              <input id="skb-desc" type="text" maxlength="120" autocomplete="off" placeholder="Shown in Minecraft's pack list" data-skb-desc>
+            </div>
+
+            <div class="skb-icon-row">
+              <div class="skb-icon-preview"><canvas width="64" height="64" data-skb-icon-main aria-label="Pack icon preview" role="img"></canvas></div>
+              <div class="skb-icon-controls">
+                <span class="skb-label" id="skb-icon-label">Pack icon <span class="skb-opt">optional</span></span>
+                <div class="skb-seg" role="radiogroup" aria-labelledby="skb-icon-label">
+                  <label><input type="radio" name="skb-icon-mode" value="auto" checked><span>From a skin</span></label>
+                  <label><input type="radio" name="skb-icon-mode" value="upload"><span>Upload image</span></label>
+                  <label><input type="radio" name="skb-icon-mode" value="none"><span>No icon</span></label>
+                </div>
+                <div class="skb-icon-extra" data-skb-icon-auto>
+                  <select class="skb-select" aria-label="Which skin's face to use" data-skb-icon-skin></select>
+                </div>
+                <div class="skb-icon-extra" data-skb-icon-upload hidden>
+                  <button type="button" class="btn btn-ghost btn-small" data-skb-icon-pick>Choose image&hellip;</button>
+                  <input type="file" accept="image/*" hidden data-skb-icon-file>
+                  <span class="hint" data-skb-icon-note>Any square-ish image. It gets cropped and resized to 256&times;256.</span>
+                </div>
+              </div>
+            </div>
+
+            <details class="skb-adv">
+              <summary>Advanced</summary>
+              <div class="skb-adv-body">
+                <div class="field skb-ver">
+                  <label for="skb-version">Version</label>
+                  <input id="skb-version" type="text" inputmode="decimal" value="1.0.0" maxlength="11" autocomplete="off" data-skb-version>
+                  <p class="hint">Format <code>1.0.0</code>. Raise it when you re-export an update so Minecraft replaces the old copy.</p>
+                </div>
+                <div class="field">
+                  <span class="label">Pack IDs (UUIDs)</span>
+                  <p class="skb-uuid"><span>Pack</span><code data-skb-uuid-pack></code></p>
+                  <p class="skb-uuid"><span>Module</span><code data-skb-uuid-module></code></p>
+                  <p class="hint">Generated for you and kept between exports, so the same pack updates in place. Only make new ones if you want a separate pack.</p>
+                  <button type="button" class="btn btn-ghost btn-small" data-skb-new-uuid>Generate new IDs</button>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <!-- Step 2: skins -->
+          <section class="panel skb-skins-panel" aria-labelledby="skb-skins-title">
+            <div class="skb-head">
+              <span class="skb-num" aria-hidden="true">2</span>
+              <h2 id="skb-skins-title">Skins <span class="skb-count" data-skb-count>0</span></h2>
+              <button type="button" class="btn btn-primary btn-small skb-add-btn" data-skb-add>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+                Add skins
+              </button>
+            </div>
+            <input type="file" accept="image/png,.png" multiple hidden data-skb-file>
+
+            <div class="skb-alert" role="alert" data-skb-alert hidden></div>
+
+            <div class="skb-empty" data-skb-empty>
+              <button type="button" class="skb-drop" data-skb-add>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+                <strong>Drop PNG skins here, or click to browse</strong>
+                <span>64&times;64 or 128&times;128 PNG files. Add as many as you like &mdash; you can also paste an image.</span>
+              </button>
+            </div>
+
+            <div class="skb-grid" data-skb-grid></div>
+
+            <p class="hint skb-tip" data-skb-tip hidden>Each skin&rsquo;s name is what players see in Minecraft. Arm style is detected automatically &mdash; switch it if a skin looks wrong.</p>
+          </section>
+        </div>
+
+        <!-- Step 3: download -->
+        <aside class="skb-side" aria-labelledby="skb-dl-title">
+          <section class="panel">
+            <div class="skb-head"><span class="skb-num" aria-hidden="true">3</span><h2 id="skb-dl-title">Download</h2></div>
+
+            <div class="skb-sum">
+              <canvas class="skb-sum-icon" width="64" height="64" aria-hidden="true" data-skb-icon-side></canvas>
+              <div>
+                <p class="skb-sum-name" data-skb-sum-name>Untitled pack</p>
+                <p class="skb-sum-meta" data-skb-sum-meta>No skins yet</p>
+              </div>
+            </div>
+
+            <ul class="skb-check" data-skb-check></ul>
+
+            <button type="button" class="btn btn-primary skb-dl" data-skb-download disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+              <span data-skb-dl-label>Download .mcpack</span>
+            </button>
+            <p class="hint skb-after">Open the downloaded file with Minecraft to import it, then pick your skins in the Dressing Room.</p>
+
+            <details class="skb-files">
+              <summary>What&rsquo;s inside <span data-skb-size></span></summary>
+              <ul data-skb-files></ul>
+            </details>
+
+            <div class="skb-foot">
+              <span class="skb-saved" data-skb-saved>Draft saves automatically on this device.</span>
+              <button type="button" class="btn btn-ghost btn-small btn-danger" data-skb-reset>Start over</button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div class="skb-toasts" aria-live="polite" data-skb-toasts></div>
+  <div class="skb-drop-overlay" data-skb-overlay hidden><div><strong>Drop to add skins</strong><span>PNG, 64&times;64 or 128&times;128</span></div></div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+        <p class="fine" data-i18n="footer.disclaimer">Minecraft is a trademark of Mojang Synergies AB. This is a fan project and is not affiliated with Mojang or Microsoft.</p>
+        <p class="fine">&copy; <span data-year></span> <span data-site="name">OLLALOLL</span></p>
+      </div>
+      <nav aria-label="Footer" data-i18n-attr="aria-label:footer.aria">
+        <ul class="footer-links">
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="/about" data-i18n="nav.about">About</a></li>
+          <li><a href="/extras" data-i18n="nav.extras">Extras</a></li>
+          <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+          <li><a href="/geo" data-i18n="nav.geo">GEO</a></li>
+        </ul>
+      </nav>
+      <ul class="footer-links" data-footer-links data-i18n-attr="aria-label:links.title" aria-label="Find me online"></ul>
+    </div>
+  </footer>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/skin-builder.js?v=1"></script>
+</body>
+</html>

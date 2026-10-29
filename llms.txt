@@ -19,6 +19,7 @@ Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScrip
 - [Dictionary](https://ollaloll.com/dictionary): community slang dictionary
 - [Quotes](https://ollaloll.com/quotes): quote library
 - [Library](https://ollaloll.com/library): knowledge library
+- [Skin Pack Builder](https://ollaloll.com/tools/skin): free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack)
 - [Contact](https://ollaloll.com/contact)
 
 ## Projects
