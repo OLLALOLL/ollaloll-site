@@ -411,6 +411,8 @@ window.I18N = {
     "meta.term.title": "Term | OLLALOLL",
     "meta.term.desc": "A term from the Tuff People Dictionary.",
     "meta.notfound.title": "Page not found | OLLALOLL",
-    "meta.notfound.desc": "This page could not be found."
+    "meta.notfound.desc": "This page could not be found.",
+    "meta.skin-builder.title": "Skin Pack Builder | OLLALOLL",
+    "meta.skin-builder.desc": "Free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack)."
   }
 };
