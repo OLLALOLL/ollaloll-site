@@ -13,13 +13,36 @@
   display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 14px;
   border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, .04);
 }
-.uu-val code { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: var(--font-mono); font-size: .98rem; user-select: all; }
-.uu-check { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: .92rem; cursor: pointer; }
-.uu-check input { width: 20px; height: 20px; accent-color: var(--violet-2); }
+.uu-val code { flex: 1; padding: 0; background: transparent; color: var(--violet-3); min-width: 0; overflow-wrap: anywhere; font-family: var(--font-mono); font-size: .98rem; user-select: all; }
+/* Toggle switch */
+.uu-switch { position: relative; display: inline-flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; touch-action: manipulation; }
+.uu-switch input { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; }
+.uu-track {
+  position: relative; flex: none; width: 46px; height: 26px; border: 1px solid var(--line); border-radius: 999px;
+  background: rgba(255, 255, 255, .08); transition: background .2s ease, border-color .2s ease;
+}
+.uu-track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--muted); transition: transform .2s ease, background .2s ease;
+}
+.uu-switch input:checked + .uu-track { border-color: var(--violet-2); background: rgba(154, 120, 255, .45); }
+.uu-switch input:checked + .uu-track::after { transform: translateX(20px); background: #fff; }
+.uu-switch input:focus-visible + .uu-track { outline: 2px solid var(--violet-3); outline-offset: 3px; }
+.uu-switch-text { font-size: .92rem; font-weight: 700; letter-spacing: .04em; }
+@media (prefers-reduced-motion: reduce) { .uu-track, .uu-track::after { transition: none; } }
 
 .uu-hint { margin: 6px 0 14px; color: var(--muted); font-size: .92rem; }
 .uu-foot { margin: 0; text-align: center; }
 .uu-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px; }
+/* Dark dropdown: closed state with a chevron, open list readable */
+.uu .field select {
+  appearance: none; -webkit-appearance: none; color-scheme: dark; padding-right: 44px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9b8ff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 14px center; background-repeat: no-repeat; background-size: 18px;
+}
+.uu .field select option { background: #1a1530; color: #e9e4fb; }
+.uu .field select option:checked { background: #3b2a78; color: #fff; }
+.uu .field select:focus-visible, .uu .field input:focus-visible { outline: 2px solid var(--violet-3); outline-offset: 2px; }
 .uu .field select, .uu .field input[type="text"], .uu .field input[type="number"] {
   width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 14px;
   background: rgba(255, 255, 255, .05); color: var(--ink); font: inherit; font-size: 16px;
