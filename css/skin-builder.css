@@ -692,9 +692,15 @@
   font-size: 1.05rem;
 }
 
-.skb-dl[disabled] {
-  opacity: 0.45;
-  cursor: not-allowed;
+/* Not a real :disabled, so tapping it can explain what's missing. */
+.skb .btn[aria-disabled="true"] {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.skb .skb-dl.is-blocked,
+.skb .skb-bar-dl.is-blocked {
+  opacity: 0.55;
   box-shadow: none;
 }
 
@@ -862,5 +868,246 @@
 
   .skb-select {
     width: 100%;
+  }
+}
+
+/* ---- Custom pack IDs ---- */
+.skb-idbox {
+  margin-top: 14px;
+}
+
+.skb-idrow {
+  margin-bottom: 12px;
+}
+
+.skb-idrow > label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.skb-idinput {
+  display: flex;
+  gap: 8px;
+}
+
+.skb-idinput input {
+  flex: 1;
+  min-width: 0;
+}
+
+.skb-idinput .skb-text-btn {
+  flex: none;
+}
+
+.skb .field input.skb-mono {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* ---- Sticky bottom bar (small screens) ---- */
+.skb-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 110;
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+  background: rgba(13, 10, 26, 0.93);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transform: translateY(110%);
+  visibility: hidden;
+  transition: transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.skb-bar.is-on {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.25s ease;
+}
+
+.skb .skb-bar .btn {
+  min-height: 48px;
+}
+
+.skb-bar-add {
+  flex: none;
+  padding-right: 18px;
+  padding-left: 16px;
+}
+
+.skb-bar-dl {
+  flex: 1;
+  min-width: 0;
+}
+
+.skb-bar-dl small {
+  font-size: 0.82rem;
+  font-weight: 700;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+@media (min-width: 961px) {
+  .skb-bar {
+    display: none;
+  }
+}
+
+.skb-toasts {
+  transition: bottom 0.25s ease;
+}
+
+.skb-toasts.has-bar {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skb-bar,
+  .skb-bar.is-on,
+  .skb-toasts {
+    transition: none;
+  }
+}
+
+/* ---- Touch: no double-tap zoom delay, 44px+ targets ---- */
+.skb button,
+.skb label,
+.skb summary,
+.skb select {
+  touch-action: manipulation;
+}
+
+.skb-card {
+  scroll-margin-bottom: 96px;
+}
+
+@media (pointer: coarse), (max-width: 560px) {
+  .skb-icon-btn,
+  .skb-move .skb-icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .skb-text-btn,
+  .skb-select,
+  .skb .btn-small {
+    min-height: 44px;
+  }
+
+  .skb-card-name {
+    min-height: 46px;
+    font-size: 1rem;
+  }
+
+  .skb .skb-seg span {
+    padding: 0.7rem 0.95rem;
+  }
+
+  .skb-card .skb-seg span {
+    padding: 0.7rem 0.4rem;
+  }
+
+  .skb-adv summary,
+  .skb-files summary {
+    padding: 11px 0;
+  }
+
+  .skb-stage {
+    padding-top: 58px;
+  }
+
+  .skb-move {
+    top: 6px;
+    right: 6px;
+    gap: 6px;
+  }
+
+  .skb-idx {
+    top: 14px;
+    left: 10px;
+  }
+
+  .skb-alert {
+    padding-right: 52px;
+  }
+
+  .skb-alert button {
+    top: 2px;
+    right: 2px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .skb-toast button {
+    min-height: 44px;
+    padding: 0 14px;
+  }
+
+  .skb-dl {
+    min-height: 54px;
+  }
+
+  .skb-add-tile {
+    min-height: 110px;
+  }
+
+  .skb-view small {
+    font-size: 0.75rem;
+  }
+
+  .skb-meta {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .skb {
+    gap: 18px;
+  }
+
+  .skb-main {
+    gap: 18px;
+  }
+
+  .skb .panel {
+    padding: 18px 14px;
+    border-radius: 22px;
+  }
+
+  .skb-head {
+    margin-bottom: 16px;
+  }
+
+  .skb-grid {
+    gap: 12px;
+  }
+
+  /* 16px+ in fields so iOS doesn't zoom the page on focus */
+  .skb .field input,
+  .skb .skb-select,
+  .skb-card-name {
+    font-size: 16px;
+  }
+
+  .skb .field input.skb-mono {
+    font-size: 16px;
+  }
+
+  .skb-foot {
+    flex-wrap: wrap;
+  }
+
+  .skb-foot .btn {
+    white-space: nowrap;
+  }
+
+  .skb-drop {
+    padding: 36px 16px;
   }
 }

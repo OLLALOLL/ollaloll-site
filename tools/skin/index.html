@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
   <link rel="stylesheet" href="../../css/style.css?v=17">
-  <link rel="stylesheet" href="../../css/skin-builder.css?v=2">
+  <link rel="stylesheet" href="../../css/skin-builder.css?v=3">
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
@@ -65,16 +65,16 @@
             <div class="skb-fields">
               <div class="field">
                 <label for="skb-name">Pack name <span class="skb-req">required</span></label>
-                <input id="skb-name" type="text" maxlength="48" autocomplete="off" placeholder="e.g. My Cool Skins" data-skb-name>
+                <input id="skb-name" type="text" maxlength="48" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="e.g. My Cool Skins" data-skb-name>
               </div>
               <div class="field">
                 <label for="skb-author">Author <span class="skb-opt">optional</span></label>
-                <input id="skb-author" type="text" maxlength="48" autocomplete="off" placeholder="Your name or username" data-skb-author>
+                <input id="skb-author" type="text" maxlength="48" autocomplete="off" enterkeyhint="done" placeholder="Your name or username" data-skb-author>
               </div>
             </div>
             <div class="field">
               <label for="skb-desc">Description <span class="skb-opt">optional</span></label>
-              <input id="skb-desc" type="text" maxlength="120" autocomplete="off" placeholder="Shown in Minecraft's pack list" data-skb-desc>
+              <input id="skb-desc" type="text" maxlength="120" autocomplete="off" enterkeyhint="done" placeholder="Shown in Minecraft's pack list" data-skb-desc>
             </div>
 
             <div class="skb-icon-row">
@@ -103,14 +103,40 @@
                 <div class="field skb-ver">
                   <label for="skb-version">Version</label>
                   <input id="skb-version" type="text" inputmode="decimal" value="1.0.0" maxlength="11" autocomplete="off" data-skb-version>
-                  <p class="hint">Format <code>1.0.0</code>. Raise it when you re-export an update so Minecraft replaces the old copy.</p>
+                  <p class="hint">Format <code>1.0.0</code>. It only matters if you reuse your own IDs below: raise it so Minecraft replaces the old copy.</p>
                 </div>
                 <div class="field">
-                  <span class="label">Pack IDs (UUIDs)</span>
-                  <p class="skb-uuid"><span>Pack</span><code data-skb-uuid-pack></code></p>
-                  <p class="skb-uuid"><span>Module</span><code data-skb-uuid-module></code></p>
-                  <p class="hint">Generated for you and kept between exports, so the same pack updates in place. Only make new ones if you want a separate pack.</p>
-                  <button type="button" class="btn btn-ghost btn-small" data-skb-new-uuid>Generate new IDs</button>
+                  <span class="label" id="skb-id-label">Pack IDs (UUIDs)</span>
+                  <div class="skb-seg" role="radiogroup" aria-labelledby="skb-id-label">
+                    <label><input type="radio" name="skb-id-mode" value="auto" checked><span>New every download</span></label>
+                    <label><input type="radio" name="skb-id-mode" value="custom"><span>Use my own</span></label>
+                  </div>
+
+                  <div class="skb-idbox" data-skb-id-auto>
+                    <p class="skb-uuid"><span>Pack</span><code data-skb-uuid-pack></code></p>
+                    <p class="skb-uuid"><span>Module</span><code data-skb-uuid-module></code></p>
+                    <p class="hint">A fresh pair is made for every download, so each export installs as its own separate pack.</p>
+                  </div>
+
+                  <div class="skb-idbox" data-skb-id-custom hidden>
+                    <div class="skb-idrow">
+                      <label for="skb-uuid-pack-in">Pack ID</label>
+                      <div class="skb-idinput">
+                        <input id="skb-uuid-pack-in" type="text" class="skb-mono" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="123e4567-e89b-12d3-a456-426614174000" data-skb-id-in="pack">
+                        <button type="button" class="skb-text-btn" data-skb-id-gen="pack">Generate</button>
+                      </div>
+                      <p class="error" data-skb-id-err="pack" hidden></p>
+                    </div>
+                    <div class="skb-idrow">
+                      <label for="skb-uuid-module-in">Module ID</label>
+                      <div class="skb-idinput">
+                        <input id="skb-uuid-module-in" type="text" class="skb-mono" spellcheck="false" autocomplete="off" autocapitalize="none" placeholder="123e4567-e89b-12d3-a456-426614174000" data-skb-id-in="module">
+                        <button type="button" class="skb-text-btn" data-skb-id-gen="module">Generate</button>
+                      </div>
+                      <p class="error" data-skb-id-err="module" hidden></p>
+                    </div>
+                    <p class="hint">Reuse the same two IDs every time to update a pack you already installed, and raise the version above. They must be different from each other.</p>
+                  </div>
                 </div>
               </div>
             </details>
@@ -159,11 +185,11 @@
 
             <ul class="skb-check" data-skb-check></ul>
 
-            <button type="button" class="btn btn-primary skb-dl" data-skb-download disabled>
+            <button type="button" class="btn btn-primary skb-dl is-blocked" data-skb-download aria-disabled="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
               <span data-skb-dl-label>Download .mcpack</span>
             </button>
-            <p class="hint skb-after">Open the downloaded file with Minecraft to import it, then pick your skins in the Dressing Room.</p>
+            <p class="hint skb-after">Open the downloaded file with Minecraft to import it, then pick your skins in the Dressing Room. On a phone, find the file in your Downloads or Files app and choose Minecraft.</p>
 
             <details class="skb-files">
               <summary>What&rsquo;s inside <span data-skb-size></span></summary>
@@ -176,6 +202,19 @@
             </div>
           </section>
         </aside>
+
+        <!-- Small screens: Add + Download stay within thumb reach -->
+        <div class="skb-bar" data-skb-bar aria-hidden="true">
+          <button type="button" class="btn btn-ghost skb-bar-add" data-skb-add aria-label="Add skins">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+            <span>Add</span>
+          </button>
+          <button type="button" class="btn btn-primary skb-bar-dl" data-skb-download-bar aria-disabled="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+            <span>Download</span>
+            <small data-skb-bar-count></small>
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -205,6 +244,6 @@
   </footer>
   <script src="../../js/i18n.js"></script>
   <script src="../../js/main.js"></script>
-  <script src="../../js/skin-builder.js?v=1"></script>
+  <script src="../../js/skin-builder.js?v=2"></script>
 </body>
 </html>

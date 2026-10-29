@@ -115,6 +115,8 @@
       description: "",
       version: "1.0.0",
       uuids: { pack: uuid(), module: uuid() },
+      idMode: "auto",
+      customIds: { pack: "", module: "" },
       icon: { mode: "auto", skinId: null, dataUrl: null },
       skins: [],
     };
@@ -141,6 +143,8 @@
       description: state.description,
       version: state.version,
       uuids: state.uuids,
+      idMode: state.idMode,
+      customIds: state.customIds,
       icon: state.icon,
       skins: state.skins.map((s) => ({
         id: s.id, name: s.name, model: s.model, png: s.png, w: s.w, h: s.h, note: s.note,
@@ -179,6 +183,10 @@
       if (typeof d.version === "string") state.version = d.version.slice(0, 11);
       if (d.uuids && typeof d.uuids.pack === "string" && typeof d.uuids.module === "string") {
         state.uuids = { pack: d.uuids.pack, module: d.uuids.module };
+      }
+      if (d.idMode === "custom") state.idMode = "custom";
+      if (d.customIds && typeof d.customIds.pack === "string" && typeof d.customIds.module === "string") {
+        state.customIds = { pack: d.customIds.pack.slice(0, 40), module: d.customIds.module.slice(0, 40) };
       }
       if (d.icon && ["auto", "upload", "none"].includes(d.icon.mode)) {
         state.icon = {
@@ -367,7 +375,8 @@
 
   function renderSkins(opts) {
     grid.textContent = "";
-    state.skins.forEach((skin, index) => grid.append(buildCard(skin, index, opts && opts.newId === skin.id)));
+    const fresh = new Set((opts && opts.newIds) || []);
+    state.skins.forEach((skin, index) => grid.append(buildCard(skin, index, fresh.has(skin.id))));
     if (state.skins.length) {
       grid.append(
         el(
@@ -392,6 +401,16 @@
     }
     syncIconSkinSelect();
     updateSummary();
+    // Show the user what they just added, even when the list is long.
+    if (fresh.size) {
+      const first = grid.querySelector('[data-skin="' + Array.from(fresh)[0] + '"]');
+      if (first) {
+        requestAnimationFrame(() => {
+          const r = first.getBoundingClientRect();
+          if (r.top < 0 || r.bottom > window.innerHeight) bringIntoView(first, "center");
+        });
+      }
+    }
   }
 
   function buildCard(skin, index, isNew) {
@@ -562,13 +581,13 @@
     const files = Array.from(fileList || []).filter(Boolean);
     if (!files.length) return;
     const problems = [];
-    let lastId = null;
+    const newIds = [];
     let added = 0;
     for (const file of files) {
       try {
         const skin = await importPng(file);
         state.skins.push(skin);
-        lastId = skin.id;
+        newIds.push(skin.id);
         added++;
       } catch (error) {
         problems.push(file.name + ": " + error.message);
@@ -577,7 +596,7 @@
     if (problems.length) showAlert(problems);
     else clearAlert();
     if (added) {
-      renderSkins({ newId: lastId });
+      renderSkins({ newIds });
       scheduleSave();
       toast(added === 1 ? "Added 1 skin." : "Added " + added + " skins.");
     }
@@ -704,20 +723,86 @@
     return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
   }
 
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const uuidPackEl = $("[data-skb-uuid-pack]");
   const uuidModuleEl = $("[data-skb-uuid-module]");
+  const idAutoBox = $("[data-skb-id-auto]");
+  const idCustomBox = $("[data-skb-id-custom]");
+  const idInputs = { pack: $('[data-skb-id-in="pack"]'), module: $('[data-skb-id-in="module"]') };
+  const idErrors = { pack: $('[data-skb-id-err="pack"]'), module: $('[data-skb-id-err="module"]') };
 
   function showUuids() {
     uuidPackEl.textContent = state.uuids.pack;
     uuidModuleEl.textContent = state.uuids.module;
   }
 
-  $("[data-skb-new-uuid]").addEventListener("click", () => {
-    state.uuids = { pack: uuid(), module: uuid() };
+  // The IDs the pack will actually be built with.
+  function activeIds() {
+    return state.idMode === "custom"
+      ? { pack: state.customIds.pack.trim().toLowerCase(), module: state.customIds.module.trim().toLowerCase() }
+      : state.uuids;
+  }
+
+  // Returns an error message for one custom field, or "" when it is fine.
+  function idError(which) {
+    const value = state.customIds[which].trim();
+    if (!value) return "Enter an ID, or press Generate.";
+    if (!UUID_RE.test(value)) return "That isn't a valid UUID (8-4-4-4-12 letters/digits).";
+    const other = state.customIds[which === "pack" ? "module" : "pack"].trim().toLowerCase();
+    if (other && other === value.toLowerCase()) return "Pack and module IDs must be different.";
+    return "";
+  }
+
+  function showIdErrors(onlyTouched) {
+    for (const which of ["pack", "module"]) {
+      const touched = !onlyTouched || state.customIds[which].trim() !== "";
+      const message = state.idMode === "custom" && touched ? idError(which) : "";
+      idErrors[which].textContent = message;
+      idErrors[which].hidden = !message;
+      idInputs[which].setAttribute("aria-invalid", message ? "true" : "false");
+    }
+  }
+
+  function applyIdMode() {
+    $$('input[name="skb-id-mode"]').forEach((r) => {
+      r.checked = r.value === state.idMode;
+    });
+    idAutoBox.hidden = state.idMode !== "auto";
+    idCustomBox.hidden = state.idMode !== "custom";
+    idInputs.pack.value = state.customIds.pack;
+    idInputs.module.value = state.customIds.module;
     showUuids();
-    scheduleSave();
-    toast("New pack IDs generated.");
-  });
+    showIdErrors(true);
+  }
+
+  $$('input[name="skb-id-mode"]').forEach((radio) =>
+    radio.addEventListener("change", () => {
+      state.idMode = radio.value;
+      // First time on "Use my own": start from the pair that was about to be used.
+      if (state.idMode === "custom" && !state.customIds.pack && !state.customIds.module) {
+        state.customIds = { pack: state.uuids.pack, module: state.uuids.module };
+      }
+      applyIdMode();
+      updateSummary();
+      scheduleSave();
+    })
+  );
+
+  for (const which of ["pack", "module"]) {
+    idInputs[which].addEventListener("input", () => {
+      state.customIds[which] = idInputs[which].value;
+      showIdErrors(false);
+      updateSummary();
+      scheduleSave();
+    });
+    $('[data-skb-id-gen="' + which + '"]').addEventListener("click", () => {
+      state.customIds[which] = uuid();
+      idInputs[which].value = state.customIds[which];
+      showIdErrors(false);
+      updateSummary();
+      scheduleSave();
+    });
+  }
 
   /* ---- Pack icon ---- */
 
@@ -857,6 +942,9 @@
   const checkList = $("[data-skb-check]");
   const dlButton = $("[data-skb-download]");
   const dlLabel = $("[data-skb-dl-label]");
+  const bar = $("[data-skb-bar]");
+  const barDl = $("[data-skb-download-bar]");
+  const barCount = $("[data-skb-bar-count]");
   const filesList = $("[data-skb-files]");
   const sizeEl = $("[data-skb-size]");
   const savedNote = $("[data-skb-saved]");
@@ -897,6 +985,7 @@
     if (!state.name.trim()) list.push("name");
     if (!state.skins.length) list.push("skins");
     if (!parseVersion(state.version)) list.push("version");
+    if (state.idMode === "custom" && (idError("pack") || idError("module"))) list.push("ids");
     return list;
   }
 
@@ -919,10 +1008,15 @@
       item(!issues.includes("skins"), n ? n + (n === 1 ? " skin added" : " skins added") : "At least one skin added")
     );
     if (issues.includes("version")) checkList.append(item(false, "Version looks like 1.0.0"));
+    if (issues.includes("ids")) checkList.append(item(false, "Custom IDs are valid and different"));
 
     const ready = issues.length === 0;
-    dlButton.disabled = !ready;
-    dlButton.title = ready ? "" : "Finish the checklist above first";
+    for (const button of [dlButton, barDl]) {
+      button.setAttribute("aria-disabled", ready ? "false" : "true");
+      button.classList.toggle("is-blocked", !ready);
+    }
+    barCount.textContent = n ? "· " + n + (n === 1 ? " skin" : " skins") : "";
+    updateBar();
 
     // File list
     const ids = skinIds();
@@ -1036,6 +1130,7 @@
     const packId = slugPack(packName);
     const ids = skinIds();
     const version = parseVersion(state.version);
+    const ids_ = activeIds();
     const author = state.author.trim();
     const description = state.description.trim() || (author ? "Skin pack by " + author : "A skin pack");
 
@@ -1044,10 +1139,10 @@
       header: {
         name: packName,
         description: cleanLang(description),
-        uuid: state.uuids.pack,
+        uuid: ids_.pack,
         version,
       },
-      modules: [{ type: "skin_pack", uuid: state.uuids.module, version }],
+      modules: [{ type: "skin_pack", uuid: ids_.module, version }],
     };
 
     const skinsJson = {
@@ -1085,8 +1180,43 @@
     return { blob: makeZip(files), fileName: packId + ".mcpack" };
   }
 
-  dlButton.addEventListener("click", () => {
-    if (problems().length) return;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function bringIntoView(node, block) {
+    node.scrollIntoView({ block: block || "center", behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  // Instead of a dead, greyed-out button, say what's missing and take them there.
+  function explainBlocked(issues) {
+    const first = issues[0];
+    if (first === "name") {
+      toast("Give your pack a name first.");
+      bringIntoView(nameInput);
+      nameInput.focus({ preventScroll: true });
+    } else if (first === "skins") {
+      toast("Add at least one skin first.");
+      bringIntoView($(".skb-skins-panel"), "start");
+    } else if (first === "version") {
+      toast("The version should look like 1.0.0.");
+      $(".skb-adv").open = true;
+      bringIntoView(versionInput);
+      versionInput.focus({ preventScroll: true });
+    } else {
+      toast("Check your custom pack IDs.");
+      $(".skb-adv").open = true;
+      showIdErrors(false);
+      const bad = idError("pack") ? idInputs.pack : idInputs.module;
+      bringIntoView(bad);
+      bad.focus({ preventScroll: true });
+    }
+  }
+
+  function onDownload() {
+    const issues = problems();
+    if (issues.length) {
+      explainBlocked(issues);
+      return;
+    }
     let result;
     try {
       result = buildPack();
@@ -1101,6 +1231,67 @@
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 15000);
     toast("Downloaded " + result.fileName + ". Open it with Minecraft to import.");
+    // Every download in "new IDs" mode gets its own fresh pair.
+    if (state.idMode === "auto") {
+      state.uuids = { pack: uuid(), module: uuid() };
+      showUuids();
+      scheduleSave();
+    }
+  }
+
+  dlButton.addEventListener("click", onDownload);
+  barDl.addEventListener("click", onDownload);
+
+  /* ---- Sticky action bar for small screens ---- */
+
+  const mqBar = window.matchMedia("(max-width: 960px)");
+  let mainVisible = true;
+  let sideVisible = false;
+  let typing = false;
+
+  function updateBar() {
+    const on = mqBar.matches && state.skins.length > 0 && mainVisible && !sideVisible && !typing;
+    bar.classList.toggle("is-on", on);
+    bar.setAttribute("aria-hidden", on ? "false" : "true");
+    toastBox.classList.toggle("has-bar", on);
+  }
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries) => {
+      mainVisible = entries[0].isIntersecting;
+      updateBar();
+    }).observe($(".skb-main"));
+    new IntersectionObserver(
+      (entries) => {
+        sideVisible = entries[0].isIntersecting;
+        updateBar();
+      },
+      { threshold: 0.25 }
+    ).observe($(".skb-side"));
+  }
+  if (mqBar.addEventListener) mqBar.addEventListener("change", updateBar);
+
+  // Hide the bar while a keyboard is up so it never sits on top of what you're typing.
+  const isTextField = (node) => Boolean(node && node.matches && node.matches('input[type="text"], textarea, select'));
+  document.addEventListener("focusin", (e) => {
+    if (isTextField(e.target)) {
+      typing = true;
+      updateBar();
+    }
+  });
+  document.addEventListener("focusout", () => {
+    setTimeout(() => {
+      typing = isTextField(document.activeElement);
+      updateBar();
+    }, 60);
+  });
+
+  // Enter closes the on-screen keyboard instead of doing nothing.
+  root.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.matches && e.target.matches('input[type="text"]')) {
+      e.preventDefault();
+      e.target.blur();
+    }
   });
 
   /* ---- Start over (two-step so it can't be hit by accident) ---- */
@@ -1141,8 +1332,16 @@
     descInput.value = state.description;
     versionInput.value = state.version;
     versionInput.setAttribute("aria-invalid", parseVersion(state.version) ? "false" : "true");
-    showUuids();
+    applyIdMode();
     applyIconMode();
+  }
+
+  // On phones there is nothing to drag onto or paste into, so say "tap".
+  if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    const dropTitle = $(".skb-drop strong");
+    const dropHint = $(".skb-drop span");
+    if (dropTitle) dropTitle.textContent = "Tap to choose your skin PNGs";
+    if (dropHint) dropHint.textContent = "64×64 or 128×128 PNG files. You can pick several at once.";
   }
 
   loadDraft();
