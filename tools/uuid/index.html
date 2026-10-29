@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" data-page="uuid">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>UUID Generator | OLLALOLL</title>
+  <meta name="description" content="Generate pack and module UUIDs for Minecraft Bedrock manifest.json files. Free, runs in your browser.">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta property="og:title" content="UUID Generator | OLLALOLL">
+  <meta property="og:description" content="Generate pack and module UUIDs for Minecraft Bedrock manifest.json files. Free, runs in your browser.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ollaloll.com/tools/uuid">
+  <meta property="og:url" content="https://ollaloll.com/tools/uuid">
+  <link rel="alternate" type="application/rss+xml" title="OLLALOLL — everything" href="https://zrslvneipbgtivhlygfd.supabase.co/functions/v1/feed?type=all">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OLLALOLL">
+  <link rel="icon" href="../../assets/favicon.ico" sizes="any">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../assets/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css?v=17">
+  <link rel="stylesheet" href="../../css/uuid.css?v=1">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+      <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Menu" data-i18n-attr="aria-label:menu"><svg class="icon-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="nav-panel" id="nav-panel">
+        <ul class="nav-links">
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="/about" data-i18n="nav.about">About</a></li>
+            <li class="nav-item-extras"><a href="/extras" data-i18n="nav.extras">Extras</a><span class="nav-dot" data-nav-extras-dot hidden aria-hidden="true"></span></li>
+            <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary btn-small" data-donate href="/contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="donate.nav">Support</span></a>
+      </div>
+    </nav>
+    <button class="search-toggle" type="button" id="global-search-toggle" aria-label="Search" data-i18n-attr="aria-label:search.toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+    <div class="lang" data-lang></div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1>UUID Generator</h1>
+      <p>Make a fresh pack UUID and module UUID for your Bedrock addon&rsquo;s <code>manifest.json</code>. Every pack needs its own &mdash; never copy them from another pack.</p>
+    </div>
+
+    <div class="wrap">
+      <div class="uu" data-uu>
+        <section class="panel uu-panel" aria-labelledby="uu-pair-title">
+          <div class="uu-head">
+            <h2 id="uu-pair-title">Your pair</h2>
+            <button type="button" class="btn btn-primary" data-uu-new>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+              <span>Generate new</span>
+            </button>
+          </div>
+
+          <div class="uu-row">
+            <span class="uu-label">Pack UUID <small>header.uuid</small></span>
+            <div class="uu-val"><code data-uu-pack></code><button type="button" class="btn btn-ghost btn-small" data-uu-copy="pack">Copy</button></div>
+          </div>
+          <div class="uu-row">
+            <span class="uu-label">Module UUID <small>modules[0].uuid</small></span>
+            <div class="uu-val"><code data-uu-module></code><button type="button" class="btn btn-ghost btn-small" data-uu-copy="module">Copy</button></div>
+          </div>
+
+          <label class="uu-check"><input type="checkbox" data-uu-upper> <span>UPPERCASE</span></label>
+        </section>
+
+        <section class="panel uu-panel" aria-labelledby="uu-man-title">
+          <h2 id="uu-man-title">Ready-made manifest</h2>
+          <p class="uu-hint">A starting <code>manifest.json</code> with your pair already filled in.</p>
+          <div class="uu-opts">
+            <div class="field">
+              <label for="uu-type">Pack type</label>
+              <select id="uu-type" data-uu-type>
+                <option value="resources">Resource pack (textures)</option>
+                <option value="data">Behavior pack (addon)</option>
+                <option value="skin_pack">Skin pack</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="uu-name">Pack name</label>
+              <input id="uu-name" type="text" maxlength="48" autocomplete="off" enterkeyhint="done" placeholder="My Pack" data-uu-name>
+            </div>
+          </div>
+          <pre class="uu-code" tabindex="0"><code data-uu-manifest></code></pre>
+          <button type="button" class="btn btn-primary" data-uu-copy="manifest">Copy manifest</button>
+          <p class="uu-hint">Linking a behavior pack and a resource pack? Make a second pair for the other pack, then list the other pack&rsquo;s <em>pack</em> UUID under <code>dependencies</code>.</p>
+        </section>
+
+        <section class="panel uu-panel" aria-labelledby="uu-bulk-title">
+          <h2 id="uu-bulk-title">Just need some UUIDs?</h2>
+          <div class="uu-opts">
+            <div class="field">
+              <label for="uu-count">How many</label>
+              <input id="uu-count" type="number" inputmode="numeric" min="1" max="100" value="10" data-uu-count>
+            </div>
+          </div>
+          <textarea class="uu-list" rows="6" readonly aria-label="Generated UUIDs" data-uu-list></textarea>
+          <div class="uu-btns">
+            <button type="button" class="btn btn-ghost" data-uu-bulk>Generate list</button>
+            <button type="button" class="btn btn-ghost" data-uu-copy="list">Copy list</button>
+          </div>
+        </section>
+
+        <p class="uu-hint uu-foot">These are random version&nbsp;4 UUIDs made in your browser with its secure random generator. Nothing is sent anywhere.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="uu-toast" role="status" aria-live="polite" data-uu-toast hidden></div>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.5l8.5 4.9v9.2L12 21.5l-8.5-4.9V7.4z" fill="rgba(139,92,246,.3)" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 7.4L12 12.3l8.5-4.9M12 12.3v9.2" fill="none" stroke="#c9b8ff" stroke-width="1.5" stroke-linejoin="round"/></svg><span data-site="name">OLLALOLL</span></a>
+        <p class="fine" data-i18n="footer.disclaimer">Minecraft is a trademark of Mojang Synergies AB. This is a fan project and is not affiliated with Mojang or Microsoft.</p>
+        <p class="fine">&copy; <span data-year></span> <span data-site="name">OLLALOLL</span></p>
+      </div>
+      <nav aria-label="Footer" data-i18n-attr="aria-label:footer.aria">
+        <ul class="footer-links">
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/projects" data-i18n="nav.projects">Projects</a></li>
+          <li><a href="/about" data-i18n="nav.about">About</a></li>
+          <li><a href="/extras" data-i18n="nav.extras">Extras</a></li>
+          <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
+          <li><a href="/geo" data-i18n="nav.geo">GEO</a></li>
+        </ul>
+      </nav>
+      <ul class="footer-links" data-footer-links data-i18n-attr="aria-label:links.title" aria-label="Find me online"></ul>
+    </div>
+  </footer>
+  <script src="../../js/i18n.js?v=3"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/uuid.js?v=1"></script>
+</body>
+</html>

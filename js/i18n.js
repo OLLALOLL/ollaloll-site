@@ -415,6 +415,8 @@ window.I18N = {
     "meta.skin-builder.title": "Skin Pack Builder | OLLALOLL",
     "meta.skin-builder.desc": "Free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack).",
     "meta.convert.title": "JPEG to PNG Converter | OLLALOLL",
-    "meta.convert.desc": "Convert JPEG images to PNG for free. Everything runs in your browser, nothing is uploaded."
+    "meta.convert.desc": "Convert JPEG images to PNG for free. Everything runs in your browser, nothing is uploaded.",
+    "meta.uuid.title": "UUID Generator | OLLALOLL",
+    "meta.uuid.desc": "Generate pack and module UUIDs for Minecraft Bedrock manifest.json files. Free, runs in your browser."
   }
 };
