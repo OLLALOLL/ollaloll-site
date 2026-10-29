@@ -74,7 +74,7 @@
     errBox.hidden = !errors.length;
     errors.forEach((m) => errBox.append(el("p", null, m)));
     const ok = !errors.length;
-    outEl.textContent = ok ? JSON.stringify(json, null, 2) : "Fix the problems above to see your loot table.";
+    outEl.textContent = ok ? JSON.stringify(json, null, 2) : "Your loot table appears here once everything above is filled in.";
     outEl.classList.toggle("is-placeholder", !ok);
     [copyBtn, dlBtn].forEach((b) => b.setAttribute("aria-disabled", ok ? "false" : "true"));
     const p = state.path.trim();

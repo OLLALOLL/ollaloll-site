@@ -85,7 +85,7 @@
     errBox.textContent = ""; errBox.hidden = !errors.length;
     errors.forEach((m) => errBox.append(el("p", null, m)));
     const ok = !errors.length && !!json;
-    outEl.textContent = ok ? JSON.stringify(json, null, 2) : "Fix the problems above to see your recipe.";
+    outEl.textContent = ok ? JSON.stringify(json, null, 2) : "Your recipe appears here once everything above is filled in.";
     outEl.classList.toggle("is-placeholder", !ok);
     [copyBtn, dlBtn].forEach((b) => b.setAttribute("aria-disabled", ok ? "false" : "true"));
     const name = /^[a-z0-9_]+:([a-z0-9_]+)$/.test(st.id.trim()) ? st.id.trim().split(":")[1] : "my_recipe";
