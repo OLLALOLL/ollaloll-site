@@ -1,4 +1,4 @@
-.bd { display: grid; gap: 20px; max-width: 760px; margin: 0 auto 64px; }
+.bd { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; max-width: 760px; margin: 0 auto 64px; }
 .bd .panel, .bd-panel, .bd-pool { padding: 22px; }
 .bd h2 { margin: 0 0 8px; font-size: 1.15rem; }
 .bd .btn { min-height: 44px; touch-action: manipulation; }
@@ -124,3 +124,28 @@
 .bd-switch input:focus-visible + .bd-track { outline: 2px solid var(--violet-3); outline-offset: 3px; }
 .bd-switch-text { font-size: .93rem; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { .bd-track, .bd-track::after { transition: none; } }
+
+/* Trading table builder */
+.tr-tier-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 14px; align-items: end; }
+.tr-first { margin: 0; align-self: center; }
+.tr-trade-n { font-size: .95rem; }
+.tr-row { display: flex; gap: 10px; }
+.tr-grow { flex: 1; min-width: 0; }
+.tr-qty { flex: none; width: 84px; }
+.tr-more { margin-top: 4px; }
+.tr-more summary { min-height: 44px; display: flex; align-items: center; color: var(--violet-3); font-weight: 700; font-size: .92rem; cursor: pointer; touch-action: manipulation; }
+.tr-more .bd-entry-row { margin-bottom: 8px; }
+
+.tr-pv-h { margin: 18px 0 8px; font-size: .95rem; color: var(--violet-3); }
+.tr-pv-h:first-child { margin-top: 0; }
+.tr-pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, .03); }
+.tr-pv-want { display: flex; gap: 6px; }
+.tr-pv-arrow { color: var(--muted); font-size: 1.2rem; }
+.tr-pv-meta { margin-left: auto; color: var(--muted); font-size: .8rem; }
+.tr-slot { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; max-width: 100%; padding: 0 12px; border: 2px solid rgba(201, 184, 255, .3); border-radius: 10px; background: rgba(0, 0, 0, .28); font-size: .85rem; text-transform: capitalize; }
+.tr-slot.is-empty { color: var(--muted); border-style: dashed; }
+.tr-slot-q { color: var(--violet-3); font-weight: 700; font-family: var(--font-mono); }
+@media (max-width: 560px) {
+  .tr-pv-meta { margin-left: 0; width: 100%; }
+  .tr-qty { width: 72px; }
+}
