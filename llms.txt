@@ -20,6 +20,7 @@ Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScrip
 - [Quotes](https://ollaloll.com/quotes): quote library
 - [Library](https://ollaloll.com/library): knowledge library
 - [Skin Pack Builder](https://ollaloll.com/tools/skin): free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack)
+- [JPEG to PNG Converter](https://ollaloll.com/tools/convert): free in-browser tool that converts JPEG (and WebP, GIF, BMP) images to PNG; nothing is uploaded
 - [Contact](https://ollaloll.com/contact)
 
 ## Projects

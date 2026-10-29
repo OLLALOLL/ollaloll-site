@@ -413,6 +413,8 @@ window.I18N = {
     "meta.notfound.title": "Page not found | OLLALOLL",
     "meta.notfound.desc": "This page could not be found.",
     "meta.skin-builder.title": "Skin Pack Builder | OLLALOLL",
-    "meta.skin-builder.desc": "Free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack)."
+    "meta.skin-builder.desc": "Free in-browser tool that turns PNG skins into a Minecraft Bedrock skin pack (.mcpack).",
+    "meta.convert.title": "JPEG to PNG Converter | OLLALOLL",
+    "meta.convert.desc": "Convert JPEG images to PNG for free. Everything runs in your browser, nothing is uploaded."
   }
 };
