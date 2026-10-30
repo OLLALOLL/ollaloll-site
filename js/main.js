@@ -5,7 +5,7 @@
     name: "OLLALOLL",
     siteUrl: "https://ollaloll.com",
     tagline: "Texture packs, addons and scripts for Minecraft Bedrock Edition.",
-    intro: "Browse my public projects, read the install guide, or send me a message.",
+    intro: "OLLALOLL (Big O) is a Minecraft Bedrock developer. Browse my public projects, read the install guide, or send me a message.",
     what: [
       { type: "texturepack", title: "Texture packs", text: "Custom textures and looks for Bedrock resource packs." },
       { type: "addon", title: "Addons", text: "Behavior and resource packs that change how the game plays." },

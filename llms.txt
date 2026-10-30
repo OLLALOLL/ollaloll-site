@@ -1,6 +1,6 @@
 # OLLALOLL
 
-> OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, and runs free browser tools for Bedrock creators, plus a few unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
+> OLLALOLL is a Minecraft Bedrock Edition developer (aka Big O) who makes texture packs, addons and Script API scripts for Bedrock, and builds websites and web apps, plus a few Bedrock-unrelated web projects. This file exists because the rest of ollaloll.com renders its real content with client-side JavaScript, which most AI tools and crawlers don't execute — this page gives that content directly as plain text.
 
 ## About
 
@@ -28,9 +28,9 @@ Outside Minecraft I build websites and web apps in plain HTML, CSS and JavaScrip
 - [Trading Table Builder](https://ollaloll.com/tools/trades): free in-browser builder for Minecraft Bedrock villager trade tables with a live preview
 - [Contact](https://ollaloll.com/contact)
 
-## Free tools
+## Web apps
 
-Browser-based tools for Minecraft Bedrock creators, indexed at https://ollaloll.com/tools. They run entirely in the visitor's browser, so nothing a visitor adds is uploaded. They generate files and cannot check inside Minecraft that an item exists, so a typo in an item name is only caught by the game.
+Web apps for Minecraft Bedrock creators, indexed at https://ollaloll.com/tools. They run entirely in the visitor's browser, so nothing a visitor adds is uploaded. They generate files and cannot check inside Minecraft that an item exists, so a typo in an item name is only caught by the game.
 
 - [Skin Pack Builder](https://ollaloll.com/tools/skin): Turns PNG skins (64×64 or 128×128, classic or slim arms) into a Minecraft Bedrock skin pack (.mcpack). Add as many skins as you like, name and reorder them, preview front and back, set a pack icon, and download. Each download gets fresh pack IDs unless you enter your own.
 - [Image Converter](https://ollaloll.com/tools/convert): Converts JPEG (and WebP, GIF, BMP) images to PNG, many at a time, with a zip download for batches.
