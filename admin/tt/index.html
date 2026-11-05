@@ -82,11 +82,14 @@
     .lesson.past { opacity: .55; }
     .empty { text-align: center; color: var(--muted); padding: 32px 12px; border: 1px dashed var(--line); border-radius: 16px; }
 
-    .grid { display: grid; grid-template-columns: 38px repeat(5, minmax(0, 1fr)); gap: 4px; }
-    .grid .h { text-align: center; font-size: .75rem; color: var(--muted); padding: 4px 0; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: 44px repeat(4, minmax(0, 1fr)); gap: 4px; }
+    .grid .h { text-align: center; font-size: .7rem; color: var(--muted); padding: 4px 0; font-weight: 600; line-height: 1.2; }
+    .grid .h b { display: block; color: var(--ink); font-size: .9rem; }
+    .grid .h small { font-size: .6rem; font-weight: 500; }
     .grid .h.today { color: var(--v3); }
-    .grid .p { font-size: .65rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: right; padding-right: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
-    .grid .p b { color: var(--ink); font-size: .8rem; }
+    .grid .p { font-size: .7rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: left; padding-left: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .grid .p b { color: var(--ink); font-size: .9rem; }
+    .grid .p.today b { color: var(--v3); }
     .cell { --c: #a78bfa; min-height: 62px; border-radius: 10px; border: 1px solid var(--line); border-top: 3px solid var(--c); background: color-mix(in srgb, var(--c) 16%, rgba(255,255,255,.03)); padding: 4px 2px; font-size: .78rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; min-width: 0; }
     .cell small { font-weight: 500; color: var(--muted); font-size: .66rem; }
     .cell.blank { background: transparent; border: 1px dashed rgba(255,255,255,.06); border-top-width: 1px; cursor: default; }
@@ -380,25 +383,28 @@
     function renderWeek(out, letter) {
       var grid = h("div", "grid");
       grid.appendChild(h("div", "h", ""));
-      for (var d = 0; d < 5; d++) grid.appendChild(h("div", "h" + (isTodayShown(d) ? " today" : ""), DAYN[d]));
-      var n = nowMin();
       for (var p = 1; p <= 4; p++) {
-        var pc = h("div", "p"); pc.appendChild(h("b", null, String(p))); pc.appendChild(document.createTextNode(PERIODS[p][0]));
-        grid.appendChild(pc);
-        for (var di = 0; di < 5; di++) {
-          (function (di) {
-            var raw = T[letter][di].filter(function (l) { return l.p === p; })[0];
+        var ph = h("div", "h"); ph.appendChild(h("b", null, String(p))); ph.appendChild(h("small", null, PERIODS[p][0] + "–" + PERIODS[p][1]));
+        grid.appendChild(ph);
+      }
+      var n = nowMin();
+      for (var d = 0; d < 5; d++) {
+        var dc = h("div", "p" + (isTodayShown(d) ? " today" : "")); dc.appendChild(h("b", null, DAYN[d])); dc.appendChild(document.createTextNode(String(dayDate(d).getDate())));
+        grid.appendChild(dc);
+        for (var pp = 1; pp <= 4; pp++) {
+          (function (d, pp) {
+            var raw = T[letter][d].filter(function (l) { return l.p === pp; })[0];
             if (!raw) { grid.appendChild(h("div", "cell blank")); return; }
             var x = resolve(raw);
             var c = h("button", "cell");
             c.type = "button";
             c.style.setProperty("--c", colour(x.s));
-            if (isTodayShown(di) && n >= mins(PERIODS[p][0]) && n < mins(PERIODS[p][1])) c.classList.add("now");
+            if (isTodayShown(d) && n >= mins(PERIODS[pp][0]) && n < mins(PERIODS[pp][1])) c.classList.add("now");
             c.appendChild(h("span", null, x.unpicked ? S[x.s][0].replace(" / ", "/") : S[x.s][0]));
             c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : "pick"));
-            c.addEventListener("click", function () { openLesson(raw, di); });
+            c.addEventListener("click", function () { openLesson(raw, d); });
             grid.appendChild(c);
-          })(di);
+          })(d, pp);
         }
       }
       out.appendChild(grid);
