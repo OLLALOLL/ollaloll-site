@@ -97,6 +97,8 @@
     .grid button.p { background: none; border: 0; padding: 0 0 0 2px; font: inherit; border-radius: 10px; }
     .grid .p.today { background: rgba(139,92,246,.2); box-shadow: inset 0 0 0 1px rgba(201,184,255,.45); padding-left: 6px; }
     .grid .h.cur { color: var(--v3); }
+    .grid .h.corner b { background: var(--grad); color: #1a1030; border-radius: 12px; width: 34px; height: 34px; line-height: 34px; margin: 0 auto 2px; font-size: 1.2rem; }
+    .grid .h.corner small { font-size: .6rem; text-transform: uppercase; letter-spacing: .06em; }
     .grid .h.cur b { color: #1a1030; background: var(--grad); border-radius: 99px; width: 26px; margin: 0 auto 2px; }
     .sheet { overscroll-behavior: contain; touch-action: pan-y; }
     .grid .p { font-size: .7rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: left; padding-left: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
@@ -282,6 +284,7 @@
     function render() {
       var letter = curLetter();
       $("wk-letter").textContent = "Week " + letter;
+      $("wk-letter").hidden = view === "week";
       var a = dayDate(0), b = dayDate(4);
       $("wk-range").textContent = a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MON[a.getMonth()]) + " – " + b.getDate() + " " + MON[b.getMonth()];
       var tag = $("wk-now");
@@ -380,7 +383,8 @@
     function renderWeek(out, letter) {
       var grid = h("div", "grid");
       var n = nowMin();
-      grid.appendChild(h("div", "h", ""));
+      var corner = h("div", "h corner"); corner.appendChild(h("b", null, letter)); corner.appendChild(h("small", null, "week"));
+      grid.appendChild(corner);
       for (var p = 1; p <= 4; p++) {
         var live = offset === 0 && todayIdx >= 0 && n >= mins(PERIODS[p][0]) && n < mins(PERIODS[p][1]);
         var ph = h("div", "h" + (live ? " cur" : "")); ph.appendChild(h("b", null, String(p))); ph.appendChild(h("small", null, PERIODS[p][0] + "–" + PERIODS[p][1]));
