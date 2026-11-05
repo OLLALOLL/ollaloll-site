@@ -144,16 +144,17 @@
   <div class="app">
     <header class="top">
       <h1>9D<small id="clock">Timetable</small></h1>
+      <button class="icon-btn" id="lang" type="button" aria-label="Language"></button>
     </header>
 
     <div class="weekbar">
-      <button class="nav" id="prev" type="button" aria-label="Previous week">‹</button>
+      <button class="nav" id="prev" type="button">‹</button>
       <div class="title"><div><b id="wk-letter">A</b><span id="wk-range"></span></div><button class="nowtag" id="wk-now" type="button"></button></div>
-      <button class="nav" id="next" type="button" aria-label="Next week">›</button>
+      <button class="nav" id="next" type="button">›</button>
     </div>
 
     <div class="row2" id="row2" hidden>
-      <button class="backbtn" id="back" type="button">‹ Back to week</button>
+      <button class="backbtn" id="back" type="button"></button>
     </div>
 
     <div class="days" id="days"></div>
@@ -172,9 +173,45 @@
     var PERIODS = {
       1: ["09:00", "10:20"], 2: ["10:30", "11:50"], 3: ["12:35", "13:55"], 4: ["14:05", "15:25"]
     };
-    var DAYN = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-    var DAYFULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var TX = {
+      en: {
+        dayn: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        dayfull: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        daysun: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        mon: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        title: "9D Timetable", back: "‹ Back to week", prev: "Previous week", next: "Next week",
+        week: "Week", weekLow: "week", thisWeek: "This week", backThis: "Back to this week",
+        now: "Now", nextK: "Next", today: "Today", done: "Done for today",
+        ends: function (n) { return "ends in " + n + " min"; }, nextAt: function (a, t) { return "Next: " + a + " at " + t; },
+        teacher: "Teacher", room: "Classroom", time: "Time", day: "Day", period: "period",
+        dep: "Depends on your group", nolist: "Not listed", pickG: "pick group", pick: "pick",
+        choose: "Choose your group", change: "Change your group", close: "Close", open: "Open", group: "group", lang: "ET"
+      },
+      et: {
+        dayn: ["Es", "Te", "Ko", "Ne", "Re"],
+        dayfull: ["Esmaspäev", "Teisipäev", "Kolmapäev", "Neljapäev", "Reede"],
+        daysun: ["Pü", "Es", "Te", "Ko", "Ne", "Re", "La"],
+        mon: ["jaan", "veebr", "märts", "apr", "mai", "juuni", "juuli", "aug", "sept", "okt", "nov", "dets"],
+        title: "9D tunniplaan", back: "‹ Tagasi nädalale", prev: "Eelmine nädal", next: "Järgmine nädal",
+        week: "Nädal", weekLow: "nädal", thisWeek: "See nädal", backThis: "Tagasi sellele nädalale",
+        now: "Praegu", nextK: "Järgmine", today: "Täna", done: "Tänaseks läbi",
+        ends: function (n) { return "lõpeb " + n + " min pärast"; }, nextAt: function (a, t) { return "Järgmine: " + a + " kell " + t; },
+        teacher: "Õpetaja", room: "Klassiruum", time: "Aeg", day: "Päev", period: "tund",
+        dep: "Sõltub sinu rühmast", nolist: "Pole märgitud", pickG: "vali rühm", pick: "vali",
+        choose: "Vali oma rühm", change: "Muuda oma rühma", close: "Sulge", open: "Ava", group: "rühm", lang: "EN"
+      }
+    };
+    var LANG = (function () {
+      var v = null; try { v = JSON.parse(localStorage.getItem("tt-lang")); } catch (e) {}
+      if (v === "en" || v === "et") return v;
+      return /^et/i.test(navigator.language || "") ? "et" : "en";
+    })();
+    function tr(k) { return TX[LANG][k]; }
+    var DAYN, DAYFULL, MON;
+    function sname(code) {
+      if (LANG === "en") return S[code][1];
+      var n = S[code][2]; return n.charAt(0).toUpperCase() + n.slice(1);
+    }
 
     // code, English name, Estonian name, colour
     var S = {
@@ -292,15 +329,15 @@
 
     function render() {
       var letter = curLetter();
-      $("wk-letter").textContent = "Week " + letter;
+      $("wk-letter").textContent = tr("week") + " " + letter;
       $("wk-letter").hidden = view === "week";
       var a = dayDate(0), b = dayDate(4);
       $("wk-range").textContent = a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MON[a.getMonth()]) + " – " + b.getDate() + " " + MON[b.getMonth()];
       var tag = $("wk-now");
-      if (offset === 0) { tag.textContent = "This week"; tag.className = "nowtag"; tag.disabled = true; }
-      else { tag.textContent = "Back to this week"; tag.className = "nowtag btn"; tag.disabled = false; }
+      if (offset === 0) { tag.textContent = tr("thisWeek"); tag.className = "nowtag"; tag.disabled = true; }
+      else { tag.textContent = tr("backThis"); tag.className = "nowtag btn"; tag.disabled = false; }
       var nw = new Date();
-      $("clock").textContent = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
+      $("clock").textContent = TX[LANG].daysun[nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
       $("row2").hidden = view === "week";
       document.documentElement.classList.toggle("lock", view === "week");
       if (view === "week") window.scrollTo(0, 0);
@@ -337,24 +374,24 @@
       });
       if (!cur && !next && lessons.length === 0) return;
       var card = h("div", "status");
-      function name(x) { return S[x.s][1]; }
+      function name(x) { return sname(x.s); }
       if (cur) {
         var en = mins(PERIODS[cur.p][1]), st = mins(PERIODS[cur.p][0]);
-        card.appendChild(h("div", "k", "Now"));
-        card.appendChild(h("div", "v", name(cur) + (cur.room ? " · " + cur.room : "") + " · ends in " + (en - n) + " min"));
+        card.appendChild(h("div", "k", tr("now")));
+        card.appendChild(h("div", "v", name(cur) + (cur.room ? " · " + cur.room : "") + " · " + tr("ends")(en - n)));
         var bar = h("div", "bar"), i = h("i"); i.style.width = Math.round((n - st) / (en - st) * 100) + "%";
         bar.appendChild(i); card.appendChild(bar);
         if (next) {
-          var nx = h("div", "k", "Next: " + name(next) + " at " + PERIODS[next.p][0]);
+          var nx = h("div", "k", tr("nextAt")(name(next), PERIODS[next.p][0]));
           nx.style.marginTop = "8px";
           card.appendChild(nx);
         }
       } else if (next) {
-        card.appendChild(h("div", "k", "Next"));
+        card.appendChild(h("div", "k", tr("nextK")));
         card.appendChild(h("div", "v", name(next) + (next.room ? " · " + next.room : "") + " · " + PERIODS[next.p][0]));
       } else {
-        card.appendChild(h("div", "k", "Today"));
-        card.appendChild(h("div", "v", "Done for today"));
+        card.appendChild(h("div", "k", tr("today")));
+        card.appendChild(h("div", "v", tr("done")));
       }
       box.appendChild(card);
     }
@@ -379,9 +416,9 @@
           else if (n >= mins(en)) btn.classList.add("past");
         }
         var t = h("div", "t"); t.appendChild(h("b", null, st)); t.appendChild(document.createTextNode(en));
-        var nm = h("div", "n"); nm.appendChild(h("strong", null, S[x.s][1]));
+        var nm = h("div", "n"); nm.appendChild(h("strong", null, sname(x.s)));
         nm.appendChild(h("em", null, x.group ? S[x.s][0] + " · " + x.group : S[x.s][0]));
-        var r = h("div", x.unpicked ? "r pick" : "r", x.unpicked ? "pick group" : (x.room || "–"));
+        var r = h("div", x.unpicked ? "r pick" : "r", x.unpicked ? tr("pickG") : (x.room || "–"));
         btn.appendChild(t); btn.appendChild(nm); btn.appendChild(r);
         btn.addEventListener("click", function () { openLesson(raw, sel); });
         list.appendChild(btn);
@@ -395,7 +432,7 @@
       var grid = h("div", "grid");
       var slots = {}, labels = {};
       var n = nowMin();
-      var corner = h("div", "h corner"); corner.appendChild(h("b", null, letter)); corner.appendChild(h("small", null, "week"));
+      var corner = h("div", "h corner"); corner.appendChild(h("b", null, letter)); corner.appendChild(h("small", null, tr("weekLow")));
       grid.appendChild(corner);
       for (var p = 1; p <= 4; p++) {
         var live = offset === 0 && todayIdx >= 0 && n >= mins(PERIODS[p][0]) && n < mins(PERIODS[p][1]);
@@ -406,7 +443,7 @@
         (function (d) {
           var dc = h("button", "p" + (isTodayShown(d) ? " today" : ""));
           dc.type = "button";
-          dc.setAttribute("aria-label", "Open " + DAYFULL[d]);
+          dc.setAttribute("aria-label", tr("open") + " " + DAYFULL[d]);
           dc.appendChild(h("b", null, DAYN[d])); dc.appendChild(document.createTextNode(String(dayDate(d).getDate())));
           dc.addEventListener("click", function () { openDay(d); });
           labels[d] = dc;
@@ -422,7 +459,7 @@
             c.style.setProperty("--c", colour(x.s));
             if (isTodayShown(d) && n >= mins(PERIODS[pp][0]) && n < mins(PERIODS[pp][1])) c.classList.add("now");
             c.appendChild(h("span", null, x.unpicked ? S[x.s][0].replace(" / ", "/") : S[x.s][0]));
-            c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : "pick"));
+            c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : tr("pick")));
             c.addEventListener("click", function () { openLesson(raw, d); });
             slots[d + "_" + pp] = c;
             grid.appendChild(c);
@@ -527,30 +564,30 @@
       FAM[fam].g.forEach(function (g) {
         var c = h("button", "chip", g[0]);
         c.type = "button";
-        c.appendChild(h("small", null, g[2] + " · " + S[g[1]][1]));
+        c.appendChild(h("small", null, g[2] + " · " + sname(g[1])));
         c.setAttribute("aria-pressed", String(groups[fam] === g[0]));
         c.addEventListener("click", function () { groups[fam] = g[0]; save("tt-groups", groups); onPick(); });
         chips.appendChild(c);
       });
       return chips;
     }
-    function closeBtn() { var b = h("button", "close", "Close"); b.type = "button"; b.addEventListener("click", closeSheet); return b; }
+    function closeBtn() { var b = h("button", "close", tr("close")); b.type = "button"; b.addEventListener("click", closeSheet); return b; }
 
     function openLesson(raw, dayIdx) {
       var x = resolve(raw);
       var s = S[x.s];
       sheet.textContent = "";
       sheet.appendChild(h("div", "grab"));
-      sheet.appendChild(h("h2", null, s[1]));
-      sheet.appendChild(h("div", "code", s[0] + (s[2] && s[2] !== s[0] ? " · " + s[2] : "") + (x.group ? " · group " + x.group : "")));
+      sheet.appendChild(h("h2", null, sname(x.s)));
+      sheet.appendChild(h("div", "code", s[0] + (LANG === "en" && s[2] && s[2] !== s[0] ? " · " + s[2] : "") + (x.group ? " · " + tr("group") + " " + x.group : "")));
       var facts = h("div", "facts");
-      facts.appendChild(fact("Teacher", x.teacher || (x.unpicked ? "Depends on your group" : "Not listed")));
-      facts.appendChild(fact("Classroom", x.room || (x.unpicked ? "Depends on your group" : "–")));
-      facts.appendChild(fact("Time", PERIODS[x.p][0] + " – " + PERIODS[x.p][1] + " (period " + x.p + ")"));
-      facts.appendChild(fact("Day", DAYFULL[dayIdx] + " " + dayDate(dayIdx).getDate() + " " + MON[dayDate(dayIdx).getMonth()]));
+      facts.appendChild(fact(tr("teacher"), x.teacher || (x.unpicked ? tr("dep") : tr("nolist"))));
+      facts.appendChild(fact(tr("room"), x.room || (x.unpicked ? tr("dep") : "–")));
+      facts.appendChild(fact(tr("time"), PERIODS[x.p][0] + " – " + PERIODS[x.p][1] + " (" + tr("period") + " " + x.p + ")"));
+      facts.appendChild(fact(tr("day"), DAYFULL[dayIdx] + " " + dayDate(dayIdx).getDate() + " " + MON[dayDate(dayIdx).getMonth()]));
       sheet.appendChild(facts);
       if (raw.fam) {
-        sheet.appendChild(h("h3", null, x.group ? "Change your group" : "Choose your group"));
+        sheet.appendChild(h("h3", null, x.group ? tr("change") : tr("choose")));
         sheet.appendChild(groupChips(raw.fam, function () { render(); openLesson(raw, dayIdx); }));
       }
       sheet.appendChild(closeBtn());
@@ -563,6 +600,18 @@
     $("wk-now").addEventListener("click", function () { offset = 0; render(); });
     $("back").addEventListener("click", closeDay);
 
+    function applyLang() {
+      var T_ = TX[LANG]; DAYN = T_.dayn; DAYFULL = T_.dayfull; MON = T_.mon;
+      document.documentElement.lang = LANG;
+      document.title = T_.title;
+      $("lang").textContent = T_.lang;
+      $("back").textContent = T_.back; $("prev").setAttribute("aria-label", T_.prev); $("next").setAttribute("aria-label", T_.next);
+    }
+    $("lang").addEventListener("click", function () {
+      LANG = LANG === "en" ? "et" : "en"; save("tt-lang", LANG);
+      applyLang(); render();
+    });
+    applyLang();
     window.addEventListener("resize", function () { render(); });
     render();
     setInterval(function () { if (!sheet.classList.contains("on")) { if (new Date().getDate() !== now.getDate()) { location.reload(); } else render(); } }, 60000);
