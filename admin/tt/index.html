@@ -149,7 +149,6 @@
     <div class="days" id="days"></div>
     <div id="status"></div>
         <div id="out"></div>
-    <p class="foot" id="foot"></p>
   </div>
 
   <div class="backdrop" id="backdrop"></div>
@@ -313,7 +312,6 @@
       if (view === "week") { $("status").textContent = ""; renderWeek(out, letter); }
       else { renderStatus(letter); renderDay(out, letter); }
 
-      $("foot").textContent = view === "week" ? "Tap a day to open it, or a lesson to pick your group. Week A/B switches automatically." : "";
     }
 
     function renderStatus(letter) {
