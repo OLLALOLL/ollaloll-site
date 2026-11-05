@@ -89,17 +89,25 @@
     .lesson.past { opacity: .55; }
     .empty { text-align: center; color: var(--muted); padding: 32px 12px; border: 1px dashed var(--line); border-radius: 16px; }
 
+    .gridwrap { position: relative; }
+    .daybar { position: absolute; z-index: 0; border-radius: 14px; background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(139,92,246,.1)); box-shadow: inset 0 0 0 1px rgba(201,184,255,.28); pointer-events: none; }
+    .timeline { position: absolute; z-index: 3; width: 3px; margin-left: -1.5px; border-radius: 3px; background: #ff7a93; box-shadow: 0 0 10px rgba(255,122,147,.8); pointer-events: none; }
+    .timeline span { position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); margin-bottom: 2px; padding: 1px 6px; border-radius: 99px; background: #ff7a93; color: #2a0612; font-size: .65rem; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .timeline::before { content: ""; position: absolute; left: 50%; top: -3px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: #ff7a93; }
+    .grid > * { position: relative; z-index: 1; }
     .grid { display: grid; grid-template-columns: 44px repeat(4, minmax(0, 1fr)); gap: 4px; }
     .grid .h { text-align: center; font-size: .7rem; color: var(--muted); padding: 4px 0; font-weight: 600; line-height: 1.2; }
     .grid .h b { display: block; color: var(--ink); font-size: .9rem; }
     .grid .h small { font-size: .6rem; font-weight: 500; }
     .grid .h.today { color: var(--v3); }
     .grid button.p { background: none; border: 0; padding: 0 0 0 2px; font: inherit; border-radius: 10px; }
-    .grid .p.today { background: rgba(139,92,246,.2); box-shadow: inset 0 0 0 1px rgba(201,184,255,.45); padding-left: 6px; }
+    .grid .p.today { color: var(--v3); }
+    .grid .p.today b::after { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--v3); margin-left: 6px; vertical-align: middle; box-shadow: 0 0 8px var(--v2); }
     .grid .h.cur { color: var(--v3); }
     .grid .h.corner b { background: var(--grad); color: #1a1030; border-radius: 12px; width: 34px; height: 34px; line-height: 34px; margin: 0 auto 2px; font-size: 1.2rem; }
     .grid .h.corner small { font-size: .6rem; text-transform: uppercase; letter-spacing: .06em; }
-    .grid .h.cur b { color: #1a1030; background: var(--grad); border-radius: 99px; width: 26px; margin: 0 auto 2px; }
+    .grid .h.cur b { color: var(--v3); }
+    .grid .h.cur small { color: var(--v3); }
     .sheet { overscroll-behavior: contain; touch-action: pan-y; }
     .grid .p { font-size: .7rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: left; padding-left: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
     .grid .p b { color: var(--ink); font-size: .9rem; }
@@ -379,7 +387,9 @@
     }
 
     function renderWeek(out, letter) {
+      var wrap = h("div", "gridwrap");
       var grid = h("div", "grid");
+      var slots = {}, labels = {};
       var n = nowMin();
       var corner = h("div", "h corner"); corner.appendChild(h("b", null, letter)); corner.appendChild(h("small", null, "week"));
       grid.appendChild(corner);
@@ -395,12 +405,13 @@
           dc.setAttribute("aria-label", "Open " + DAYFULL[d]);
           dc.appendChild(h("b", null, DAYN[d])); dc.appendChild(document.createTextNode(String(dayDate(d).getDate())));
           dc.addEventListener("click", function () { openDay(d); });
+          labels[d] = dc;
           grid.appendChild(dc);
         })(d);
         for (var pp = 1; pp <= 4; pp++) {
           (function (d, pp) {
             var raw = T[letter][d].filter(function (l) { return l.p === pp; })[0];
-            if (!raw) { grid.appendChild(h("div", "cell blank")); return; }
+            if (!raw) { var bl = h("div", "cell blank"); slots[d + "_" + pp] = bl; grid.appendChild(bl); return; }
             var x = resolve(raw);
             var c = h("button", "cell");
             c.type = "button";
@@ -409,11 +420,36 @@
             c.appendChild(h("span", null, x.unpicked ? S[x.s][0].replace(" / ", "/") : S[x.s][0]));
             c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : "pick"));
             c.addEventListener("click", function () { openLesson(raw, d); });
+            slots[d + "_" + pp] = c;
             grid.appendChild(c);
           })(d, pp);
         }
       }
-      out.appendChild(grid);
+      wrap.appendChild(grid);
+      out.appendChild(wrap);
+      if (offset === 0 && todayIdx >= 0 && n >= 7 * 60 && n <= 17 * 60) placeNow(wrap, labels[todayIdx], slots, n);
+    }
+
+    // today's row band + live time line (like Edupage's red line)
+    function placeNow(wrap, label, slots, n) {
+      var W = wrap.getBoundingClientRect(), L = label.getBoundingClientRect();
+      var top = L.top - W.top, hgt = L.height;
+      var row = []; for (var p = 1; p <= 4; p++) row.push(slots[todayIdx + "_" + p].getBoundingClientRect());
+      var bar = h("div", "daybar");
+      bar.style.left = (L.left - W.left - 2) + "px"; bar.style.width = (W.width - (L.left - W.left) + 2) + "px";
+      bar.style.top = (top - 3) + "px"; bar.style.height = (hgt + 6) + "px";
+      wrap.insertBefore(bar, wrap.firstChild);
+      var x = null;
+      for (var i = 0; i < 4; i++) {
+        var st = mins(PERIODS[i + 1][0]), en = mins(PERIODS[i + 1][1]);
+        if (n >= st && n < en) { x = row[i].left + row[i].width * (n - st) / (en - st); break; }
+        if (n < st) { x = i === 0 ? row[0].left - 2 : (row[i - 1].right + row[i].left) / 2; break; }
+      }
+      if (x === null) x = row[3].right + 2;
+      var line = h("div", "timeline");
+      line.style.left = (x - W.left) + "px"; line.style.top = (top - 2) + "px"; line.style.height = (hgt + 4) + "px";
+      line.appendChild(h("span", null, pad(new Date().getHours()) + ":" + pad(new Date().getMinutes())));
+      wrap.appendChild(line);
     }
 
     /* ---------- sheets ---------- */
@@ -523,6 +559,7 @@
     $("wk-now").addEventListener("click", function () { offset = 0; render(); });
     $("back").addEventListener("click", closeDay);
 
+    window.addEventListener("resize", function () { render(); });
     render();
     setInterval(function () { if (!sheet.classList.contains("on")) { if (new Date().getDate() !== now.getDate()) { location.reload(); } else render(); } }, 60000);
 
