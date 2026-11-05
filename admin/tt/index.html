@@ -240,18 +240,18 @@
     // split-group families: [group, subject, teacher, default room]
     var FAM = {
       mat: { name: "Mathematics", s: "mat", g: [
-        ["mat1", "mat", "Lepik", "C307"], ["mat2", "mat", "Vetevool", "C305"], ["mat3", "mat", "Saarepuu", "C304"],
-        ["mat4", "mat", "Kivi", "C241"], ["mat5", "mat", "Kiis", "C115"] ] },
+        ["mat1", "mat", "Maarika Lepik", "C307"], ["mat2", "mat", "Kaia Vetevool", "C305"], ["mat3", "mat", "Taive Saarepuu", "C304"],
+        ["mat4", "mat", "Greete Kivi", "C241"], ["mat5", "mat", "Kristina Kiis", "C115"] ] },
       ika: { name: "English (ika)", s: "ika", g: [
-        ["IK1", "ika", "Kivik", "C161"], ["IK2", "ika", "Mällik", "C155"], ["IK3", "ika", "Kukk", "C233"],
-        ["IK4", "ika", "Altenberg", "C129"], ["IK5", "ika", "Kõdre", "C155"], ["IK6", "ika", "Kolbi", "C131"] ] },
+        ["IK1", "ika", "Kaisa Kivi", "C141"], ["IK2", "ika", "Mirjam Mätlik", "C135"], ["IK3", "ika", "Stina Kukk", "C233"],
+        ["IK4", "ika", "Laura Altenberg", "C129"], ["IK5", "ika", "Kertu Koldre", "C133"], ["IK6", "ika", "Kirke Kobi", "C131"] ] },
       b2: { name: "Russian / German (vkb / skb)", s: "b2", g: [
-        ["VK1", "vkb", "Peltonov", "C233"], ["VK2", "vkb", "Nerada", "C115"], ["VK3", "vkb", "Pobjartina", "C125"],
-        ["VK4", "vkb", "Reimann", "C139"], ["SK1", "skb", "Keskla", "C202"], ["SK2", "skb", "Tiitsepere", "C125"] ] },
+        ["VK1", "vkb", "Oleg Fedotov", "C235"], ["VK2", "vkb", "Jelena Neroda", "C115"], ["VK3", "vkb", "Kaja Pobjaržina", "C123"],
+        ["VK4", "vkb", "Ljudmila Reimann", "C119"], ["SK1", "skb", "Katrin Keskla", "C202"], ["SK2", "skb", "Pille Toompere", "C125"] ] },
       kk: { name: "Physical education (kk)", s: "kk", g: [
-        ["T1", "kk", "Rünne", "D0"], ["P1", "kk", "Porkveli", "D101-1"] ] },
+        ["T1", "kk", "Eha Rünne", "D0"], ["P1", "kk", "Ahmed Porkveli", "D101-1"] ] },
       kt: { name: "Handicraft / technology", s: "kt", g: [
-        ["käs", "käs", "Nahkur", "C104"], ["teh", "teh", "Kobrusepp", "C148"] ] }
+        ["käs", "käs", "Kairy Nahkur", "C104"], ["teh", "teh", "Tiit Kobrusepp", "C148"] ] }
     };
 
     function L(p, s, room, teacher) { return { p: p, s: s, r: room, t: teacher || null }; }
@@ -259,18 +259,18 @@
 
     var T = {
       A: [
-        [L(1, "kj", "C311", "Kivi"), G(2, "mat"), L(3, "mu", "B217", "Kalvet A."), G(4, "kt")],
-        [L(1, "ek", "C241", "Pappel T."), G(2, "mat", { mat5: "C302" })],
-        [L(1, "keemia", "C222", "Pilter K."), L(2, "kirj", "C241", "Pappel T."), L(3, "bio", "C214", "Heinsalu"), G(4, "ika")],
-        [L(1, "ek", "C241", "Pappel T."), L(2, "geo", "C204", "Ojassalu"), G(3, "kk"), G(4, "b2")],
-        [L(1, "ühisk", "C223"), L(2, "aj", "C229"), L(3, "f", "C210"), G(4, "b2")]
+        [L(1, "kj", "C311", "Greete Kivi"), G(2, "mat"), L(3, "mu", "B217", "Andrus Kalvet"), G(4, "kt")],
+        [L(1, "ek", "C241", "Triinu Pappel"), G(2, "mat", { mat5: "C302" })],
+        [L(1, "keemia", "C222", "Kati Pilter"), L(2, "kirj", "C241", "Triinu Pappel"), L(3, "bio", "C214", "Meri Heinsalu"), G(4, "ika")],
+        [L(1, "ek", "C241", "Triinu Pappel"), L(2, "geo", "C204", "Kersti Ojassalu"), G(3, "kk"), G(4, "b2")],
+        [L(1, "ühisk", "C223", "Heimar Vaarend"), L(2, "aj", "C229", "Maarja Kapsi"), L(3, "f", "C210", "Koit Luus"), G(4, "b2")]
       ],
       B: [
-        [L(1, "keemia", "C222", "Pilter K."), G(2, "mat")],
-        [L(1, "ek", "C241", "Pappel T."), G(2, "mat", { mat5: "C302" }), G(3, "ika")],
-        [G(1, "mat", { mat4: "C222", mat5: "C302" }), L(2, "kirj", "C241", "Pappel T."), L(3, "bio", "C214", "Heinsalu"), G(4, "ika")],
-        [L(2, "geo", "C204", "Ojassalu"), G(3, "kk"), G(4, "b2")],
-        [L(1, "ühisk", "C223"), L(2, "aj", "C229"), L(3, "f", "C210")]
+        [L(1, "keemia", "C222", "Kati Pilter"), G(2, "mat")],
+        [L(1, "ek", "C241", "Triinu Pappel"), G(2, "mat", { mat5: "C302" }), G(3, "ika")],
+        [G(1, "mat", { mat4: "C222", mat5: "C302" }), L(2, "kirj", "C241", "Triinu Pappel"), L(3, "bio", "C214", "Meri Heinsalu"), G(4, "ika")],
+        [L(2, "geo", "C204", "Kersti Ojassalu"), G(3, "kk"), G(4, "b2")],
+        [L(1, "ühisk", "C223", "Heimar Vaarend"), L(2, "aj", "C229", "Maarja Kapsi"), L(3, "f", "C210", "Koit Luus")]
       ]
     };
 
