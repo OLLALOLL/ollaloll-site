@@ -91,6 +91,10 @@
 
     html.lock, html.lock body { overflow: hidden; height: 100%; overscroll-behavior: none; position: relative; }
     html { overscroll-behavior-y: none; }
+    .cell { position: relative; }
+    .cell.chg { border-style: dashed; border-color: #ffb86b; }
+    .cell.chg::after { content: "!"; position: absolute; top: 2px; right: 5px; font-size: .75rem; font-weight: 800; color: #ffb86b; }
+    .lesson.chg { border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-color: #ffb86b; }
     .gridwrap { position: relative; }
     .daybar { position: absolute; z-index: 0; border-radius: 14px; background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(139,92,246,.1)); box-shadow: inset 0 0 0 1px rgba(201,184,255,.28); pointer-events: none; }
     .timeline { position: absolute; z-index: 3; width: 3px; margin-left: -1.5px; border-radius: 3px; background: #ff7a93; box-shadow: 0 0 10px rgba(255,122,147,.8); pointer-events: none; }
@@ -185,7 +189,7 @@
         ends: function (n) { return "ends in " + n + " min"; }, nextAt: function (a, t) { return "Next: " + a + " at " + t; },
         teacher: "Teacher", room: "Classroom", time: "Time", day: "Day", period: "period",
         dep: "Depends on your group", nolist: "Not listed", pickG: "pick group", pick: "pick",
-        choose: "Choose your group", change: "Change your group", close: "Close", open: "Open", group: "group", lang: "ET"
+        choose: "Choose your group", change: "Change your group", close: "Close", open: "Open", group: "group", lang: "ET", changed: "Changed lesson", note: "Note", nolessons: "No lessons"
       },
       et: {
         dayn: ["Es", "Te", "Ko", "Ne", "Re"],
@@ -198,7 +202,7 @@
         ends: function (n) { return "lõpeb " + n + " min pärast"; }, nextAt: function (a, t) { return "Järgmine: " + a + " kell " + t; },
         teacher: "Õpetaja", room: "Klassiruum", time: "Aeg", day: "Päev", period: "tund",
         dep: "Sõltub sinu rühmast", nolist: "Pole märgitud", pickG: "vali rühm", pick: "vali",
-        choose: "Vali oma rühm", change: "Muuda oma rühma", close: "Sulge", open: "Ava", group: "rühm", lang: "EN"
+        choose: "Vali oma rühm", change: "Muuda oma rühma", close: "Sulge", open: "Ava", group: "rühm", lang: "EN", changed: "Muudetud tund", note: "Märkus", nolessons: "Tunde pole"
       }
     };
     var LANG = (function () {
@@ -298,7 +302,16 @@
 
     /* ---------- lesson resolution ---------- */
     function resolve(l) {
-      if (l.s) return { p: l.p, s: l.s, room: l.r, teacher: l.t, group: null, fam: null };
+      if (l.s) return { p: l.p, s: l.s, room: l.r, teacher: l.t, group: null, fam: null, ch: l.ch };
+      if (l.opts) {
+        var pk = groups[l.fam];
+        for (var j = 0; j < l.opts.length; j++) {
+          var o = l.opts[j];
+          if (o.g === pk) return { p: l.p, s: o.s, room: o.r, teacher: o.t || null, group: o.g, fam: l.fam, ch: o.ch };
+        }
+        var same = l.opts.every(function (o) { return o.s === l.opts[0].s; });
+        return { p: l.p, s: same ? l.opts[0].s : (S[l.fam] ? l.fam : l.opts[0].s), room: null, teacher: null, group: null, fam: l.fam, unpicked: true };
+      }
       var f = FAM[l.fam], pick = groups[l.fam];
       for (var i = 0; i < f.g.length; i++) {
         var g = f.g[i];
@@ -307,6 +320,27 @@
         }
       }
       return { p: l.p, s: f.s, room: null, teacher: null, group: null, fam: l.fam, unpicked: true };
+    }
+
+    /* ---------- dated data from Edupage (data.json) overrides the A/B pattern ---------- */
+    var SNAP = load("tt-snap", null);
+    var HIDE = { koor: 1 };
+    var FAMOF = { mat: "mat", ika: "ika", vkb: "b2", skb: "b2", kk: "kk", "käs-tehn": "kt" };
+    function buildDay(items) {
+      var byP = {};
+      items.forEach(function (a) {
+        if (a[1] == null || a[0] == null || HIDE[a[1]]) return;
+        var it = { p: a[0], s: a[1], sn: a[2], col: a[3], g: a[4], t: a[5], r: a[6], ch: !!a[7] };
+        if (it.s === "käs-tehn" && (it.g === "käs" || it.g === "teh")) it.s = it.g;
+        if (!S[it.s]) S[it.s] = [it.s, it.sn || it.s, (it.sn || it.s).toLowerCase(), it.col || "#a78bfa"];
+        (byP[it.p] = byP[it.p] || []).push(it);
+      });
+      return Object.keys(byP).map(Number).sort(function (x, y) { return x - y; }).map(function (p) {
+        var arr = byP[p];
+        if (arr.length === 1 && !arr[0].g) return { p: p, s: arr[0].s, r: arr[0].r, t: arr[0].t || null, ch: arr[0].ch };
+        var fk = arr[0].s === "käs" || arr[0].s === "teh" ? "kt" : (FAMOF[arr[0].s] || ("x:" + arr[0].s));
+        return { p: p, fam: fk, opts: arr };
+      });
     }
 
     /* ---------- DOM helpers ---------- */
@@ -322,7 +356,13 @@
 
     function shownMonday() { var m = new Date(monday); m.setDate(m.getDate() + offset * 7); return m; }
     function dayDate(i) { var m = shownMonday(); m.setDate(m.getDate() + i); return m; }
-    function curLetter() { return autoLetter(shownMonday()); }
+    function isoOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+    function curLetter() { var m = isoOf(shownMonday()); return (SNAP && SNAP.letters && SNAP.letters[m]) || autoLetter(shownMonday()); }
+    function dayLessons(d) {
+      var date = isoOf(dayDate(d));
+      if (SNAP && SNAP.days && SNAP.days[date]) return buildDay(SNAP.days[date]);
+      return T[curLetter()][d];
+    }
     function isTodayShown(i) { return offset === 0 && i === todayIdx; }
 
     function nowMin() { var n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
@@ -366,7 +406,7 @@
     function renderStatus(letter) {
       var box = $("status"); box.textContent = "";
       if (!isTodayShown(sel)) return;
-      var lessons = T[letter][sel].map(resolve);
+      var lessons = dayLessons(sel).map(resolve);
       var n = nowMin(), cur = null, next = null;
       lessons.forEach(function (x) {
         var st = mins(PERIODS[x.p][0]), en = mins(PERIODS[x.p][1]);
@@ -397,8 +437,8 @@
     }
 
     function renderDay(out, letter) {
-      var lessons = T[letter][sel];
-      if (!lessons.length) { out.appendChild(h("div", "empty", "No lessons")); return; }
+      var lessons = dayLessons(sel);
+      if (!lessons.length) { out.appendChild(h("div", "empty", tr("nolessons"))); return; }
       var list = h("div", "list");
       var n = nowMin();
       var marked = !isTodayShown(sel);
@@ -417,7 +457,8 @@
         }
         var t = h("div", "t"); t.appendChild(h("b", null, st)); t.appendChild(document.createTextNode(en));
         var nm = h("div", "n"); nm.appendChild(h("strong", null, sname(x.s)));
-        nm.appendChild(h("em", null, x.group ? S[x.s][0] + " · " + x.group : S[x.s][0]));
+        nm.appendChild(h("em", null, (x.group ? S[x.s][0] + " · " + x.group : S[x.s][0]) + (x.ch ? " · " + tr("changed").toLowerCase() : "")));
+        if (x.ch) btn.classList.add("chg");
         var r = h("div", x.unpicked ? "r pick" : "r", x.unpicked ? tr("pickG") : (x.room || "–"));
         btn.appendChild(t); btn.appendChild(nm); btn.appendChild(r);
         btn.addEventListener("click", function () { openLesson(raw, sel); });
@@ -451,12 +492,13 @@
         })(d);
         for (var pp = 1; pp <= 4; pp++) {
           (function (d, pp) {
-            var raw = T[letter][d].filter(function (l) { return l.p === pp; })[0];
+            var raw = dayLessons(d).filter(function (l) { return l.p === pp; })[0];
             if (!raw) { var bl = h("div", "cell blank"); slots[d + "_" + pp] = bl; grid.appendChild(bl); return; }
             var x = resolve(raw);
             var c = h("button", "cell");
             c.type = "button";
             c.style.setProperty("--c", colour(x.s));
+            if (x.ch) c.classList.add("chg");
             if (isTodayShown(d) && n >= mins(PERIODS[pp][0]) && n < mins(PERIODS[pp][1])) c.classList.add("now");
             c.appendChild(h("span", null, x.unpicked ? S[x.s][0].replace(" / ", "/") : S[x.s][0]));
             c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : tr("pick")));
@@ -559,9 +601,10 @@
     function fact(label, value) {
       var f = h("div", "fact"); f.appendChild(h("span", null, label)); f.appendChild(h("b", null, value)); return f;
     }
-    function groupChips(fam, onPick) {
+    function groupChips(fam, onPick, opts) {
       var chips = h("div", "chips");
-      FAM[fam].g.forEach(function (g) {
+      var list = opts ? opts.map(function (o) { return [o.g, o.s, o.t || o.r, o.r]; }) : FAM[fam].g;
+      list.forEach(function (g) {
         var c = h("button", "chip", g[0]);
         c.type = "button";
         c.appendChild(h("small", null, g[2] + " · " + sname(g[1])));
@@ -585,10 +628,11 @@
       facts.appendChild(fact(tr("room"), x.room || (x.unpicked ? tr("dep") : "–")));
       facts.appendChild(fact(tr("time"), PERIODS[x.p][0] + " – " + PERIODS[x.p][1] + " (" + tr("period") + " " + x.p + ")"));
       facts.appendChild(fact(tr("day"), DAYFULL[dayIdx] + " " + dayDate(dayIdx).getDate() + " " + MON[dayDate(dayIdx).getMonth()]));
+      if (x.ch) { var nt = fact(tr("note"), tr("changed")); nt.lastChild.style.color = "#ffb86b"; facts.insertBefore(nt, facts.firstChild); }
       sheet.appendChild(facts);
       if (raw.fam) {
         sheet.appendChild(h("h3", null, x.group ? tr("change") : tr("choose")));
-        sheet.appendChild(groupChips(raw.fam, function () { render(); openLesson(raw, dayIdx); }));
+        sheet.appendChild(groupChips(raw.fam, function () { render(); openLesson(raw, dayIdx); }, raw.opts));
       }
       sheet.appendChild(closeBtn());
       openSheet();
@@ -612,6 +656,13 @@
       applyLang(); render();
     });
     applyLang();
+    function loadSnap() {
+      fetch("data.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (j && j.days) { SNAP = j; save("tt-snap", j); render(); }
+      }).catch(function () {});
+    }
+    loadSnap();
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) loadSnap(); });
     window.addEventListener("resize", function () { render(); });
     render();
     setInterval(function () { if (!sheet.classList.contains("on")) { if (new Date().getDate() !== now.getDate()) { location.reload(); } else render(); } }, 60000);
