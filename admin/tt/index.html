@@ -89,6 +89,8 @@
     .lesson.past { opacity: .55; }
     .empty { text-align: center; color: var(--muted); padding: 32px 12px; border: 1px dashed var(--line); border-radius: 16px; }
 
+    html.lock, html.lock body { overflow: hidden; height: 100%; overscroll-behavior: none; position: relative; }
+    html { overscroll-behavior-y: none; }
     .gridwrap { position: relative; }
     .daybar { position: absolute; z-index: 0; border-radius: 14px; background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(139,92,246,.1)); box-shadow: inset 0 0 0 1px rgba(201,184,255,.28); pointer-events: none; }
     .timeline { position: absolute; z-index: 3; width: 3px; margin-left: -1.5px; border-radius: 3px; background: #ff7a93; box-shadow: 0 0 10px rgba(255,122,147,.8); pointer-events: none; }
@@ -300,6 +302,8 @@
       var nw = new Date();
       $("clock").textContent = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
       $("row2").hidden = view === "week";
+      document.documentElement.classList.toggle("lock", view === "week");
+      if (view === "week") window.scrollTo(0, 0);
 
       // day tabs
       var days = $("days"); days.textContent = "";
