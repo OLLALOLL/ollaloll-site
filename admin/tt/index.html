@@ -36,6 +36,19 @@
     }
     button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
+    .hbtns { display: flex; gap: 8px; }
+    .icon-btn .cnt { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 6px; border-radius: 99px; background: #ffb86b; color: #2a1600; font-size: .75rem; font-weight: 800; line-height: 20px; text-align: center; }
+    .icon-btn.on { border-color: var(--v3); background: rgba(139,92,246,.28); }
+    .chday h3 { margin: 18px 0 8px; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; color: var(--v3); }
+    .chcard { --c: #ffb86b; margin-bottom: 8px; padding: 12px 14px; border-radius: 16px; border: 1px solid var(--line); border-left: 5px solid var(--c); background: color-mix(in srgb, var(--c) 12%, rgba(255,255,255,.03)); }
+    .chcard.cancel { --c: #ff7a93; }
+    .chcard.none { --c: #8b84a8; }
+    .chcard.new { --c: #a78bfa; }
+    .chcard .top2 { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .chcard strong { font-size: 1.02rem; overflow-wrap: anywhere; }
+    .chcard .badge { flex: none; padding: 2px 10px; border-radius: 99px; background: var(--c); color: #1a1030; font-size: .72rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+    .chcard p { margin: 4px 0 0; color: var(--muted); font-size: .88rem; overflow-wrap: anywhere; }
+    .chnote { margin-top: 18px; text-align: center; color: var(--muted); font-size: .8rem; }
     header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     h1 { font-family: var(--disp); font-weight: 600; font-size: 1.5rem; margin: 0; letter-spacing: -.01em; }
     h1 small { display: block; font-family: var(--font); font-weight: 500; font-size: .8rem; color: var(--muted); letter-spacing: 0; margin-top: 2px; }
@@ -148,10 +161,10 @@
   <div class="app">
     <header class="top">
       <h1>9D<small id="clock">Timetable</small></h1>
-      <button class="icon-btn" id="lang" type="button" aria-label="Language"></button>
+      <div class="hbtns"><button class="icon-btn" id="btn-changes" type="button"></button><button class="icon-btn" id="lang" type="button" aria-label="Language"></button></div>
     </header>
 
-    <div class="weekbar">
+    <div class="weekbar" id="weekbar">
       <button class="nav" id="prev" type="button">‹</button>
       <div class="title"><div><b id="wk-letter">A</b><span id="wk-range"></span></div><button class="nowtag" id="wk-now" type="button"></button></div>
       <button class="nav" id="next" type="button">›</button>
@@ -189,7 +202,7 @@
         ends: function (n) { return "ends in " + n + " min"; }, nextAt: function (a, t) { return "Next: " + a + " at " + t; },
         teacher: "Teacher", room: "Classroom", time: "Time", day: "Day", period: "period",
         dep: "Depends on your group", nolist: "Not listed", pickG: "pick group", pick: "pick",
-        choose: "Choose your group", change: "Change your group", close: "Close", open: "Open", group: "group", lang: "ET", changed: "Changed lesson", note: "Note", nolessons: "No lessons"
+        choose: "Choose your group", change: "Change your group", close: "Close", open: "Open", group: "group", lang: "ET", changed: "Changed lesson", changes: "Changes", noChanges: "No changes coming up", cancelled: "Cancelled", noLessonsDay: "No lessons this day", subL: "Changed", newL: "New lesson", tMissing: "Teacher not listed", tNow: "Teacher", was: "was", synced: "Last synced", note: "Note", nolessons: "No lessons"
       },
       et: {
         dayn: ["Es", "Te", "Ko", "Ne", "Re"],
@@ -202,7 +215,7 @@
         ends: function (n) { return "lõpeb " + n + " min pärast"; }, nextAt: function (a, t) { return "Järgmine: " + a + " kell " + t; },
         teacher: "Õpetaja", room: "Klassiruum", time: "Aeg", day: "Päev", period: "tund",
         dep: "Sõltub sinu rühmast", nolist: "Pole märgitud", pickG: "vali rühm", pick: "vali",
-        choose: "Vali oma rühm", change: "Muuda oma rühma", close: "Sulge", open: "Ava", group: "rühm", lang: "EN", changed: "Muudetud tund", note: "Märkus", nolessons: "Tunde pole"
+        choose: "Vali oma rühm", change: "Muuda oma rühma", close: "Sulge", open: "Ava", group: "rühm", lang: "EN", changed: "Muudetud tund", changes: "Muudatused", noChanges: "Lähiajal muudatusi pole", cancelled: "Ära jäänud", noLessonsDay: "Sel päeval tunde pole", subL: "Muudetud", newL: "Uus tund", tMissing: "Õpetaja pole märgitud", tNow: "Õpetaja", was: "oli", synced: "Viimati uuendatud", note: "Märkus", nolessons: "Tunde pole"
       }
     };
     var LANG = (function () {
@@ -379,12 +392,15 @@
       var nw = new Date();
       $("clock").textContent = TX[LANG].daysun[nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
       $("row2").hidden = view === "week";
+      $("weekbar").hidden = view === "changes";
+      var nChg = changeCount(); var bc = $("btn-changes"); bc.textContent = tr("changes"); bc.classList.toggle("on", view === "changes");
+      if (nChg > 0) { var sp = h("span", "cnt", String(nChg)); bc.appendChild(sp); }
       document.documentElement.classList.toggle("lock", view === "week");
       if (view === "week") window.scrollTo(0, 0);
 
       // day tabs
       var days = $("days"); days.textContent = "";
-      days.hidden = view === "week";
+      days.hidden = view !== "day";
       for (var i = 0; i < 5; i++) {
         (function (i) {
           var btn = h("button", isTodayShown(i) ? "today" : "");
@@ -399,8 +415,97 @@
 
       var out = $("out"); out.textContent = "";
       if (view === "week") { $("status").textContent = ""; renderWeek(out, letter); }
+      else if (view === "changes") { $("status").textContent = ""; renderChanges(out); }
       else { renderStatus(letter); renderDay(out, letter); }
 
+    }
+
+    /* ---------- changes page ---------- */
+    function staticDayFor(date) {
+      var dow = (date.getDay() + 6) % 7;
+      var mon = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dow);
+      var letter = (SNAP && SNAP.letters && SNAP.letters[isoOf(mon)]) || autoLetter(mon);
+      return T[letter][dow] || [];
+    }
+    function expandItems(lessons) {
+      var out = [];
+      lessons.forEach(function (l) {
+        if (l.s) out.push({ p: l.p, s: l.s, g: "", t: l.t || "", r: l.r || "", ch: !!l.ch, fam: null });
+        else if (l.opts) l.opts.forEach(function (o) { out.push({ p: l.p, s: o.s, g: o.g, t: o.t || "", r: o.r || "", ch: !!o.ch, fam: l.fam }); });
+        else FAM[l.fam].g.forEach(function (g) { out.push({ p: l.p, s: g[1], g: g[0], t: g[2], r: (l.ov && l.ov[g[0]]) || g[3], ch: false, fam: l.fam }); });
+      });
+      return out;
+    }
+    function computeChanges() {
+      var res = [];
+      if (!SNAP || !SNAP.days) return res;
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      Object.keys(SNAP.days).sort().forEach(function (ds) {
+        var q = ds.split("-"), date = new Date(+q[0], +q[1] - 1, +q[2]);
+        var dow = (date.getDay() + 6) % 7;
+        if (date < today || dow > 4) return;
+        function rel(it) { return !it.fam || !groups[it.fam] || groups[it.fam] === it.g; }
+        var live = expandItems(buildDay(SNAP.days[ds])).filter(rel), stat = expandItems(staticDayFor(date)).filter(rel);
+        var entries = [];
+        if (!live.length && stat.length) entries.push({ kind: "none" });
+        else {
+          var lk = {}, sk = {};
+          live.forEach(function (it) { lk[it.p + "|" + it.s + "|" + it.g] = it; });
+          stat.forEach(function (it) { sk[it.p + "|" + it.s + "|" + it.g] = it; });
+          stat.forEach(function (it) { if (!lk[it.p + "|" + it.s + "|" + it.g]) entries.push({ kind: "cancel", it: it }); });
+          live.forEach(function (it) {
+            var st = sk[it.p + "|" + it.s + "|" + it.g];
+            if (!st) entries.push({ kind: "new", it: it });
+            else if (it.ch || (it.t && st.t && it.t !== st.t)) entries.push({ kind: "sub", it: it, was: st.t });
+          });
+        }
+        if (entries.length) res.push({ date: date, dow: dow, entries: entries });
+      });
+      return res;
+    }
+    function changeCount() { var n = 0; computeChanges().forEach(function (d) { n += d.entries.length; }); return n; }
+
+    function renderChanges(out) {
+      var list = computeChanges();
+      if (!list.length) out.appendChild(h("div", "empty", tr("noChanges")));
+      list.forEach(function (day) {
+        var box = h("div", "chday");
+        box.appendChild(h("h3", null, DAYFULL[day.dow] + " " + day.date.getDate() + " " + MON[day.date.getMonth()]));
+        day.entries.forEach(function (e) {
+          var card = h("div", "chcard " + e.kind);
+          var top = h("div", "top2");
+          if (e.kind === "none") {
+            top.appendChild(h("strong", null, tr("noLessonsDay")));
+            top.appendChild(h("span", "badge", tr("cancelled")));
+            card.appendChild(top);
+          } else {
+            var it = e.it;
+            card.style.setProperty("--c", e.kind === "cancel" ? "#ff7a93" : e.kind === "new" ? "#a78bfa" : "#ffb86b");
+            top.appendChild(h("strong", null, sname(it.s) + (it.g ? " · " + it.g : "")));
+            top.appendChild(h("span", "badge", e.kind === "cancel" ? tr("cancelled") : e.kind === "new" ? tr("newL") : tr("subL")));
+            card.appendChild(top);
+            var line = PERIODS[it.p] ? PERIODS[it.p][0] + "–" + PERIODS[it.p][1] : "";
+            if (e.kind !== "cancel" && it.r) line += " · " + it.r;
+            if (e.kind === "cancel" && it.r) line += " · " + it.r;
+            card.appendChild(h("p", null, line));
+            if (e.kind === "sub") {
+              card.appendChild(h("p", null, it.t ? tr("tNow") + ": " + it.t + (e.was && e.was !== it.t ? " (" + tr("was") + " " + e.was + ")" : "") : tr("tMissing") + (e.was ? " (" + tr("was") + " " + e.was + ")" : "")));
+            }
+          }
+          box.appendChild(card);
+        });
+        out.appendChild(box);
+      });
+      if (SNAP && SNAP.generated) {
+        var g = SNAP.generated.split("-");
+        out.appendChild(h("div", "chnote", tr("synced") + " " + (+g[2]) + " " + MON[+g[1] - 1]));
+      }
+    }
+    function openChanges() {
+      if (view === "changes") { closeDay(); return; }
+      view = "changes";
+      try { history.pushState({ tt: "chg" }, ""); } catch (e) {}
+      render(); window.scrollTo(0, 0);
     }
 
     function renderStatus(letter) {
@@ -558,7 +663,7 @@
       render(); window.scrollTo(0, 0);
     }
     function closeDay() {
-      if (view !== "day") return;
+      if (view === "week") return;
       view = "week"; ignorePop++;
       try { history.back(); } catch (e) { ignorePop--; }
       render();
@@ -566,7 +671,7 @@
     window.addEventListener("popstate", function () {
       if (ignorePop > 0) { ignorePop--; return; }
       if (sheetOpen) { sheetOpen = false; hideSheet(); }
-      else if (view === "day") { view = "week"; render(); }
+      else if (view !== "week") { view = "week"; render(); }
     });
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
@@ -641,6 +746,7 @@
     /* ---------- events ---------- */
     $("prev").addEventListener("click", function () { offset--; render(); });
     $("next").addEventListener("click", function () { offset++; render(); });
+    $("btn-changes").addEventListener("click", openChanges);
     $("wk-now").addEventListener("click", function () { offset = 0; render(); });
     $("back").addEventListener("click", closeDay);
 
