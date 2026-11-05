@@ -47,6 +47,13 @@
     .weekbar .title b { display: inline-block; padding: 2px 12px; border-radius: 99px; background: var(--grad); color: #1a1030; font-weight: 700; margin-right: 6px; }
     .weekbar .title span { color: var(--muted); font-size: .95rem; }
     .row2 { display: flex; gap: 8px; margin-bottom: 14px; }
+    [hidden] { display: none !important; }
+    .backbtn { min-height: 44px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); font-weight: 600; }
+    .nowtag { margin-top: 4px; border: 1px solid rgba(201,184,255,.45); background: rgba(139,92,246,.18); color: var(--v3); border-radius: 99px; padding: 3px 12px; font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; min-height: 26px; }
+    .nowtag.btn { background: var(--grad); color: #1a1030; border-color: transparent; min-height: 34px; padding: 5px 14px; }
+    .nowmark { display: flex; align-items: center; gap: 8px; color: var(--v3); font-size: .8rem; font-weight: 700; font-variant-numeric: tabular-nums; margin: -2px 0; }
+    .nowmark::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--v3); box-shadow: 0 0 10px var(--v2); }
+    .nowmark::after { content: ""; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--v3), transparent); }
     .seg { display: flex; flex: 1; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); padding: 3px; gap: 3px; }
     .seg button { flex: 1; min-height: 38px; border: 0; border-radius: 11px; background: transparent; color: var(--muted); font-weight: 600; font-size: .9rem; }
     .seg button[aria-pressed="true"] { background: var(--glass2); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(201,184,255,.35); }
@@ -87,19 +94,25 @@
     .grid .h b { display: block; color: var(--ink); font-size: .9rem; }
     .grid .h small { font-size: .6rem; font-weight: 500; }
     .grid .h.today { color: var(--v3); }
+    .grid button.p { background: none; border: 0; padding: 0 0 0 2px; font: inherit; border-radius: 10px; }
+    .grid .p.today { background: rgba(139,92,246,.2); box-shadow: inset 0 0 0 1px rgba(201,184,255,.45); padding-left: 6px; }
+    .grid .h.cur { color: var(--v3); }
+    .grid .h.cur b { color: #1a1030; background: var(--grad); border-radius: 99px; width: 26px; margin: 0 auto 2px; }
+    .sheet { overscroll-behavior: contain; touch-action: pan-y; }
     .grid .p { font-size: .7rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: left; padding-left: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
     .grid .p b { color: var(--ink); font-size: .9rem; }
     .grid .p.today b { color: var(--v3); }
-    .cell { --c: #a78bfa; min-height: 62px; border-radius: 10px; border: 1px solid var(--line); border-top: 3px solid var(--c); background: color-mix(in srgb, var(--c) 16%, rgba(255,255,255,.03)); padding: 4px 2px; font-size: .78rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; min-width: 0; }
+    .cell { --c: #a78bfa; min-height: 62px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--c) 22%, transparent); background: color-mix(in srgb, var(--c) 16%, rgba(255,255,255,.03)); padding: 4px 2px; font-size: .78rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; min-width: 0; }
     .cell small { font-weight: 500; color: var(--muted); font-size: .66rem; }
-    .cell.blank { background: transparent; border: 1px dashed rgba(255,255,255,.06); border-top-width: 1px; cursor: default; }
+    .cell.blank { background: transparent; border: 1px dashed rgba(255,255,255,.06); cursor: default; }
     .cell.now { box-shadow: 0 0 0 2px var(--v3); }
 
     .backdrop { position: fixed; inset: 0; background: rgba(5,3,12,.65); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .18s; z-index: 20; }
     .backdrop.on { opacity: 1; pointer-events: auto; }
     .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-width: 520px; margin: 0 auto; max-height: 86vh; overflow: auto; border-radius: 24px 24px 0 0; background: #17122a; border: 1px solid var(--line); border-bottom: 0; padding: 18px 18px calc(22px + env(safe-area-inset-bottom)); transform: translateY(105%); transition: transform .22s ease; }
     .sheet.on { transform: none; }
-    .sheet .grab { width: 44px; height: 4px; border-radius: 4px; background: var(--line); margin: -6px auto 12px; }
+    .sheet .grab { width: 44px; height: 5px; border-radius: 4px; background: rgba(255,255,255,.25); margin: -6px auto 12px; position: relative; }
+    .sheet .grab::after { content: ""; position: absolute; inset: -14px -40px; }
     .sheet h2 { margin: 0; font-family: var(--disp); font-weight: 600; font-size: 1.25rem; overflow-wrap: anywhere; }
     .sheet .code { color: var(--muted); font-size: .9rem; margin: 2px 0 14px; }
     .facts { display: grid; gap: 8px; margin-bottom: 14px; }
@@ -118,32 +131,22 @@
 <body>
   <div class="app">
     <header class="top">
-      <h1>9D<small>Timetable</small></h1>
-      <button class="icon-btn" id="btn-groups" type="button">My groups</button>
+      <h1>9D<small id="clock">Timetable</small></h1>
     </header>
 
     <div class="weekbar">
       <button class="nav" id="prev" type="button" aria-label="Previous week">‹</button>
-      <div class="title"><b id="wk-letter">A</b><span id="wk-range"></span></div>
+      <div class="title"><div><b id="wk-letter">A</b><span id="wk-range"></span></div><button class="nowtag" id="wk-now" type="button"></button></div>
       <button class="nav" id="next" type="button" aria-label="Next week">›</button>
     </div>
 
-    <div class="row2">
-      <div class="seg" id="seg-week" role="group" aria-label="Week">
-        <button type="button" data-w="auto">Auto</button>
-        <button type="button" data-w="A">A</button>
-        <button type="button" data-w="B">B</button>
-      </div>
-      <div class="seg" id="seg-view" role="group" aria-label="View">
-        <button type="button" data-v="day">Day</button>
-        <button type="button" data-v="week">Week</button>
-      </div>
+    <div class="row2" id="row2" hidden>
+      <button class="backbtn" id="back" type="button">‹ Back to week</button>
     </div>
 
     <div class="days" id="days"></div>
     <div id="status"></div>
-    <div id="banner"></div>
-    <div id="out"></div>
+        <div id="out"></div>
     <p class="foot" id="foot"></p>
   </div>
 
@@ -228,8 +231,7 @@
     function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
     var groups = load("tt-groups", {});
-    var override = load("tt-week", "auto");   // auto | A | B
-    var view = load("tt-view", "day");        // day | week
+    var view = "week";                         // week | day
     var offset = 0;
     var sel = 0;
 
@@ -272,7 +274,7 @@
 
     function shownMonday() { var m = new Date(monday); m.setDate(m.getDate() + offset * 7); return m; }
     function dayDate(i) { var m = shownMonday(); m.setDate(m.getDate() + i); return m; }
-    function curLetter() { return override === "auto" ? autoLetter(shownMonday()) : override; }
+    function curLetter() { return autoLetter(shownMonday()); }
     function isTodayShown(i) { return offset === 0 && i === todayIdx; }
 
     function nowMin() { var n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
@@ -281,11 +283,13 @@
       var letter = curLetter();
       $("wk-letter").textContent = "Week " + letter;
       var a = dayDate(0), b = dayDate(4);
-      $("wk-range").textContent = a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MON[a.getMonth()]) + " – " + b.getDate() + " " + MON[b.getMonth()] +
-        (override === "auto" ? " · auto" : " · manual");
-
-      Array.prototype.forEach.call($("seg-week").children, function (btn) { btn.setAttribute("aria-pressed", String(btn.getAttribute("data-w") === override)); });
-      Array.prototype.forEach.call($("seg-view").children, function (btn) { btn.setAttribute("aria-pressed", String(btn.getAttribute("data-v") === view)); });
+      $("wk-range").textContent = a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MON[a.getMonth()]) + " – " + b.getDate() + " " + MON[b.getMonth()];
+      var tag = $("wk-now");
+      if (offset === 0) { tag.textContent = "This week"; tag.className = "nowtag"; tag.disabled = true; }
+      else { tag.textContent = "Back to this week"; tag.className = "nowtag btn"; tag.disabled = false; }
+      var nw = new Date();
+      $("clock").textContent = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
+      $("row2").hidden = view === "week";
 
       // day tabs
       var days = $("days"); days.textContent = "";
@@ -302,23 +306,11 @@
         })(i);
       }
 
-      renderBanner();
       var out = $("out"); out.textContent = "";
       if (view === "week") { $("status").textContent = ""; renderWeek(out, letter); }
       else { renderStatus(letter); renderDay(out, letter); }
 
-      $("foot").textContent = "Week A/B switches automatically (week of 2 Nov 2026 = A).";
-    }
-
-    function renderBanner() {
-      var box = $("banner"); box.textContent = "";
-      var need = Object.keys(FAM).some(function (k) { return !groups[k]; });
-      if (!need) return;
-      var btn = h("button", "banner", "Choose your groups");
-      btn.type = "button";
-      btn.appendChild(h("small", null, "Maths, English, languages, PE and crafts are split by group."));
-      btn.addEventListener("click", openGroups);
-      box.appendChild(btn);
+      $("foot").textContent = view === "week" ? "Tap a day to open it, or a lesson to pick your group. Week A/B switches automatically." : "";
     }
 
     function renderStatus(letter) {
@@ -359,9 +351,13 @@
       if (!lessons.length) { out.appendChild(h("div", "empty", "No lessons")); return; }
       var list = h("div", "list");
       var n = nowMin();
+      var marked = !isTodayShown(sel);
+      function mark() { if (marked) return; marked = true; list.appendChild(h("div", "nowmark", pad(new Date().getHours()) + ":" + pad(new Date().getMinutes()))); }
       lessons.forEach(function (raw) {
         var x = resolve(raw);
         var st = PERIODS[x.p][0], en = PERIODS[x.p][1];
+        if (!marked && n < mins(st)) mark();
+        if (!marked && n >= mins(st) && n < mins(en)) marked = true;
         var btn = h("button", "lesson");
         btn.type = "button";
         btn.style.setProperty("--c", colour(x.s));
@@ -377,20 +373,28 @@
         btn.addEventListener("click", function () { openLesson(raw, sel); });
         list.appendChild(btn);
       });
+      mark();
       out.appendChild(list);
     }
 
     function renderWeek(out, letter) {
       var grid = h("div", "grid");
+      var n = nowMin();
       grid.appendChild(h("div", "h", ""));
       for (var p = 1; p <= 4; p++) {
-        var ph = h("div", "h"); ph.appendChild(h("b", null, String(p))); ph.appendChild(h("small", null, PERIODS[p][0] + "–" + PERIODS[p][1]));
+        var live = offset === 0 && todayIdx >= 0 && n >= mins(PERIODS[p][0]) && n < mins(PERIODS[p][1]);
+        var ph = h("div", "h" + (live ? " cur" : "")); ph.appendChild(h("b", null, String(p))); ph.appendChild(h("small", null, PERIODS[p][0] + "–" + PERIODS[p][1]));
         grid.appendChild(ph);
       }
-      var n = nowMin();
       for (var d = 0; d < 5; d++) {
-        var dc = h("div", "p" + (isTodayShown(d) ? " today" : "")); dc.appendChild(h("b", null, DAYN[d])); dc.appendChild(document.createTextNode(String(dayDate(d).getDate())));
-        grid.appendChild(dc);
+        (function (d) {
+          var dc = h("button", "p" + (isTodayShown(d) ? " today" : ""));
+          dc.type = "button";
+          dc.setAttribute("aria-label", "Open " + DAYFULL[d]);
+          dc.appendChild(h("b", null, DAYN[d])); dc.appendChild(document.createTextNode(String(dayDate(d).getDate())));
+          dc.addEventListener("click", function () { openDay(d); });
+          grid.appendChild(dc);
+        })(d);
         for (var pp = 1; pp <= 4; pp++) {
           (function (d, pp) {
             var raw = T[letter][d].filter(function (l) { return l.p === pp; })[0];
@@ -412,10 +416,66 @@
 
     /* ---------- sheets ---------- */
     var sheet = $("sheet"), backdrop = $("backdrop");
-    function openSheet() { sheet.classList.add("on"); backdrop.classList.add("on"); sheet.setAttribute("aria-hidden", "false"); }
-    function closeSheet() { sheet.classList.remove("on"); backdrop.classList.remove("on"); sheet.setAttribute("aria-hidden", "true"); }
+    var sheetOpen = false, ignorePop = 0;
+    function showSheet() {
+      sheet.style.transform = ""; sheet.style.transition = "";
+      sheet.classList.add("on"); backdrop.classList.add("on"); sheet.setAttribute("aria-hidden", "false");
+    }
+    function hideSheet() { sheet.style.transform = ""; sheet.style.transition = ""; sheet.classList.remove("on"); backdrop.classList.remove("on"); sheet.setAttribute("aria-hidden", "true"); }
+    function openSheet() {
+      if (!sheetOpen) { sheetOpen = true; try { history.pushState({ tt: "sheet" }, ""); } catch (e) {} }
+      showSheet();
+    }
+    function closeSheet() {
+      if (!sheetOpen) return;
+      sheetOpen = false; hideSheet();
+      ignorePop++; try { history.back(); } catch (e) { ignorePop--; }
+    }
+    function openDay(d) {
+      sel = d; view = "day";
+      try { history.pushState({ tt: "day" }, ""); } catch (e) {}
+      render(); window.scrollTo(0, 0);
+    }
+    function closeDay() {
+      if (view !== "day") return;
+      view = "week"; ignorePop++;
+      try { history.back(); } catch (e) { ignorePop--; }
+      render();
+    }
+    window.addEventListener("popstate", function () {
+      if (ignorePop > 0) { ignorePop--; return; }
+      if (sheetOpen) { sheetOpen = false; hideSheet(); }
+      else if (view === "day") { view = "week"; render(); }
+    });
     backdrop.addEventListener("click", closeSheet);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+
+    // swipe down to dismiss
+    (function () {
+      var y0 = null, dy = 0, fromHandle = false, t0 = 0;
+      sheet.addEventListener("touchstart", function (e) {
+        var t = e.touches[0];
+        fromHandle = t.clientY - sheet.getBoundingClientRect().top < 48;
+        y0 = (sheet.scrollTop <= 0 || fromHandle) ? t.clientY : null; dy = 0; t0 = Date.now();
+      }, { passive: true });
+      sheet.addEventListener("touchmove", function (e) {
+        if (y0 === null) return;
+        dy = e.touches[0].clientY - y0;
+        if (dy > 0) {
+          e.preventDefault();
+          sheet.style.transition = "none"; sheet.style.transform = "translateY(" + dy + "px)";
+        } else { dy = 0; sheet.style.transform = ""; }
+      }, { passive: false });
+      function end() {
+        if (y0 === null) return;
+        var fast = dy > 40 && (Date.now() - t0) < 250;
+        y0 = null;
+        if (dy > 90 || fast) { closeSheet(); }
+        else { sheet.style.transition = ""; sheet.style.transform = ""; }
+        dy = 0;
+      }
+      sheet.addEventListener("touchend", end); sheet.addEventListener("touchcancel", end);
+    })();
 
     function fact(label, value) {
       var f = h("div", "fact"); f.appendChild(h("span", null, label)); f.appendChild(h("b", null, value)); return f;
@@ -455,31 +515,11 @@
       openSheet();
     }
 
-    function openGroups() {
-      sheet.textContent = "";
-      sheet.appendChild(h("div", "grab"));
-      sheet.appendChild(h("h2", null, "My groups"));
-      sheet.appendChild(h("div", "code", "Saved on this device. Pick yours for each subject."));
-      Object.keys(FAM).forEach(function (k) {
-        sheet.appendChild(h("h3", null, FAM[k].name));
-        sheet.appendChild(groupChips(k, function () { render(); openGroups(); }));
-      });
-      sheet.appendChild(closeBtn());
-      openSheet();
-    }
-
     /* ---------- events ---------- */
-    $("btn-groups").addEventListener("click", openGroups);
     $("prev").addEventListener("click", function () { offset--; render(); });
     $("next").addEventListener("click", function () { offset++; render(); });
-    $("seg-week").addEventListener("click", function (e) {
-      var w = e.target.getAttribute && e.target.getAttribute("data-w"); if (!w) return;
-      override = w; save("tt-week", w); render();
-    });
-    $("seg-view").addEventListener("click", function (e) {
-      var v = e.target.getAttribute && e.target.getAttribute("data-v"); if (!v) return;
-      view = v; save("tt-view", v); render();
-    });
+    $("wk-now").addEventListener("click", function () { offset = 0; render(); });
+    $("back").addEventListener("click", closeDay);
 
     render();
     setInterval(function () { if (!sheet.classList.contains("on")) { if (new Date().getDate() !== now.getDate()) { location.reload(); } else render(); } }, 60000);
