@@ -37,6 +37,9 @@
     button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
     .hbtns { display: flex; gap: 8px; }
+    .icon-btn .dot { display: inline-block; width: 10px; height: 10px; margin-left: 8px; border-radius: 50%; vertical-align: middle; }
+    .icon-btn .dot.red { background: #ff4d6d; box-shadow: 0 0 8px #ff4d6d; }
+    .icon-btn .dot.yellow { background: #ffd23f; box-shadow: 0 0 8px #ffd23f; }
     .icon-btn .cnt { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 6px; border-radius: 99px; background: #ffb86b; color: #2a1600; font-size: .75rem; font-weight: 800; line-height: 20px; text-align: center; }
     .icon-btn.on { border-color: var(--v3); background: rgba(139,92,246,.28); }
     .chday h3 { margin: 18px 0 8px; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; color: var(--v3); }
@@ -393,8 +396,8 @@
       $("clock").textContent = TX[LANG].daysun[nw.getDay()] + " " + nw.getDate() + " " + MON[nw.getMonth()] + " · " + pad(nw.getHours()) + ":" + pad(nw.getMinutes());
       $("row2").hidden = view === "week";
       $("weekbar").hidden = view === "changes";
-      var nChg = changeCount(); var bc = $("btn-changes"); bc.textContent = tr("changes"); bc.classList.toggle("on", view === "changes");
-      if (nChg > 0) { var sp = h("span", "cnt", String(nChg)); bc.appendChild(sp); }
+      var bc = $("btn-changes"); bc.textContent = tr("changes"); bc.classList.toggle("on", view === "changes");
+      var ind = changeIndicator(); if (ind) bc.appendChild(h("span", "dot " + ind));
       document.documentElement.classList.toggle("lock", view === "week");
       if (view === "week") window.scrollTo(0, 0);
 
@@ -456,6 +459,7 @@
           live.forEach(function (it) {
             var st = sk[it.p + "|" + it.s + "|" + it.g];
             if (!st) entries.push({ kind: "new", it: it });
+            else if (it.ch && !it.t) entries.push({ kind: "cancel", it: st });
             else if (it.ch || (it.t && st.t && it.t !== st.t)) entries.push({ kind: "sub", it: it, was: st.t });
           });
         }
@@ -463,7 +467,17 @@
       });
       return res;
     }
-    function changeCount() { var n = 0; computeChanges().forEach(function (d) { n += d.entries.length; }); return n; }
+    function changeIndicator() {
+      var list = computeChanges(); if (!list.length) return "";
+      var t = new Date(); t.setHours(0, 0, 0, 0);
+      var nx = new Date(t); do { nx.setDate(nx.getDate() + 1); } while (nx.getDay() === 0 || nx.getDay() === 6);
+      var res = "";
+      list.forEach(function (d) {
+        if (d.date.getTime() === t.getTime()) res = "red";
+        else if (!res && d.date.getTime() === nx.getTime()) res = "yellow";
+      });
+      return res;
+    }
 
     function renderChanges(out) {
       var list = computeChanges();
