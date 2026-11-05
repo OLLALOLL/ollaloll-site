@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0d0a1a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Timetable">
+  <title>9D Timetable</title>
+  <link rel="manifest" href="/admin/tt/manifest.webmanifest">
+  <link rel="icon" href="/admin/tt/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/admin/tt/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0a1a; --ink: #efeafc; --muted: #aca5c7; --line: rgba(255,255,255,.1);
+      --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.09);
+      --v2: #a78bfa; --v3: #c9b8ff; --grad: linear-gradient(135deg,#9a78ff,#c7a6ff);
+      --font: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --disp: "Unbounded", "Trebuchet MS", system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+      font-family: var(--font); font-size: 16px; line-height: 1.4;
+      background-image: radial-gradient(900px 420px at 80% -10%, rgba(139,92,246,.22), transparent 70%);
+      background-repeat: no-repeat;
+      padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .app { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
+    header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    h1 { font-family: var(--disp); font-weight: 600; font-size: 1.5rem; margin: 0; letter-spacing: -.01em; }
+    h1 small { display: block; font-family: var(--font); font-weight: 500; font-size: .8rem; color: var(--muted); letter-spacing: 0; margin-top: 2px; }
+    .icon-btn { min-width: 44px; height: 44px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); font-weight: 600; font-size: .9rem; }
+
+    .weekbar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .weekbar .nav { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); font-size: 1.2rem; }
+    .weekbar .title { flex: 1; text-align: center; min-width: 0; }
+    .weekbar .title b { display: inline-block; padding: 2px 12px; border-radius: 99px; background: var(--grad); color: #1a1030; font-weight: 700; margin-right: 6px; }
+    .weekbar .title span { color: var(--muted); font-size: .95rem; }
+    .row2 { display: flex; gap: 8px; margin-bottom: 14px; }
+    .seg { display: flex; flex: 1; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); padding: 3px; gap: 3px; }
+    .seg button { flex: 1; min-height: 38px; border: 0; border-radius: 11px; background: transparent; color: var(--muted); font-weight: 600; font-size: .9rem; }
+    .seg button[aria-pressed="true"] { background: var(--glass2); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(201,184,255,.35); }
+
+    .days[hidden] { display: none; }
+    .days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
+    .days button { min-height: 58px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; position: relative; }
+    .days button b { font-size: .95rem; }
+    .days button span { font-size: .78rem; color: var(--muted); }
+    .days button[aria-pressed="true"] { background: var(--grad); border-color: transparent; color: #1a1030; }
+    .days button[aria-pressed="true"] span { color: #3a2a63; }
+    .days button.today::after { content: ""; position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: var(--v2); }
+    .days button.today[aria-pressed="true"]::after { background: #1a1030; }
+
+    .status { border-radius: 16px; border: 1px solid rgba(201,184,255,.35); background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(139,92,246,.08)); padding: 12px 14px; margin-bottom: 14px; }
+    .status .k { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--v3); font-weight: 700; }
+    .status .v { font-weight: 600; margin-top: 2px; }
+    .status .bar { height: 5px; border-radius: 9px; background: rgba(255,255,255,.12); margin-top: 8px; overflow: hidden; }
+    .status .bar i { display: block; height: 100%; background: var(--grad); border-radius: 9px; }
+    .banner { width: 100%; text-align: left; border: 1px dashed rgba(201,184,255,.5); background: var(--glass); border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; font-weight: 600; }
+    .banner small { display: block; font-weight: 400; color: var(--muted); }
+
+    .list { display: grid; gap: 10px; }
+    .lesson { --c: #a78bfa; width: 100%; text-align: left; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px 12px 12px; border-radius: 16px; border: 1px solid var(--line); border-left: 5px solid var(--c); background: color-mix(in srgb, var(--c) 14%, rgba(255,255,255,.03)); min-height: 64px; }
+    .lesson .t { font-size: .85rem; color: var(--muted); line-height: 1.25; font-variant-numeric: tabular-nums; }
+    .lesson .t b { color: var(--ink); display: block; font-size: .95rem; }
+    .lesson .n { min-width: 0; }
+    .lesson .n strong { display: block; font-size: 1.05rem; overflow-wrap: anywhere; }
+    .lesson .n em { display: block; font-style: normal; color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+    .lesson .r { font-weight: 700; font-size: .95rem; padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,.28); white-space: nowrap; }
+    .lesson .r.pick { color: var(--v3); font-weight: 600; font-size: .8rem; }
+    .lesson.now { box-shadow: 0 0 0 2px var(--v3), 0 0 24px rgba(167,139,250,.35); }
+    .lesson.past { opacity: .55; }
+    .empty { text-align: center; color: var(--muted); padding: 32px 12px; border: 1px dashed var(--line); border-radius: 16px; }
+
+    .grid { display: grid; grid-template-columns: 38px repeat(5, minmax(0, 1fr)); gap: 4px; }
+    .grid .h { text-align: center; font-size: .75rem; color: var(--muted); padding: 4px 0; font-weight: 600; }
+    .grid .h.today { color: var(--v3); }
+    .grid .p { font-size: .65rem; color: var(--muted); display: flex; flex-direction: column; justify-content: center; text-align: right; padding-right: 2px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .grid .p b { color: var(--ink); font-size: .8rem; }
+    .cell { --c: #a78bfa; min-height: 62px; border-radius: 10px; border: 1px solid var(--line); border-top: 3px solid var(--c); background: color-mix(in srgb, var(--c) 16%, rgba(255,255,255,.03)); padding: 4px 2px; font-size: .78rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; min-width: 0; }
+    .cell small { font-weight: 500; color: var(--muted); font-size: .66rem; }
+    .cell.blank { background: transparent; border: 1px dashed rgba(255,255,255,.06); border-top-width: 1px; cursor: default; }
+    .cell.now { box-shadow: 0 0 0 2px var(--v3); }
+
+    .backdrop { position: fixed; inset: 0; background: rgba(5,3,12,.65); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .18s; z-index: 20; }
+    .backdrop.on { opacity: 1; pointer-events: auto; }
+    .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-width: 520px; margin: 0 auto; max-height: 86vh; overflow: auto; border-radius: 24px 24px 0 0; background: #17122a; border: 1px solid var(--line); border-bottom: 0; padding: 18px 18px calc(22px + env(safe-area-inset-bottom)); transform: translateY(105%); transition: transform .22s ease; }
+    .sheet.on { transform: none; }
+    .sheet .grab { width: 44px; height: 4px; border-radius: 4px; background: var(--line); margin: -6px auto 12px; }
+    .sheet h2 { margin: 0; font-family: var(--disp); font-weight: 600; font-size: 1.25rem; overflow-wrap: anywhere; }
+    .sheet .code { color: var(--muted); font-size: .9rem; margin: 2px 0 14px; }
+    .facts { display: grid; gap: 8px; margin-bottom: 14px; }
+    .fact { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; padding: 11px 12px; border-radius: 12px; background: var(--glass); border: 1px solid var(--line); }
+    .fact span { color: var(--muted); font-size: .85rem; }
+    .fact b { overflow-wrap: anywhere; }
+    .sheet h3 { margin: 16px 0 8px; font-size: .85rem; text-transform: uppercase; letter-spacing: .07em; color: var(--v3); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { min-height: 44px; padding: 6px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); font-weight: 600; text-align: left; }
+    .chip small { display: block; font-weight: 400; color: var(--muted); font-size: .75rem; }
+    .chip[aria-pressed="true"] { border-color: var(--v3); background: rgba(139,92,246,.28); }
+    .close { width: 100%; margin-top: 16px; min-height: 48px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass2); font-weight: 600; }
+    .foot { margin-top: 22px; text-align: center; color: var(--muted); font-size: .8rem; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1>9D<small>Timetable</small></h1>
+      <button class="icon-btn" id="btn-groups" type="button">My groups</button>
+    </header>
+
+    <div class="weekbar">
+      <button class="nav" id="prev" type="button" aria-label="Previous week">‹</button>
+      <div class="title"><b id="wk-letter">A</b><span id="wk-range"></span></div>
+      <button class="nav" id="next" type="button" aria-label="Next week">›</button>
+    </div>
+
+    <div class="row2">
+      <div class="seg" id="seg-week" role="group" aria-label="Week">
+        <button type="button" data-w="auto">Auto</button>
+        <button type="button" data-w="A">A</button>
+        <button type="button" data-w="B">B</button>
+      </div>
+      <div class="seg" id="seg-view" role="group" aria-label="View">
+        <button type="button" data-v="day">Day</button>
+        <button type="button" data-v="week">Week</button>
+      </div>
+    </div>
+
+    <div class="days" id="days"></div>
+    <div id="status"></div>
+    <div id="banner"></div>
+    <div id="out"></div>
+    <p class="foot" id="foot"></p>
+  </div>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ---------- data ---------- */
+    var PERIODS = {
+      1: ["09:00", "10:20"], 2: ["10:30", "11:50"], 3: ["12:35", "13:55"], 4: ["14:05", "15:25"]
+    };
+    var DAYN = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+    var DAYFULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // code, English name, Estonian name, colour
+    var S = {
+      kj:     ["kj", "Class teacher's hour", "klassijuhatajatund", "#f0a0a0"],
+      mat:    ["mat", "Mathematics", "matemaatika", "#b5d89a"],
+      mu:     ["mu", "Music", "muusika", "#f7b6b6"],
+      ek:     ["ek", "Estonian language", "eesti keel", "#bdbdf0"],
+      kirj:   ["kirj", "Literature", "kirjandus", "#d6b4f0"],
+      keemia: ["keemia", "Chemistry", "keemia", "#e57f7f"],
+      bio:    ["bio", "Biology", "bioloogia", "#8fcf8f"],
+      geo:    ["geo", "Geography", "geograafia", "#d0a6f0"],
+      aj:     ["aj", "History", "ajalugu", "#b9f08c"],
+      f:      ["f", "Physics", "füüsika", "#8a8af0"],
+      "ühisk": ["ühisk", "Social studies", "ühiskonnaõpetus", "#e56fb0"],
+      koor:   ["koor", "Choir", "koor", "#aeaef5"],
+      ika:    ["ika", "English", "inglise keel A", "#e0a070"],
+      vkb:    ["vkb", "Russian", "vene keel B", "#7fd096"],
+      skb:    ["skb", "German", "saksa keel B", "#f0b070"],
+      kk:     ["kk", "Physical education", "kehaline kasvatus", "#c98a8a"],
+      "käs":  ["käs", "Handicraft", "käsitöö", "#d6d58a"],
+      teh:    ["teh", "Technology", "tehnoloogiaõpetus", "#90bfef"],
+      b2:     ["vkb / skb", "Second language (Russian or German)", "vene / saksa keel B", "#7fd096"],
+      kt:     ["käs-tehn", "Handicraft and technology", "käsitöö ja tehnoloogia", "#d6d58a"]
+    };
+
+    // split-group families: [group, subject, teacher, default room]
+    var FAM = {
+      mat: { name: "Mathematics", s: "mat", g: [
+        ["mat1", "mat", "Lepik", "C307"], ["mat2", "mat", "Vetevool", "C305"], ["mat3", "mat", "Saarepuu", "C304"],
+        ["mat4", "mat", "Kivi", "C241"], ["mat5", "mat", "Kiis", "C115"] ] },
+      ika: { name: "English (ika)", s: "ika", g: [
+        ["IK1", "ika", "Kivik", "C161"], ["IK2", "ika", "Mällik", "C155"], ["IK3", "ika", "Kukk", "C233"],
+        ["IK4", "ika", "Altenberg", "C129"], ["IK5", "ika", "Kõdre", "C155"], ["IK6", "ika", "Kolbi", "C131"] ] },
+      b2: { name: "Russian / German (vkb / skb)", s: "b2", g: [
+        ["VK1", "vkb", "Peltonov", "C233"], ["VK2", "vkb", "Nerada", "C115"], ["VK3", "vkb", "Pobjartina", "C125"],
+        ["VK4", "vkb", "Reimann", "C139"], ["SK1", "skb", "Keskla", "C202"], ["SK2", "skb", "Tiitsepere", "C125"] ] },
+      kk: { name: "Physical education (kk)", s: "kk", g: [
+        ["T1", "kk", "Rünne", "D0"], ["P1", "kk", "Porkveli", "D101-1"] ] },
+      kt: { name: "Handicraft / technology", s: "kt", g: [
+        ["käs", "käs", "Nahkur", "C104"], ["teh", "teh", "Kobrusepp", "C148"] ] }
+    };
+
+    function L(p, s, room, teacher) { return { p: p, s: s, r: room, t: teacher || null }; }
+    function G(p, fam, ov) { return { p: p, fam: fam, ov: ov || {} }; }
+
+    var T = {
+      A: [
+        [L(1, "kj", "C311", "Kivi"), G(2, "mat"), L(3, "mu", "B217", "Kalvet A."), G(4, "kt")],
+        [L(1, "ek", "C241", "Pappel T."), G(2, "mat", { mat5: "C302" }), L(4, "koor", "B217, B104", "Kalvet A., Kalvet V.")],
+        [L(1, "keemia", "C222", "Pilter K."), L(2, "kirj", "C241", "Pappel T."), L(3, "bio", "C214", "Heinsalu"), G(4, "ika")],
+        [L(1, "ek", "C241", "Pappel T."), L(2, "geo", "C204", "Ojassalu"), G(3, "kk"), G(4, "b2")],
+        [L(1, "ühisk", "C223"), L(2, "aj", "C229"), L(3, "f", "C210"), G(4, "b2")]
+      ],
+      B: [
+        [L(1, "keemia", "C222", "Pilter K."), G(2, "mat")],
+        [L(1, "ek", "C241", "Pappel T."), G(2, "mat", { mat5: "C302" }), G(3, "ika"), L(4, "koor", "B217, B104", "Kalvet A., Kalvet V.")],
+        [G(1, "mat", { mat4: "C222", mat5: "C302" }), L(2, "kirj", "C241", "Pappel T."), L(3, "bio", "C214", "Heinsalu"), G(4, "ika")],
+        [L(2, "geo", "C204", "Ojassalu"), G(3, "kk"), G(4, "b2")],
+        [L(1, "ühisk", "C223"), L(2, "aj", "C229"), L(3, "f", "C210")]
+      ]
+    };
+
+    /* ---------- state / storage ---------- */
+    function load(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+    function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+    var groups = load("tt-groups", {});
+    var override = load("tt-week", "auto");   // auto | A | B
+    var view = load("tt-view", "day");        // day | week
+    var offset = 0;
+    var sel = 0;
+
+    /* ---------- date helpers ---------- */
+    var BASE = Date.UTC(2026, 10, 2); // Monday of a week A
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    function mins(hm) { var a = hm.split(":"); return +a[0] * 60 + +a[1]; }
+    function mondayOf(now) {
+      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var dow = (d.getDay() + 6) % 7;
+      d.setDate(d.getDate() - dow + (dow > 4 ? 7 : 0));
+      return d;
+    }
+    function weekIndex(mon) { return Math.round((Date.UTC(mon.getFullYear(), mon.getMonth(), mon.getDate()) - BASE) / (7 * 864e5)); }
+    function autoLetter(mon) { return ((weekIndex(mon) % 2) + 2) % 2 === 0 ? "A" : "B"; }
+
+    /* ---------- lesson resolution ---------- */
+    function resolve(l) {
+      if (l.s) return { p: l.p, s: l.s, room: l.r, teacher: l.t, group: null, fam: null };
+      var f = FAM[l.fam], pick = groups[l.fam];
+      for (var i = 0; i < f.g.length; i++) {
+        var g = f.g[i];
+        if (g[0] === pick) {
+          return { p: l.p, s: g[1], room: l.ov[g[0]] || g[3], teacher: g[2], group: g[0], fam: l.fam };
+        }
+      }
+      return { p: l.p, s: f.s, room: null, teacher: null, group: null, fam: l.fam, unpicked: true };
+    }
+
+    /* ---------- DOM helpers ---------- */
+    function $(id) { return document.getElementById(id); }
+    function h(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+    function colour(s) { return S[s][3]; }
+
+    /* ---------- render ---------- */
+    var now = new Date();
+    var monday = mondayOf(now);
+    var todayIdx = (function () { var d = (now.getDay() + 6) % 7; return d > 4 ? -1 : d; })();
+    sel = todayIdx < 0 ? 0 : todayIdx;
+
+    function shownMonday() { var m = new Date(monday); m.setDate(m.getDate() + offset * 7); return m; }
+    function dayDate(i) { var m = shownMonday(); m.setDate(m.getDate() + i); return m; }
+    function curLetter() { return override === "auto" ? autoLetter(shownMonday()) : override; }
+    function isTodayShown(i) { return offset === 0 && i === todayIdx; }
+
+    function nowMin() { var n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
+
+    function render() {
+      var letter = curLetter();
+      $("wk-letter").textContent = "Week " + letter;
+      var a = dayDate(0), b = dayDate(4);
+      $("wk-range").textContent = a.getDate() + (a.getMonth() === b.getMonth() ? "" : " " + MON[a.getMonth()]) + " – " + b.getDate() + " " + MON[b.getMonth()] +
+        (override === "auto" ? " · auto" : " · manual");
+
+      Array.prototype.forEach.call($("seg-week").children, function (btn) { btn.setAttribute("aria-pressed", String(btn.getAttribute("data-w") === override)); });
+      Array.prototype.forEach.call($("seg-view").children, function (btn) { btn.setAttribute("aria-pressed", String(btn.getAttribute("data-v") === view)); });
+
+      // day tabs
+      var days = $("days"); days.textContent = "";
+      days.hidden = view === "week";
+      for (var i = 0; i < 5; i++) {
+        (function (i) {
+          var btn = h("button", isTodayShown(i) ? "today" : "");
+          btn.type = "button";
+          btn.setAttribute("aria-pressed", String(i === sel));
+          btn.appendChild(h("b", null, DAYN[i]));
+          btn.appendChild(h("span", null, String(dayDate(i).getDate())));
+          btn.addEventListener("click", function () { sel = i; render(); });
+          days.appendChild(btn);
+        })(i);
+      }
+
+      renderBanner();
+      var out = $("out"); out.textContent = "";
+      if (view === "week") { $("status").textContent = ""; renderWeek(out, letter); }
+      else { renderStatus(letter); renderDay(out, letter); }
+
+      $("foot").textContent = "Week A/B switches automatically (week of 2 Nov 2026 = A).";
+    }
+
+    function renderBanner() {
+      var box = $("banner"); box.textContent = "";
+      var need = Object.keys(FAM).some(function (k) { return !groups[k]; });
+      if (!need) return;
+      var btn = h("button", "banner", "Choose your groups");
+      btn.type = "button";
+      btn.appendChild(h("small", null, "Maths, English, languages, PE and crafts are split by group."));
+      btn.addEventListener("click", openGroups);
+      box.appendChild(btn);
+    }
+
+    function renderStatus(letter) {
+      var box = $("status"); box.textContent = "";
+      if (!isTodayShown(sel)) return;
+      var lessons = T[letter][sel].map(resolve);
+      var n = nowMin(), cur = null, next = null;
+      lessons.forEach(function (x) {
+        var st = mins(PERIODS[x.p][0]), en = mins(PERIODS[x.p][1]);
+        if (n >= st && n < en) cur = x; else if (n < st && !next) next = x;
+      });
+      if (!cur && !next && lessons.length === 0) return;
+      var card = h("div", "status");
+      function name(x) { return S[x.s][1]; }
+      if (cur) {
+        var en = mins(PERIODS[cur.p][1]), st = mins(PERIODS[cur.p][0]);
+        card.appendChild(h("div", "k", "Now"));
+        card.appendChild(h("div", "v", name(cur) + (cur.room ? " · " + cur.room : "") + " · ends in " + (en - n) + " min"));
+        var bar = h("div", "bar"), i = h("i"); i.style.width = Math.round((n - st) / (en - st) * 100) + "%";
+        bar.appendChild(i); card.appendChild(bar);
+        if (next) {
+          var nx = h("div", "k", "Next: " + name(next) + " at " + PERIODS[next.p][0]);
+          nx.style.marginTop = "8px";
+          card.appendChild(nx);
+        }
+      } else if (next) {
+        card.appendChild(h("div", "k", "Next"));
+        card.appendChild(h("div", "v", name(next) + (next.room ? " · " + next.room : "") + " · " + PERIODS[next.p][0]));
+      } else {
+        card.appendChild(h("div", "k", "Today"));
+        card.appendChild(h("div", "v", "Done for today"));
+      }
+      box.appendChild(card);
+    }
+
+    function renderDay(out, letter) {
+      var lessons = T[letter][sel];
+      if (!lessons.length) { out.appendChild(h("div", "empty", "No lessons")); return; }
+      var list = h("div", "list");
+      var n = nowMin();
+      lessons.forEach(function (raw) {
+        var x = resolve(raw);
+        var st = PERIODS[x.p][0], en = PERIODS[x.p][1];
+        var btn = h("button", "lesson");
+        btn.type = "button";
+        btn.style.setProperty("--c", colour(x.s));
+        if (isTodayShown(sel)) {
+          if (n >= mins(st) && n < mins(en)) btn.classList.add("now");
+          else if (n >= mins(en)) btn.classList.add("past");
+        }
+        var t = h("div", "t"); t.appendChild(h("b", null, st)); t.appendChild(document.createTextNode(en));
+        var nm = h("div", "n"); nm.appendChild(h("strong", null, S[x.s][1]));
+        nm.appendChild(h("em", null, x.group ? S[x.s][0] + " · " + x.group : S[x.s][0]));
+        var r = h("div", x.unpicked ? "r pick" : "r", x.unpicked ? "pick group" : (x.room || "–"));
+        btn.appendChild(t); btn.appendChild(nm); btn.appendChild(r);
+        btn.addEventListener("click", function () { openLesson(raw, sel); });
+        list.appendChild(btn);
+      });
+      out.appendChild(list);
+    }
+
+    function renderWeek(out, letter) {
+      var grid = h("div", "grid");
+      grid.appendChild(h("div", "h", ""));
+      for (var d = 0; d < 5; d++) grid.appendChild(h("div", "h" + (isTodayShown(d) ? " today" : ""), DAYN[d]));
+      var n = nowMin();
+      for (var p = 1; p <= 4; p++) {
+        var pc = h("div", "p"); pc.appendChild(h("b", null, String(p))); pc.appendChild(document.createTextNode(PERIODS[p][0]));
+        grid.appendChild(pc);
+        for (var di = 0; di < 5; di++) {
+          (function (di) {
+            var raw = T[letter][di].filter(function (l) { return l.p === p; })[0];
+            if (!raw) { grid.appendChild(h("div", "cell blank")); return; }
+            var x = resolve(raw);
+            var c = h("button", "cell");
+            c.type = "button";
+            c.style.setProperty("--c", colour(x.s));
+            if (isTodayShown(di) && n >= mins(PERIODS[p][0]) && n < mins(PERIODS[p][1])) c.classList.add("now");
+            c.appendChild(h("span", null, x.unpicked ? S[x.s][0].replace(" / ", "/") : S[x.s][0]));
+            c.appendChild(h("small", null, x.room ? x.room.split(",")[0] : "pick"));
+            c.addEventListener("click", function () { openLesson(raw, di); });
+            grid.appendChild(c);
+          })(di);
+        }
+      }
+      out.appendChild(grid);
+    }
+
+    /* ---------- sheets ---------- */
+    var sheet = $("sheet"), backdrop = $("backdrop");
+    function openSheet() { sheet.classList.add("on"); backdrop.classList.add("on"); sheet.setAttribute("aria-hidden", "false"); }
+    function closeSheet() { sheet.classList.remove("on"); backdrop.classList.remove("on"); sheet.setAttribute("aria-hidden", "true"); }
+    backdrop.addEventListener("click", closeSheet);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
+
+    function fact(label, value) {
+      var f = h("div", "fact"); f.appendChild(h("span", null, label)); f.appendChild(h("b", null, value)); return f;
+    }
+    function groupChips(fam, onPick) {
+      var chips = h("div", "chips");
+      FAM[fam].g.forEach(function (g) {
+        var c = h("button", "chip", g[0]);
+        c.type = "button";
+        c.appendChild(h("small", null, g[2] + " · " + S[g[1]][1]));
+        c.setAttribute("aria-pressed", String(groups[fam] === g[0]));
+        c.addEventListener("click", function () { groups[fam] = g[0]; save("tt-groups", groups); onPick(); });
+        chips.appendChild(c);
+      });
+      return chips;
+    }
+    function closeBtn() { var b = h("button", "close", "Close"); b.type = "button"; b.addEventListener("click", closeSheet); return b; }
+
+    function openLesson(raw, dayIdx) {
+      var x = resolve(raw);
+      var s = S[x.s];
+      sheet.textContent = "";
+      sheet.appendChild(h("div", "grab"));
+      sheet.appendChild(h("h2", null, s[1]));
+      sheet.appendChild(h("div", "code", s[0] + (s[2] && s[2] !== s[0] ? " · " + s[2] : "") + (x.group ? " · group " + x.group : "")));
+      var facts = h("div", "facts");
+      facts.appendChild(fact("Teacher", x.teacher || (x.unpicked ? "Depends on your group" : "Not listed")));
+      facts.appendChild(fact("Classroom", x.room || (x.unpicked ? "Depends on your group" : "–")));
+      facts.appendChild(fact("Time", PERIODS[x.p][0] + " – " + PERIODS[x.p][1] + " (period " + x.p + ")"));
+      facts.appendChild(fact("Day", DAYFULL[dayIdx] + " " + dayDate(dayIdx).getDate() + " " + MON[dayDate(dayIdx).getMonth()]));
+      sheet.appendChild(facts);
+      if (raw.fam) {
+        sheet.appendChild(h("h3", null, x.group ? "Change your group" : "Choose your group"));
+        sheet.appendChild(groupChips(raw.fam, function () { render(); openLesson(raw, dayIdx); }));
+      }
+      sheet.appendChild(closeBtn());
+      openSheet();
+    }
+
+    function openGroups() {
+      sheet.textContent = "";
+      sheet.appendChild(h("div", "grab"));
+      sheet.appendChild(h("h2", null, "My groups"));
+      sheet.appendChild(h("div", "code", "Saved on this device. Pick yours for each subject."));
+      Object.keys(FAM).forEach(function (k) {
+        sheet.appendChild(h("h3", null, FAM[k].name));
+        sheet.appendChild(groupChips(k, function () { render(); openGroups(); }));
+      });
+      sheet.appendChild(closeBtn());
+      openSheet();
+    }
+
+    /* ---------- events ---------- */
+    $("btn-groups").addEventListener("click", openGroups);
+    $("prev").addEventListener("click", function () { offset--; render(); });
+    $("next").addEventListener("click", function () { offset++; render(); });
+    $("seg-week").addEventListener("click", function (e) {
+      var w = e.target.getAttribute && e.target.getAttribute("data-w"); if (!w) return;
+      override = w; save("tt-week", w); render();
+    });
+    $("seg-view").addEventListener("click", function (e) {
+      var v = e.target.getAttribute && e.target.getAttribute("data-v"); if (!v) return;
+      view = v; save("tt-view", v); render();
+    });
+
+    render();
+    setInterval(function () { if (!sheet.classList.contains("on")) { if (new Date().getDate() !== now.getDate()) { location.reload(); } else render(); } }, 60000);
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/admin/tt/sw.js", { scope: "/admin/tt/" }).catch(function () {});
+    }
+  })();
+  </script>
+</body>
+</html>
